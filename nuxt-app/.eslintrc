@@ -1,0 +1,29 @@
+{
+  "extends": ["@antfu"],
+  "rules": {
+    "indent": ["warn", 2],
+    "curly": "off",
+    "no-console": "off",
+    "@typescript-eslint/comma-dangle": "off",
+    "vue/valid-v-for": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "max-statements-per-line": "off",
+    "unused-imports/no-unused-imports": "off",
+    "prefer-const": "off",
+    "n/prefer-global/process": "off",
+    "vue/html-self-closing": [
+      "error",
+      {
+        "html": {
+          "normal": "any"
+        }
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["types/**"],
+      "extends": ["@antfu"]
+    }
+  ]
+}
