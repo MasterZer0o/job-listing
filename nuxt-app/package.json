@@ -7,10 +7,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "deps": "pnpm up -i --latest",
+    "postdeps": "nuxt prepare",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "0.42.0",
+    "@antfu/eslint-config": "1.0.0-beta.6",
     "@nuxt/devtools": "latest",
     "@nuxtjs/html-validator": "^1.5.2",
     "@unocss/nuxt": "^0.56.1",
@@ -21,5 +23,8 @@
     "postcss-jit-props": "^1.0.13",
     "sass": "^1.68.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.4.11"
   }
 }

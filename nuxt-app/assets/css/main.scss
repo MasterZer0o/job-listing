@@ -2,9 +2,6 @@
 @use './themes/dark.scss';
 @use './themes/light.scss';
 
-body {
-  background-color: var(--jungle-12);
-}
 :root {
   --font-sans: 'Inter', sans-serif;
 }

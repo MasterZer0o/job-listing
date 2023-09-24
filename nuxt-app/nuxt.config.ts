@@ -1,8 +1,12 @@
 import openProps from 'open-props'
 
-const isDev = process.env.NODE_ENV === 'development'
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/html-validator', '@unocss/nuxt'],
+  modules: ['@nuxtjs/html-validator', '@unocss/nuxt',
+  ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs', 'skipHydrate'] }]
+  ],
+  imports: {
+    dirs: ['stores']
+  },
   experimental: {
     inlineSSRStyles: false,
     typedPages: true
@@ -25,6 +29,7 @@ export default defineNuxtConfig({
       }
     }
   },
+    
   app: {
     rootId: 'app',
     buildAssetsDir: '/public/',

@@ -5,7 +5,7 @@ useHead({
 </script>
 
 <template>
-  <div class="test">
-    <button>Random text</button>
+  <div>
+    
   </div>
 </template>
