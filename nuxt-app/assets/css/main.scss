@@ -1,7 +1,35 @@
 @use 'open-props/normalize/dark' as op;
-@use './themes/dark.scss';
-@use './themes/light.scss';
+
+@use 'themes/dark.scss';
+@use 'themes/light.scss';
+
+@use 'components/app/navbar.scss';
+@use 'components/login_form.scss';
 
 :root {
   --font-sans: 'Inter', sans-serif;
+
+  --brand: var(--blue-5);
+  --brand-2: var(--blue-6);
+  --brand-3: var(--blue-8);
+}
+
+body {
+  background-color: rgb(41, 46, 50);
+  font-family: var(--font-sans);
+}
+
+a {
+  text-decoration: none;
+  &:visited {
+    color: inherit;
+  }
+}
+li {
+  list-style-type: none;
+}
+
+ul,
+li {
+  padding: 0;
 }

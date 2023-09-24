@@ -11,19 +11,6 @@
     "unused-imports/no-unused-imports": "off",
     "prefer-const": "off",
     "n/prefer-global/process": "off",
-    "vue/html-self-closing": [
-      "error",
-      {
-        "html": {
-          "normal": "any"
-        }
-      }
-    ]
-  },
-  "overrides": [
-    {
-      "files": ["types/**"],
-      "extends": ["@antfu"]
-    }
-  ]
+    "vue/html-self-closing": "off"
+  }
 }

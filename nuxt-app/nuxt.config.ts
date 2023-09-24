@@ -2,7 +2,7 @@ import openProps from 'open-props'
 
 export default defineNuxtConfig({
   modules: ['@nuxtjs/html-validator', '@unocss/nuxt',
-  ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs', 'skipHydrate'] }]
+    ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs', 'skipHydrate'] }]
   ],
   imports: {
     dirs: ['stores']
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
       }
     }
   },
-    
+
   app: {
     rootId: 'app',
     buildAssetsDir: '/public/',
@@ -39,11 +39,12 @@ export default defineNuxtConfig({
         lang: 'en'
       },
       link: [
-        // * font *
+
         // {
         //   rel: 'stylesheet',
         //   href: 'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css'
         // },
+        // * font *
         {
           rel: 'preconnect',
           href: 'https://fonts.googleapis.com'
@@ -66,6 +67,7 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
-    public: {}
+    public: {},
+    API_BASE: ''
   }
 })

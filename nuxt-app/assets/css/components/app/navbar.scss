@@ -1,0 +1,131 @@
+.app-nav {
+  border-bottom: 1px solid var(--gray-7);
+  padding: var(--size-4);
+  display: flex;
+  align-items: center;
+
+  & > ul {
+    display: flex;
+    gap: var(--size-2);
+
+    li {
+      position: relative;
+      font-size: var(--font-size-3);
+
+      $dist: 4px;
+      $time: 100ms;
+
+      a {
+        text-decoration: none;
+        transition: color $time ease-in-out;
+
+        &::after {
+          content: '';
+          height: 2px;
+          width: 100%;
+          position: absolute;
+          left: 0;
+          bottom: -$dist;
+          opacity: 0;
+          background-color: var(--brand);
+          transition: all $time ease-in-out;
+          border-radius: 4px;
+        }
+
+        &:hover::after {
+          opacity: 1;
+          transform: translateY(-$dist);
+        }
+
+        &:hover {
+          color: var(--brand);
+        }
+      }
+    }
+  }
+
+  .user {
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+
+    & > div:first-child {
+      $hover-time: 100ms;
+      &::after {
+        content: '';
+        z-index: -1;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--gray-7);
+        opacity: 0;
+        transition: all $hover-time ease-in;
+      }
+
+      &:hover::after {
+        transform: scale(1.3);
+        opacity: 1;
+      }
+
+      path:nth-child(2) {
+        transition: fill $hover-time ease-in-out;
+      }
+
+      &:hover path:nth-child(2) {
+        fill: var(--brand);
+      }
+    }
+
+    &:hover {
+      .dropdown ul {
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
+
+    .dropdown ul {
+      position: absolute;
+      background-color: var(--gray-9);
+      padding: var(--size-3);
+      border-radius: 4px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--size-2);
+      box-shadow: var(--shadow-2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 80ms ease-in-out;
+
+      li {
+        font-size: var(--font-size-3);
+        position: relative;
+
+        $dist: 8px;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 2px;
+          height: 100%;
+          background-color: var(--brand);
+          left: -$dist;
+          opacity: 0;
+          transition: all 150ms ease-in-out;
+        }
+
+        &:hover {
+          color: var(--brand);
+
+          &::after {
+            opacity: 1;
+            transform: translateX(calc($dist - 6px));
+          }
+        }
+      }
+    }
+  }
+}
