@@ -1,6 +1,4 @@
-[color-scheme='dark'] {
-  color-scheme: dark;
-
+:root {
   --link: var(--indigo-3);
   --link-visited: var(--purple-3);
 
@@ -11,6 +9,8 @@
   --surface-2: var(--gray-8);
   --surface-3: var(--gray-7);
   --surface-4: var(--gray-6);
+
+  --input-bg-focus: hsl(209, 76%, 20%);
 
   --scrollthumb-color: var(--gray-6);
 

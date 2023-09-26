@@ -4,7 +4,7 @@
 @use 'themes/light.scss';
 
 @use 'components/app/navbar.scss';
-@use 'components/login_form.scss';
+@use 'components/forms.scss';
 
 :root {
   --font-sans: 'Inter', sans-serif;
@@ -12,11 +12,23 @@
   --brand: var(--blue-5);
   --brand-2: var(--blue-6);
   --brand-3: var(--blue-8);
+  --brand-4: var(--blue-9);
+  --brand-5: var(--blue-10);
+
+  accent-color: var(--brand, var(--link));
+  caret-color: var(--brand, var(--link));
+  color: var(--text-2);
 }
 
 body {
-  background-color: rgb(41, 46, 50);
+  background-color: var(--surface-1);
   font-family: var(--font-sans);
+
+  & > * > * {
+    transition:
+      background-color 300ms ease-in-out,
+      color 300ms ease-in-out !important;
+  }
 }
 
 a {

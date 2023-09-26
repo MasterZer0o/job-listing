@@ -2,9 +2,19 @@
 useHead({
   titleTemplate: title => title ?? 'Home'
 })
+const theme = ref('dark')
 </script>
 
 <template>
+  <Html :color-scheme="theme" />
+  <DevOnly>
+    <button
+      style="position: absolute;"
+      @click="theme = theme === 'dark' ? 'light' : 'dark'">
+      theme
+    </button>
+  </DevOnly>
+
   <NuxtLoadingIndicator
     :throttle="0"
     :duration="500"
