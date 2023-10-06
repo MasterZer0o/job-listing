@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS "sessions" (
+	"id" VARCHAR(255) PRIMARY KEY,
+	"user_id" INTEGER,
+	"created_at" TIMESTAMPTZ DEFAULT NOW(),
+	CONSTRAINT "fk_sessions_user" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "users" (
+	"id" SERIAL PRIMARY KEY,
+	"email" VARCHAR(100) NOT NULL,
+	"first_name" VARCHAR(100) NULL DEFAULT NULL,
+	"last_name" VARCHAR(100) NULL DEFAULT NULL,
+	"password" VARCHAR(100) NOT NULL,
+	"created_at" TIMESTAMPTZ DEFAULT NOW(),
+	"updated_at" TIMESTAMPTZ NULL DEFAULT NULL
+);
