@@ -76,20 +76,20 @@ async function login() {
 
 <template>
   <main>
-    <section class="login-form">
+    <section class="form">
       <div class="wrapper">
         <p>Login</p>
         <form novalidate>
           <fieldset>
             <legend></legend>
-            <input id="email" ref="emailInput" type="email" required placeholder="" value="aaa@asd.com" />
+            <input id="email" ref="emailInput" type="email" required placeholder="" />
             <label for="email">Email</label>
             <span v-if="emailError !== null" class="validation-error">{{ emailError }}</span>
           </fieldset>
 
           <fieldset>
             <legend></legend>
-            <input id="password" ref="passwordInput" type="password" required placeholder="" value="123123">
+            <input id="password" ref="passwordInput" type="password" required placeholder="">
             <label for="password">Password</label>
             <span v-if="passwordError !== null" class="validation-error">{{ passwordError }}</span>
           </fieldset>

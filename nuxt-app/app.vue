@@ -9,6 +9,7 @@ const theme = ref('dark')
   <Html :color-scheme="theme" />
   <DevOnly>
     <button
+      type="button"
       style="position: absolute;"
       @click="theme = theme === 'dark' ? 'light' : 'dark'">
       theme

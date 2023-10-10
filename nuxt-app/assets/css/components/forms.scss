@@ -1,4 +1,4 @@
-.login-form {
+.form {
   .wrapper {
     width: fit-content;
     margin: var(--size-10) auto 0 auto;
@@ -31,6 +31,15 @@
       position: relative;
       padding-left: 0;
       padding-right: 0;
+
+      .input-eye {
+        background: none;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: var(--size-2);
+        user-select: none;
+      }
     }
 
     & > fieldset {
@@ -81,6 +90,10 @@
         font-weight: var(--font-weight-7);
         letter-spacing: 1px;
 
+        &:hover:not(:has(svg)) {
+          background-color: var(--brand-2);
+        }
+
         &:has(svg) {
           background-color: var(--brand-5);
         }
@@ -88,7 +101,7 @@
         &:active,
         &:focus-visible {
           transform: scale(0.98);
-          background-color: var(--brand-2);
+          background-color: var(--brand-4) !important;
         }
 
         .loader {
@@ -106,6 +119,8 @@
       }
 
       & .validation-error {
+        display: flex;
+        gap: var(--size-1);
         padding-top: var(--size-2);
         font-size: var(--font-size-1);
       }
