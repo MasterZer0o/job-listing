@@ -9,24 +9,24 @@ import (
 )
 
 var err error
-var db *pgxpool.Pool
+var DB *pgxpool.Pool
 
 func Connect() error {
 
 	DATABASE_URL, ok := os.LookupEnv("DATABASE_URL")
 
 	if !ok {
-		panic("DATABASE URL ENV not set")
+		log.Fatal("DATABASE URL ENV not set")
 	}
 
-	Migrate()
+	// Migrate()
 
 	pool, err := pgxpool.New(context.Background(), DATABASE_URL)
-	db = pool
-
 	if err != nil {
 		log.Fatal("Database connection error: ", err)
 	}
+
+	DB = pool
 
 	return nil
 }

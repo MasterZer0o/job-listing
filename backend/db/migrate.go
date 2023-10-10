@@ -11,6 +11,7 @@ import (
 )
 
 func Migrate() {
+
 	m, err := migrate.New(
 		"file://db/migrations",
 		os.Getenv("DATABASE_URL"))
