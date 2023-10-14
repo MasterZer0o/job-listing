@@ -12,14 +12,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RequestData struct {
+type requestData struct {
 	Email          string `validate:"email"`
 	Password       string `validate:"gte=6,eqfield=PasswordRepeat"`
 	PasswordRepeat string `validate:"gte=6"`
 }
 
 func Register(ctx *fiber.Ctx) error {
-	incomingData := RequestData{}
+	incomingData := requestData{}
 	var err error
 	if err = ctx.BodyParser(&incomingData); err != nil {
 		return err
@@ -55,7 +55,7 @@ func Register(ctx *fiber.Ctx) error {
 
 var validate *validator.Validate = validator.New(validator.WithRequiredStructEnabled())
 
-func (data *RequestData) validate() error {
+func (data *requestData) validate() error {
 	if err := validate.Struct(data); err != nil {
 		var message string
 
