@@ -27,9 +27,13 @@ type foundUser struct {
 func Login(ctx *fiber.Ctx) error {
 	loginData := loginBody{}
 	err := ctx.BodyParser(&loginData)
+
 	if err != nil {
 		fmt.Println("Body parse error: ", err)
 	}
+
+	time.Sleep(1 * time.Second)
+
 	user := foundUser{}
 	err = db.DB.QueryRow(ctx.Context(), "SELECT email, password, id FROM users WHERE email = $1",
 		loginData.Email).Scan(&user.Email, &user.Password, &user.Id)
@@ -54,6 +58,8 @@ func Login(ctx *fiber.Ctx) error {
 		Name:     "session",
 		HTTPOnly: true,
 		Value:    sessionId.String(),
+		Secure:   true,
+		SameSite: "none",
 	}
 
 	if loginData.Remember {
@@ -63,8 +69,6 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	ctx.Cookie(cookie)
-
-	time.Sleep(1 * time.Second)
 
 	return ctx.SendStatus(200)
 }

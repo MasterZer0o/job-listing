@@ -30,5 +30,5 @@ func main() {
 	Router(app)
 
 	fmt.Print("Server started on port 5000.\n")
-	app.Listen("localhost:5000")
+	app.Listen(":5000")
 }

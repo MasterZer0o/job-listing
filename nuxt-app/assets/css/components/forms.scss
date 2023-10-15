@@ -74,50 +74,51 @@
         }
       }
     }
-    div:last-of-type {
-      button {
-        margin-top: var(--size-9);
-        width: 100%;
-        min-height: 46px;
-        background-color: var(--brand-3);
-        padding: var(--size-2);
-        border-radius: var(--radius-2);
-        transition:
-          transform 100ms ease-in-out,
-          background-color 100ms ease-in-out;
-        font-size: var(--font-size-3);
-        color: var(--gray-1);
-        font-weight: var(--font-weight-7);
-        letter-spacing: 1px;
+    button[type='submit'] {
+      margin-top: var(--size-9);
+      width: 100%;
+      min-height: 46px;
+      background-color: var(--brand-3);
+      padding: var(--size-2);
+      border-radius: var(--radius-2);
+      transition:
+        transform 100ms ease-in-out,
+        background-color 100ms ease-in-out;
+      font-size: var(--font-size-3);
+      color: var(--gray-1);
+      font-weight: var(--font-weight-7);
+      letter-spacing: 1px;
 
-        &:hover:not(:has(svg)) {
-          background-color: var(--brand-2);
-        }
-
-        &:has(svg) {
-          background-color: var(--brand-5);
-        }
-
-        &:active,
-        &:focus-visible {
-          transform: scale(0.98);
-          background-color: var(--brand-4) !important;
-        }
-
-        .loader {
-          margin: auto;
-          path {
-            transform-origin: center;
-            animation: spin 0.75s linear infinite;
-          }
-        }
-        @keyframes spin {
-          100% {
-            transform: rotate(360deg);
-          }
-        }
+      &:hover:not(:has(svg)) {
+        background-color: var(--brand-2);
       }
 
+      &:has(svg:not(.checkmark)) {
+        background-color: var(--brand-5);
+      }
+
+      &:active,
+      &:focus-visible {
+        transform: scale(0.98);
+        background-color: var(--brand-4) !important;
+      }
+      svg {
+        margin: auto;
+      }
+
+      .loader {
+        path {
+          transform-origin: center;
+          animation: spin 0.75s linear infinite;
+        }
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+    div:last-of-type {
       & .validation-error {
         display: flex;
         gap: var(--size-1);
@@ -198,4 +199,57 @@
       }
     }
   }
+}
+
+[data-registerform] {
+  .checkmark {
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    animation:
+      fill 0.4s ease-in-out 0.4s forwards,
+      scale 0.3s ease-in-out 0.9s both;
+  }
+
+  circle {
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scale {
+    0%,
+    100% {
+      transform: none;
+    }
+    50% {
+      transform: scale3d(1.1, 1.1, 1);
+    }
+  }
+
+  @keyframes fill {
+    100% {
+      box-shadow: inset 0px 0px 0px 30px #619c34;
+    }
+  }
+}
+
+.logreg-enter-active,
+.logreg-leave-active {
+  transition: all 200ms ease-in-out !important;
+}
+
+.logreg-enter-from,
+.logreg-leave-to {
+  opacity: 0;
 }

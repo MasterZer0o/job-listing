@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+const user = useUser()
 </script>
 
 <template>
@@ -14,14 +14,21 @@
     </div>
     <div class="dropdown">
       <ul>
-        <li>
-          <NuxtLink to="/login" :prefetch="false">
-            Sign in
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/register" :prefetch="false">
-            Register
+        <template v-if="!user.loggedIn">
+          <li>
+            <NuxtLink to="/login" :prefetch="false">
+              Sign in
+            </NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/register" :prefetch="false">
+              Register
+            </NuxtLink>
+          </li>
+        </template>
+        <li v-else>
+          <NuxtLink to="/account">
+            Account
           </NuxtLink>
         </li>
       </ul>

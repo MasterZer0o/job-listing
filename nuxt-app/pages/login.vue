@@ -1,15 +1,24 @@
 <script setup lang="ts">
 import { email, minLength, object, safeParse, string } from 'valibot'
 
+definePageMeta({
+  pageTransition: {
+    name: 'logreg',
+    mode: 'out-in'
+  }
+})
+
 useHead({
   title: 'Login'
 })
+
 const emailInput = ref() as Ref<HTMLInputElement>
 const passwordInput = ref() as Ref<HTMLInputElement>
+const rememberCheckbox = ref() as Ref<HTMLInputElement>
 
 const emailError = ref<string | null>(null)
 const passwordError = ref<string | null>(null)
-const credentialsError = ref(false)
+const credentialsError = ref<string | null>(null)
 
 const isLoading = ref(false)
 const rememberedValues = reactive({
@@ -18,7 +27,8 @@ const rememberedValues = reactive({
 })
 
 const schema = object({
-  email: string([email()]),
+  email: string([email(),
+    minLength(1, 'This field is required.')]),
   password: string([
     minLength(6, 'Your password has minimum 6 characters'),
     minLength(1, 'This field is required.')])
@@ -27,6 +37,7 @@ const schema = object({
 async function login() {
   const emailValue = emailInput.value.value
   const passwordValue = passwordInput.value.value
+  const rememberValue = rememberCheckbox.value.checked
 
   if (rememberedValues.email === emailValue && rememberedValues.password === passwordValue) {
     emailInput.value.addEventListener('input', () => rememberedValues.email = emailValue, { once: true })
@@ -63,14 +74,27 @@ async function login() {
   rememberedValues.email = emailValue
   rememberedValues.password = passwordValue
 
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  const apiUrl = useRuntimeConfig().public.API_BASE
+  const response = await $fetch<{ error?: string }>(`${apiUrl}/user/login`, {
+    method: 'POST',
+    body: {
+      email: emailValue,
+      password: passwordValue,
+      remember: rememberValue
+    },
+    credentials: 'include'
+  })
 
-  credentialsError.value = true
-
-  Array.from([emailInput.value, passwordInput.value])
-    .forEach(field => field.addEventListener('input', () => credentialsError.value = false, { once: true }))
+  if (!response.error) {
+    useUser().loggedIn = true
+    return navigateTo('/')
+  }
 
   isLoading.value = false
+  credentialsError.value = response.error!
+
+  Array.from([emailInput.value, passwordInput.value])
+    .forEach(field => field.addEventListener('input', () => credentialsError.value = null, { once: true }))
 }
 </script>
 
@@ -98,7 +122,7 @@ async function login() {
             <fieldset>
               <legend></legend>
               <label>
-                <input type="checkbox" />
+                <input ref="rememberCheckbox" type="checkbox" />
                 <span>
                   <svg
                     fill="none" width="12px" height="11px" viewBox="0 0 12 11" stroke-linecap="rounded" stroke-linejoin="rounded" stroke-width="2" stroke-dasharray="17"
@@ -114,8 +138,8 @@ async function login() {
             </NuxtLink>
           </div>
           <div>
-            <p v-if="credentialsError" class="validation-error">
-              Email or password is incorrect.
+            <p v-if="credentialsError !== null" class="validation-error">
+              {{ credentialsError }}
             </p>
             <button type="submit" @click.prevent="login">
               <template v-if="!isLoading">
@@ -127,9 +151,33 @@ async function login() {
             </button>
           </div>
           <NuxtLink to="/register" :no-prefetch="true">
-            I don't have an account
+            Create account
           </NuxtLink>
         </form>
+        <DevOnly>
+          <button
+            type="button"
+            class="absolute"
+            @click="function () {
+              emailInput.focus()
+              emailInput.value = `test${(Math.random() * 100).toFixed(2)}@test.com`
+              passwordInput.focus()
+              passwordInput.value = `123123`
+            }">
+            insert
+          </button>
+          <button
+            type="button"
+            class="absolute ml-20"
+            @click="function () {
+              emailInput.focus()
+              emailInput.value = `test@test.com`
+              passwordInput.focus()
+              passwordInput.value = `123123`
+            }">
+            user
+          </button>
+        </DevOnly>
       </div>
     </section>
   </main>

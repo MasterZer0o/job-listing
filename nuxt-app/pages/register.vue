@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { array, email, minLength, object, safeParse, string } from 'valibot'
+import { email, minLength, object, safeParse, string } from 'valibot'
 
 useHead({
   title: 'Register'
+})
+
+definePageMeta({
+  pageTransition: {
+    name: 'logreg',
+    mode: 'out-in'
+  }
 })
 
 const emailInput = ref() as Ref<HTMLInputElement>
@@ -17,6 +24,7 @@ const badInputError = ref<string | null>(null)
 const passwordShown = ref(false)
 
 const isLoading = ref(false)
+const isSuccess = ref(false)
 const rememberedValues = reactive({
   email: emailInput.value?.value,
   password: passwordInput.value?.value,
@@ -32,8 +40,7 @@ const schema = object({
   passwordRepeat: string([
     minLength(6, 'Your password should contain at least 6 characters'),
     minLength(1, 'This field is required.')])
-}
-)
+})
 
 async function register() {
   const emailValue = emailInput.value.value
@@ -112,12 +119,17 @@ async function register() {
 
   if (response.error) {
     badInputError.value = response.error
+    Array.from([emailInput.value, passwordInput.value])
+      .forEach(field => field.addEventListener('input', () => badInputError.value = null, { once: true }))
+    isLoading.value = false
+    return
   }
 
-  Array.from([emailInput.value, passwordInput.value])
-    .forEach(field => field.addEventListener('input', () => badInputError.value = null, { once: true }))
-
   isLoading.value = false
+  isSuccess.value = true
+  setTimeout(() => {
+    navigateTo('/')
+  }, 2500)
 }
 </script>
 
@@ -126,7 +138,7 @@ async function register() {
     <section class="form">
       <div class="wrapper">
         <p>Register</p>
-        <form novalidate @submit="register">
+        <form data-registerform novalidate @submit="register">
           <fieldset>
             <legend></legend>
             <input id="email" ref="emailInput" type="email" required placeholder="" />
@@ -196,7 +208,12 @@ async function register() {
             </p>
             <button type="submit" @click.prevent="register">
               <template v-if="!isLoading">
-                Register
+                <span v-if="!isSuccess">Register</span>
+                <svg v-else class="checkmark" width="30" height="30" stroke="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                  <circle
+                    stroke-dasharray="166" stroke="#619c34" stroke-dashoffset="166" stroke-width="2"
+                    stroke-miterlimit="10" cx="26" cy="26" r="25" fill="none" />
+                  <path class="checkmark__check" stroke-dasharray="48" stroke-dashoffset="48" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>
               </template>
 
               <svg v-else class="loader" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -210,10 +227,11 @@ async function register() {
         <DevOnly>
           <button
             type="button"
-            style="position: absolute;" @click="() => {
-              emailInput.value = 'test@test.com'
-              passwordInput.value = '123123'
-              passwordRepeatInput.value = '123123'
+            class="absolute"
+            @click="function () {
+              emailInput.value = `test${(Math.random() * 100).toFixed(2)}@test.com`
+              passwordInput.value = `123123`
+              passwordRepeatInput.value = `123123`
             }">
             insert
           </button>
