@@ -29,7 +29,7 @@ export default defineNuxtConfig({
       }
     }
   },
-
+  devtools: { enabled: false },
   app: {
     rootId: 'app',
     buildAssetsDir: '/public/',

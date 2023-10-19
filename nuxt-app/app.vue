@@ -4,14 +4,13 @@ if (process.server) {
     const response = await $fetch<{ success: boolean }>(`${useRuntimeConfig().public.API_BASE}/user/auth`, {
       credentials: 'include',
       headers: {
-        ...useRequestHeaders()!
+        ...useRequestHeaders()
       }
     })
 
     if (response.success) {
       useUser().loggedIn = true
     }
-    logInfo('app.vue ', useUser().loggedIn)
   }
   catch (error) {
     logError(error)

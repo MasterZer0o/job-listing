@@ -6,6 +6,8 @@
 @use 'components/app/navbar.scss';
 @use 'components/forms.scss';
 
+@use 'components/listing/listing.scss';
+
 :root {
   --font-sans: 'Inter', sans-serif;
 

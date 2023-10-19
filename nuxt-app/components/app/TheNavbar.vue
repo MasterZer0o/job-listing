@@ -9,8 +9,8 @@
     </div>
     <ul>
       <li>
-        <NuxtLink to="/">
-          Link 1
+        <NuxtLink to="/jobs">
+          Jobs
         </NuxtLink>
       </li>
       <li>

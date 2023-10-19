@@ -1,0 +1,15 @@
+.listing-container {
+  padding: 0 var(--size-11);
+}
+
+.offers {
+  display: flex;
+  flex-direction: column;
+
+  article {
+    img {
+      aspect-ratio: 1/1;
+      width: var(--size-11);
+    }
+  }
+}
