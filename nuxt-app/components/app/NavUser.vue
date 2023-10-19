@@ -1,5 +1,20 @@
 <script setup lang="ts">
 const user = useUser()
+async function logout() {
+  try {
+    await $fetch(`${useRuntimeConfig().public.API_BASE}/user/logout`, {
+      credentials: 'include',
+      method: 'POST'
+    })
+  }
+  catch (error) {
+
+  }
+  finally {
+    useUser().logout()
+    await navigateTo('/')
+  }
+}
 </script>
 
 <template>
@@ -26,11 +41,18 @@ const user = useUser()
             </NuxtLink>
           </li>
         </template>
-        <li v-else>
-          <NuxtLink to="/account">
-            Account
-          </NuxtLink>
-        </li>
+        <template v-else>
+          <li>
+            <NuxtLink to="/account">
+              Account
+            </NuxtLink>
+          </li>
+          <li>
+            <div @click="logout">
+              Logout
+            </div>
+          </li>
+        </template>
       </ul>
     </div>
   </div>

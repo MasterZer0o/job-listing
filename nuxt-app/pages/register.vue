@@ -106,7 +106,6 @@ async function register() {
   rememberedValues.password = passwordValue
   rememberedValues.passwordRepeat = passwordRepeatValue
 
-  // await new Promise(resolve => setTimeout(resolve, 1000))
   const apiUrl = useRuntimeConfig().public.API_BASE
   const response = await $fetch<{ error?: string }>(`${apiUrl}/user/register`, {
     method: 'POST',

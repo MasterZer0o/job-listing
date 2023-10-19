@@ -28,7 +28,7 @@ func Register(ctx *fiber.Ctx) error {
 	err = incomingData.validate()
 
 	if err != nil {
-		ctx.Status(406)
+		ctx.Status(fiber.ErrNotAcceptable.Code)
 		return ctx.JSON(fiber.Map{
 			"error": err.Error(),
 		})

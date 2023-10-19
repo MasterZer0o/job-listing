@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"main/db"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,7 +27,6 @@ func Authenticate(ctx *fiber.Ctx) error {
 
 	err = db.DB.QueryRow(ctx.Context(), "SELECT user_id, id, created_at FROM sessions WHERE id = $1", string(sessionId)).
 		Scan(&user.UserId, &user.SessionId, &user.CreatedAt)
-	fmt.Println(user.UserId, user.SessionId)
 
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ctx.JSON(fiber.Map{

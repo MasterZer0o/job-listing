@@ -110,6 +110,7 @@
         &::after {
           content: '';
           position: absolute;
+          top: 0;
           width: 2px;
           height: 100%;
           background-color: var(--brand);

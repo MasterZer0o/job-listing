@@ -7,6 +7,13 @@ definePageMeta({
     mode: 'out-in'
   }
 })
+if (process.server) {
+  console.log(useUser().loggedIn)
+  if (useUser().loggedIn) {
+    // sendRedirect(useRequestEvent(), '/')
+    await navigateTo('/')
+  }
+}
 
 useHead({
   title: 'Login'

@@ -53,7 +53,6 @@ func Login(ctx *fiber.Ctx) error {
 
 	sessionId := uuid.New()
 	_, err = db.DB.Exec(ctx.Context(), "INSERT into sessions (id, user_id) VALUES ($1, $2)", sessionId, user.Id)
-
 	cookie := &fiber.Cookie{
 		Name:     "session",
 		HTTPOnly: true,
@@ -61,7 +60,7 @@ func Login(ctx *fiber.Ctx) error {
 		Secure:   true,
 		SameSite: "none",
 	}
-
+	// TODO: return sessionId in response instead of cookie
 	if loginData.Remember {
 		cookie.MaxAge = 2590000
 	} else {

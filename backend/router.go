@@ -12,5 +12,6 @@ func Router(app *fiber.App) {
 	user.Post("/register", handlers.Register)
 	user.Post("/login", handlers.Login)
 	user.Get("/auth", handlers.Authenticate)
+	user.Post("/logout", handlers.Logout)
 
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 if (process.server) {
   try {
-    const response = await $fetch<{ success: boolean }>('http://127.0.0.1:5000/user/auth', {
+    const response = await $fetch<{ success: boolean }>(`${useRuntimeConfig().public.API_BASE}/user/auth`, {
       credentials: 'include',
       headers: {
         ...useRequestHeaders()!
@@ -11,6 +11,7 @@ if (process.server) {
     if (response.success) {
       useUser().loggedIn = true
     }
+    logInfo('app.vue ', useUser().loggedIn)
   }
   catch (error) {
     logError(error)
