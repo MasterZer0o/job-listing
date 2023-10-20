@@ -7,7 +7,7 @@ definePageMeta({
 <template>
   <main class="listing-container">
     <header>
-      <h3>Results</h3>
+      <span>Results (34)</span>
     </header>
     <ListingWrapper />
   </main>

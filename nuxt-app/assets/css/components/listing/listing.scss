@@ -1,15 +1,111 @@
 .listing-container {
-  padding: 0 var(--size-11);
+  padding: 0 var(--size-14) var(--size-11) var(--size-14);
+
+  header {
+    font-size: var(--font-size-4);
+    margin-block: var(--font-size-4);
+  }
 }
 
 .offers {
   display: flex;
   flex-direction: column;
+  gap: var(--size-3);
 
   article {
+    display: flex;
+    align-items: center;
+    border-radius: var(--size-1);
+    padding: var(--size-1) var(--size-2) var(--size-1) var(--size-1);
+    outline: 1px solid var(--surface-2);
+    transition: all 100ms ease-in-out;
+    &:hover {
+      outline-width: 2px;
+      box-shadow: var(--shadow-2);
+    }
+
+    a:not(.skills a):hover {
+      color: var(--brand);
+      text-decoration: underline;
+    }
+
+    .offer-info {
+      padding-block: var(--size-1);
+      width: 100%;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
+
+      .rmt-lvl {
+        display: flex;
+        gap: var(--size-3);
+        align-items: center;
+        font-size: var(--font-size-1);
+        margin-left: auto;
+        margin-right: var(--size-4);
+        a {
+          display: flex;
+          gap: var(--size-1);
+          align-items: center;
+        }
+      }
+
+      .pay {
+        font-size: var(--font-size-3);
+        background-color: var(--surface-2);
+        padding: var(--size-2);
+        border-radius: var(--size-1);
+      }
+      .company {
+        a {
+          display: flex;
+          gap: var(--size-1); 
+        }
+      }
+    }
+
+    .company-image {
+      margin-right: var(--size-3);
+      flex-shrink: 0;
+    }
     img {
       aspect-ratio: 1/1;
-      width: var(--size-11);
+      width: var(--size-10);
+      border-radius: var(--size-1);
+    }
+
+    .title {
+      font-size: var(--font-size-4);
+    }
+
+    .skills {
+      display: flex;
+      gap: var(--size-2);
+      align-items: center;
+      margin-left: auto;
+      width: fit-content;
+      margin-top: var(--size-2);
+      & > * {
+        font-size: var(--font-size-0);
+      }
+
+      ul {
+        display: flex;
+        gap: var(--size-2);
+
+        li {
+          outline: 1px solid var(--surface-3);
+          border-radius: 4px;
+          padding: 0 var(--size-2);
+          transition: background-color 100ms ease-in-out;
+
+          &:hover {
+            background-color: var(--surface-3);
+          }
+        }
+      }
     }
   }
 }
