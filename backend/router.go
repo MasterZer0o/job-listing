@@ -1,17 +1,21 @@
 package main
 
 import (
-	"main/handlers"
+	jobs "main/handlers/jobs"
+	user "main/handlers/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func Router(app *fiber.App) {
-	user := app.Group("/user")
+	userGroup := app.Group("/user")
 
-	user.Post("/register", handlers.Register)
-	user.Post("/login", handlers.Login)
-	user.Get("/auth", handlers.Authenticate)
-	user.Post("/logout", handlers.Logout)
+	userGroup.Post("/register", user.Register)
+	userGroup.Post("/login", user.Login)
+	userGroup.Get("/auth", user.Authenticate)
+	userGroup.Post("/logout", user.Logout)
+
+	app.Get("/jobs", jobs.GetJobs)
+	app.Get("/job/:id", jobs.GetJob)
 
 }
