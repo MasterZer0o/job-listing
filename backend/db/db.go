@@ -8,10 +8,10 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var err error
 var DB *pgxpool.Pool
 
 func Connect() error {
+	var err error
 
 	DATABASE_URL, ok := os.LookupEnv("DATABASE_URL")
 
@@ -28,5 +28,5 @@ func Connect() error {
 
 	DB = pool
 
-	return nil
+	return err
 }

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "companies" (
 	"created_at" TIMESTAMPTZ DEFAULT NOW(),
 	"updated_at" TIMESTAMPTZ
 );
-CREATE UNIQUE INDEX id_idx ON companies (id);
+CREATE UNIQUE INDEX companies_id_idx ON companies (id);
 
 
 CREATE TABLE IF NOT EXISTS "currencies" (
@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS "currencies" (
 
 CREATE TABLE IF NOT EXISTS "jobs" (
 	"id" SERIAL PRIMARY KEY,
-	"created_at" TIMESTAMPTZ DEFAULT NOW(),
   "location" VARCHAR(255),
   "remote_available" BOOLEAN,
   "company_id" INTEGER,
@@ -26,6 +25,7 @@ CREATE TABLE IF NOT EXISTS "jobs" (
   "salary_from" INTEGER,
   "salary_to" INTEGER,
   "currency_id" INTEGER,
+	"created_at" TIMESTAMPTZ DEFAULT NOW(),
 	"updated_at" TIMESTAMPTZ,
 	CONSTRAINT "fk_company_id" FOREIGN KEY ("company_id") REFERENCES "companies" ("id") ON DELETE CASCADE,
 	CONSTRAINT "fk_currency_id" FOREIGN KEY ("currency_id") REFERENCES "currencies" ("id")

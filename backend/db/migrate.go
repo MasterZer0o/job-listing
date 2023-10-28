@@ -16,6 +16,8 @@ func Migrate() {
 		"file://db/migrations",
 		os.Getenv("DATABASE_URL"))
 
+	// m.Force()
+
 	if err != nil {
 		log.Fatal(err)
 	}
