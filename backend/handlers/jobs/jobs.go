@@ -61,7 +61,6 @@ func GetJobs(ctx *fiber.Ctx) error {
 			fmt.Println(err)
 		}
 
-		// fmt.Println(result.SkillsJSON)
 		if result.SkillsJSON != "[null]" {
 			json.Unmarshal([]byte(result.SkillsJSON), &result.Skills)
 		} else {
@@ -69,9 +68,6 @@ func GetJobs(ctx *fiber.Ctx) error {
 		}
 		results = append(results, result)
 	}
-
-	// fmt.Println(skills)
-	// fmt.Printf("%+v", results)
 
 	return ctx.JSON(results)
 }

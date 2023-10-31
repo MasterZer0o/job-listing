@@ -20,6 +20,6 @@ func Router(app *fiber.App) {
 	app.Get("/jobs/count", jobs.GetCount)
 	app.Get("/job/:id", jobs.GetJob)
 
-	app.Get("/db/seed", db.Seed)
+	app.Get("/db/seed", db.SeedHandler)
 
 }
