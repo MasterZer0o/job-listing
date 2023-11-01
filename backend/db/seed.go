@@ -32,9 +32,6 @@ func SeedHandler(ctx *fiber.Ctx) error {
 		seedJobs(countInt)
 	case "users":
 
-	case "skills":
-		seedSkills(countInt)
-
 	}
 	return ctx.JSON(map[string]interface{}{
 		"success": true,
@@ -54,7 +51,6 @@ type SeededJob struct {
 }
 
 func seedJobs(rowCount uint64) {
-
 	start := time.Now()
 
 	rowSources := make([]SeededJob, 0, rowCount)
@@ -92,10 +88,11 @@ func seedJobs(rowCount uint64) {
 		}))
 
 	if err != nil {
-		fmt.Println("Error from copying", err)
+		fmt.Println("Error from copying job rows", err)
 	}
 	elapsed := time.Since(start)
-	fmt.Printf("Seeding %d took: %s.\nRows inserted: %d/%d\n", rowCount, elapsed, rowsCopied, rowCount)
+	fmt.Printf("Seeding %d jobs took: %s.\nJob rows inserted: %d/%d\n", rowCount, elapsed, rowsCopied, rowCount)
+	seedSkills(rowCount)
 
 }
 
@@ -170,7 +167,9 @@ type Skill struct {
 type jobId int
 
 func seedSkills(jobCount uint64) {
-	fmt.Println("Seeding job skills...")
+	const MAX_NUMBER_OF_SKILLS = 6
+
+	fmt.Println("\nSeeding job skills...")
 	start := time.Now()
 	rows, err := DB.Query(context.Background(), "SELECT id FROM jobs ORDER BY id ASC")
 
@@ -189,7 +188,13 @@ func seedSkills(jobCount uint64) {
 	var workers int = 1
 
 	jobIdsCount := len(jobIds)
-	divisor := 500
+	var divisor int
+
+	if jobIdsCount > 500 {
+		divisor = 500
+	} else {
+		divisor = jobIdsCount / 2
+	}
 
 	// len(jobIds) is less than 500
 	if jobIdsCount < divisor {
@@ -208,6 +213,7 @@ func seedSkills(jobCount uint64) {
 	dataSplit := make([][]jobId, 0, workers)
 
 	indexStart, indexEnd := 0, divisor
+
 	if jobIdsCount%divisor == 0 {
 		for i := 0; i < workers; i++ {
 			dataSplit = append(dataSplit, jobIds[indexStart:indexEnd])
@@ -227,9 +233,7 @@ func seedSkills(jobCount uint64) {
 
 	}
 
-	// jobSkillsMap := map[jobId][]Skill{}
 	jobSkillsRows := []Skill{}
-	const MAX_NUMBER_OF_SKILLS = 6
 	var wg sync.WaitGroup
 	for i, v := range dataSplit {
 		wg.Add(1)
@@ -238,45 +242,36 @@ func seedSkills(jobCount uint64) {
 			start := time.Now()
 			for _, jobId := range jobIds {
 				numbOfSkills := rand.Intn(MAX_NUMBER_OF_SKILLS) + 1
-				// jobSkillsMap[jobId] = []Skill{}
 
 				for j := 0; j < numbOfSkills; j++ {
 					jobSkillsRows = append(jobSkillsRows, Skill{
-						name:  "Skill" + strconv.Itoa(j),
+						name:  "Skill" + strconv.Itoa(j+1),
 						jobId: jobId,
 					})
-					// jobSkillsMap[jobId] = append(jobSkillsMap[jobId], Skill{
-					// 	name:  "Skill" + strconv.Itoa(j),
-					// 	jobId: jobId,
-					// })
 
 				}
 			}
 			elapsed := time.Since(start)
-			fmt.Printf("Worker #%d finished generating skills for %d jobs in %s.\n ", id, len(jobIds), elapsed)
+			fmt.Printf("Worker #%d finished generating skills for %d jobs in %s.\n", id, len(jobIds), elapsed)
 		}(v, i+1)
 	}
 	wg.Wait()
 	elapsed := time.Since(start)
-	fmt.Printf("Generating skills for %d took %s.", jobCount, elapsed)
+	fmt.Printf("Generating skills for %d took %s.\n", jobCount, elapsed)
 	fmt.Println("Inserting to database...")
 
-	// rowsCopied, err := DB.CopyFrom(context.Background(), pgx.Identifier{"job_skills"},
-	// 	[]string{"name", "job_id"}, pgx.CopyFromSlice(jobIdsCount, func(i int) ([]interface{}, error) {
-	// 		return []interface{}{}, nil
-	// 	}))
 	start = time.Now()
 	rowsCopied, err := DB.CopyFrom(context.Background(), pgx.Identifier{"job_skills"},
-		[]string{"name", "job_id"}, pgx.CopyFromSlice(jobIdsCount, func(i int) ([]any, error) {
+		[]string{"name", "job_id"}, pgx.CopyFromSlice(len(jobSkillsRows), func(i int) ([]any, error) {
 			return []any{&jobSkillsRows[i].name, &jobSkillsRows[i].jobId}, nil
 		}))
 
 	if err != nil {
-		fmt.Println("Error while inserting skills: ", err)
+		fmt.Println("Error while inserting skills to database: ", err)
 		return
 	}
 
 	elapsed = time.Since(start)
 	fmt.Printf("Inserted %d/%d job skills in %s.", rowsCopied, len(jobSkillsRows), elapsed)
-	// TODO: check if working
+
 }
