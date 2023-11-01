@@ -272,6 +272,6 @@ func seedSkills(jobCount uint64) {
 	}
 
 	elapsed = time.Since(start)
-	fmt.Printf("Inserted %d/%d job skills in %s.", rowsCopied, len(jobSkillsRows), elapsed)
+	fmt.Printf("Inserted %d/%d job skills in %s.\n", rowsCopied, len(jobSkillsRows), elapsed)
 
 }

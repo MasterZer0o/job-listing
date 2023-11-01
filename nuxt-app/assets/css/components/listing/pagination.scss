@@ -1,0 +1,63 @@
+[color-scheme='light'] .pagination {
+  background-color: var(--surface-2);
+
+  :where(a:has(svg):not(.disabled), ul li:not(.active, :nth-last-child(2))):hover {
+    color: #f1f3f5;
+  }
+}
+
+.pagination {
+  background-color: hsl(230, 10%, 18%);
+  padding: var(--size-3);
+  margin-top: var(--size-4);
+  border-radius: var(--radius-2);
+
+  & > div {
+    display: flex;
+    width: fit-content;
+    margin: auto;
+    align-items: center;
+    & > * {
+      font-size: var(--font-size-3);
+      color: var(--text-2);
+    }
+    a:has(svg) {
+      padding: var(--size-2);
+      margin-left: var(--size-2);
+      margin-right: var(--size-2);
+      border-radius: var(--radius-2);
+      cursor: pointer;
+    }
+    a.disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    svg,
+    ul li {
+      transition: all 100ms ease-in-out;
+    }
+
+    :where(a:has(svg):not(.disabled), ul li:not(.active, :nth-last-child(2))):hover {
+      background-color: var(--brand-3);
+    }
+
+    ul {
+      display: flex;
+      gap: var(--size-1);
+
+      li {
+        border-radius: var(--radius-2);
+        outline: transparent;
+
+        &.active {
+          outline: 1px solid var(--surface-3);
+        }
+
+        a {
+          padding: var(--size-1) var(--size-3);
+        }
+      }
+    }
+  }
+}

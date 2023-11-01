@@ -3,6 +3,5 @@
 </script>
 
 <template>
-  <div>
-  </div>
+  <h1>job offer page</h1>
 </template>

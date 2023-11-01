@@ -1,5 +1,6 @@
+@use './pagination.scss';
 .listing-container {
-  padding: 0 var(--size-14) var(--size-11) var(--size-14);
+  padding: 0 var(--size-fluid-8) var(--size-11) var(--size-fluid-8);
 
   header {
     font-size: var(--font-size-4);
@@ -13,8 +14,11 @@
   gap: var(--size-3);
 
   article {
-    display: flex;
-    align-items: center;
+    & > a {
+      display: flex;
+      align-items: center;
+      color: var(--text-2);
+    }
     border-radius: var(--size-1);
     padding: var(--size-1) var(--size-2) var(--size-1) var(--size-1);
     outline: 1px solid var(--surface-2);
@@ -24,7 +28,7 @@
       box-shadow: var(--shadow-2);
     }
 
-    a:not(.skills a):hover {
+    :where(.company, .rmt-lvl div):hover {
       color: var(--brand);
       text-decoration: underline;
     }
@@ -44,8 +48,8 @@
         align-items: center;
         font-size: var(--font-size-1);
         margin-left: auto;
-        margin-right: var(--size-4);
-        a {
+        margin-right: var(--size-6);
+        div {
           display: flex;
           gap: var(--size-1);
           align-items: center;
@@ -57,12 +61,11 @@
         background-color: var(--surface-2);
         padding: var(--size-2);
         border-radius: var(--size-1);
+        flex-shrink: 0;
       }
       .company {
-        a {
-          display: flex;
-          gap: var(--size-1); 
-        }
+        display: flex;
+        gap: var(--size-1);
       }
     }
 

@@ -35,9 +35,19 @@ func GetCount(ctx *fiber.Ctx) error {
 	r.Next()
 	r.Scan(&count)
 	r.Close()
+	time.Sleep(time.Second)
+
+	const PER_PAGE = 20
+	var totalPages uint64
+	if count%PER_PAGE == 0 {
+		totalPages = count / PER_PAGE
+	} else {
+		totalPages = count/PER_PAGE + 1
+	}
 
 	return ctx.JSON(map[string]interface{}{
-		"count": count,
+		"count":      count,
+		"totalPages": totalPages,
 	})
 }
 
