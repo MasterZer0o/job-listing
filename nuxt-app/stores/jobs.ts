@@ -3,9 +3,12 @@ export const useJobs = defineStore('jobs', () => {
   const totalCount = ref<number>()
   const totalPages = ref<number>()
 
+  const currentPage = ref<number>(1)
+
   return {
     displayedJobs,
     totalCount,
-    totalPages
+    totalPages,
+    currentPage
   }
 })

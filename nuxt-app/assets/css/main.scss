@@ -26,10 +26,10 @@ body {
   background-color: var(--surface-1);
   font-family: var(--font-sans);
 
-  & > * > * {
+  &.theming > * > * {
     transition:
       background-color 300ms ease-in-out,
-      color 300ms ease-in-out !important;
+      color 300ms ease-in-out;
   }
 }
 
@@ -59,4 +59,25 @@ li {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--surface-3);
+}
+
+.scroll-up {
+  background: transparent;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  cursor: pointer;
+  transition: transform 150ms ease-in-out;
+  animation: showScrollUp 300ms ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
+  @keyframes showScrollUp {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }

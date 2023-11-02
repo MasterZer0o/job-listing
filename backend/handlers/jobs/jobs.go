@@ -53,6 +53,8 @@ func GetCount(ctx *fiber.Ctx) error {
 
 func GetJobs(ctx *fiber.Ctx) error {
 	results := []JobsResult{}
+	// params := ctx.Queries()
+
 	rows, _ := db.DB.Query(ctx.Context(),
 		`SELECT jobs.id, location, level, title, jobs.created_at,remote_available, salary_from, salary_to,
 	companies.name, companies.image, currencies.short_name, json_agg(job_skills.name) FROM jobs

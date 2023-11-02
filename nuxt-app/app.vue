@@ -16,11 +16,18 @@ if (process.server) {
     logError(error)
   }
 }
+const theme = ref('dark')
+function changeTheme() {
+  document.body.setAttribute('class', 'theming')
+  setTimeout(() => {
+    document.body.removeAttribute('class')
+  }, 350)
+  theme.value = theme.value === 'dark' ? 'light' : 'dark'
+}
 
 useHead({
   titleTemplate: title => title ?? 'Home'
 })
-const theme = ref('dark')
 </script>
 
 <template>
@@ -29,7 +36,7 @@ const theme = ref('dark')
     <button
       type="button"
       style="position: absolute;"
-      @click="theme = theme === 'dark' ? 'light' : 'dark'">
+      @click="changeTheme">
       theme
     </button>
   </DevOnly>

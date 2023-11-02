@@ -1,7 +1,9 @@
 <script setup lang="ts">
+const props = defineProps<{ pageFromQuery: number }>()
+
+// TODO: paginated results Map<pagenumber, results>
 const store = useJobs()
-const currentPage = ref<number>(1)
-// TODO: get current page from query param
+const currentPage = ref<number>(Number.isNaN(props.pageFromQuery) ? 1 : props.pageFromQuery)
 const lastPage = computed(() => store.totalPages ?? 0)
 
 const nextPage = computed(() => {
@@ -27,12 +29,15 @@ const visiblePages = computed(() => {
   return []
 })
 
-function changePage(page: number) {
+async function changePage(page: number) {
   if (page === currentPage.value)
     return
 
   currentPage.value = page
-  // document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
+  const newJobs = await fetchJobs()
+  // TODO: 
+
+  document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 
