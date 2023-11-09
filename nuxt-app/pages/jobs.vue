@@ -18,7 +18,8 @@ async function initialFetchJobs() {
 
     const jobs = await fetchJobs()
     // TODO: handle errors
-    store.displayedJobs = jobs!
+    store.displayedJobs = jobs!.data
+    store.cid = jobs!.cid
   }
   catch (error) {
 
@@ -35,7 +36,7 @@ onBeforeMount(() => {
       <span>Results {{ store.totalCount !== undefined ? `(${store.totalCount})` : '' }}</span>
     </header>
     <ListingWrapper :offers="store.displayedJobs" />
-    <ListingPagination :page-from-query="pageFromQuery" />
+    <ListingPagination v-if="store.displayedJobs.length > 0 && (store.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
   </main>
   <AppScrollUp />
 </template>

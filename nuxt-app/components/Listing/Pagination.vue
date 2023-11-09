@@ -1,21 +1,25 @@
 <script setup lang="ts">
-const props = defineProps<{ pageFromQuery: number }>()
-
-// TODO: paginated results Map<pagenumber, results>
+defineProps<{ pageFromQuery: number }>()
 const store = useJobs()
-const currentPage = ref<number>(Number.isNaN(props.pageFromQuery) ? 1 : props.pageFromQuery)
+
+type PageNumber = number
+const paginatedResults = new Map<PageNumber, Offer[]>()
+
+paginatedResults.set(store.currentPage, store.displayedJobs)
+
 const lastPage = computed(() => store.totalPages ?? 0)
 
 const nextPage = computed(() => {
-  return currentPage.value === lastPage.value ? lastPage.value : currentPage.value + 1
+  return store.currentPage === lastPage.value ? lastPage.value : store.currentPage + 1
 })
 const previousPage = computed(() => {
-  return currentPage.value === 1 ? 1 : currentPage.value - 1
+  return store.currentPage === 1 ? 1 : store.currentPage - 1
 })
+
 const TOTAL_VISIBLE_PAGES = 5
 const visiblePages = computed(() => {
   const totalPages = store.totalPages
-  const currPage = currentPage.value
+  const currPage = store.currentPage
   if (totalPages === 1)
     return [1]
 
@@ -30,49 +34,80 @@ const visiblePages = computed(() => {
 })
 
 async function changePage(page: number) {
-  if (page === currentPage.value)
+  if (page === store.currentPage)
     return
 
-  currentPage.value = page
-  const newJobs = await fetchJobs()
-  // TODO: 
+  const cachedPage = paginatedResults.get(page)
 
-  document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
+  if (cachedPage) {
+    store.displayedJobs = cachedPage
+    store.currentPage = page
+    return
+  }
+  // go back to uncached page OR jump pages
+  if (store.currentPage > page || Math.abs(page - store.currentPage) !== 1) {
+    store.cid = undefined
+  }
+
+  store.currentPage = page
+  const newJobs = await fetchJobs()
+  store.displayedJobs = newJobs!.data
+  store.cid = newJobs!.cid
+  paginatedResults.set(store.currentPage, newJobs!.data)
+
+  // document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 
 <template>
-  <section v-if="store.displayedJobs.length > 0 && lastPage > 0" class="pagination">
+  <section class="pagination">
     <div>
       <NuxtLink
-        :to="`/jobs?p=${previousPage}`" :aria-label="`Page ${previousPage}`"
-        :class="{ disabled: currentPage === 1 }"
+        :class="{ disabled: store.currentPage === 1 }"
+        to="/jobs?p=1"
+        aria-label="Go to page 1"
+        @click.prevent="changePage(1)">
+        <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4m6-8L7 5l4 4" />
+        </svg>
+      </NuxtLink>
+      <NuxtLink
+        :to="`/jobs?p=${previousPage}`" :aria-label="`Go to page ${previousPage}`"
+        :class="{ disabled: store.currentPage === 1 }"
         @click.prevent="changePage(previousPage)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
         </svg>
       </NuxtLink>
       <ul>
-        <li v-for="page in visiblePages" :key="page" :class="{ active: currentPage === page }" @click.prevent="changePage(page)">
-          <NuxtLink :to="`/jobs?p=${page}`" :aria-label="`Page ${page}`">
+        <li v-for="page in visiblePages" :key="page" :class="{ active: store.currentPage === page }" @click.prevent="changePage(page)">
+          <NuxtLink :to="`/jobs?p=${page}`" :aria-label="`Go to page ${page}`">
             {{ page }}
           </NuxtLink>
         </li>
         <li class=":uno: px-4">
           ...
         </li>
-        <li :class="{ active: currentPage === lastPage }" @click.prevent="changePage(lastPage)">
+        <li :class="{ active: store.currentPage === lastPage }" @click.prevent="changePage(lastPage)">
           <NuxtLink :to="`/jobs?p=${lastPage}`">
             {{ lastPage }}
           </NuxtLink>
         </li>
       </ul>
       <NuxtLink
-        :to="`/jobs?p=${nextPage}`" :aria-label="`Page ${nextPage}`"
-        :class="{ disabled: currentPage === lastPage }"
+        :to="`/jobs?p=${nextPage}`" :aria-label="`Go to page ${nextPage}`"
+        :class="{ disabled: store.currentPage === lastPage }"
         @click.prevent="changePage(nextPage)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+        </svg>
+      </NuxtLink>
+      <NuxtLink
+        :to="`/jobs?p=${lastPage}`" :aria-label="`Go to page ${lastPage}`"
+        :class="{ disabled: store.currentPage === lastPage }"
+        @click.prevent="changePage(lastPage)">
+        <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 9 4-4-4-4M1 9l4-4-4-4" />
         </svg>
       </NuxtLink>
     </div>
