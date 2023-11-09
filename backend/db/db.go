@@ -10,7 +10,7 @@ import (
 
 var DB *pgxpool.Pool
 
-func Connect() error {
+func Connect() {
 	var err error
 
 	DATABASE_URL, ok := os.LookupEnv("DATABASE_URL")
@@ -27,6 +27,4 @@ func Connect() error {
 	}
 
 	DB = pool
-
-	return err
 }

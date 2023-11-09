@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+
 func main() {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
@@ -17,6 +18,7 @@ func main() {
 	})
 
 	godotenv.Load()
+
 	db.Connect()
 
 	app.Use(cors.New(cors.Config{

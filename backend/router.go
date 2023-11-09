@@ -1,7 +1,7 @@
 package main
 
 import (
-	"main/db"
+	"main/handlers"
 	jobs "main/handlers/jobs"
 	user "main/handlers/user"
 
@@ -20,6 +20,6 @@ func Router(app *fiber.App) {
 	app.Get("/jobs/count", jobs.GetCount)
 	app.Get("/job/:id", jobs.GetJob)
 
-	app.Get("/db/seed", db.SeedHandler)
+	app.Get("/db/seed", handlers.SeedHandler)
 
 }

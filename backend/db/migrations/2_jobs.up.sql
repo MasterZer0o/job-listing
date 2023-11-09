@@ -46,4 +46,5 @@ CREATE TABLE IF NOT EXISTS "job_skills" (
 	"updated_at" TIMESTAMPTZ,
 	CONSTRAINT "fk_job_id" FOREIGN KEY ("job_id") REFERENCES "jobs" ("id") ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX job_id_idx ON companies (id);
+CREATE INDEX job_id_skill_idx ON job_skills (job_id);
+
