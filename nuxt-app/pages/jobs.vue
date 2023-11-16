@@ -31,12 +31,15 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main class="listing-container">
-    <header>
-      <span>Results {{ store.totalCount !== undefined ? `(${store.totalCount})` : '' }}</span>
-    </header>
-    <ListingWrapper :offers="store.displayedJobs" />
-    <ListingPagination v-if="store.displayedJobs.length > 0 && (store.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
-  </main>
+  <div class="main-wrapper">
+    <ListingFilters />
+    <main class="listing-container">
+      <header>
+        <span>Results {{ store.totalCount !== undefined ? `(${store.totalCount})` : '' }}</span>
+      </header>
+      <ListingOffers :offers="store.displayedJobs" />
+      <ListingPagination v-if="store.displayedJobs.length > 0 && (store.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
+    </main>
+  </div>
   <AppScrollUp />
 </template>

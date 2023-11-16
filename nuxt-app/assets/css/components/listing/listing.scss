@@ -1,12 +1,18 @@
 @use './pagination.scss';
+@use './filters.scss';
+
 .listing-container {
-  padding: 0 var(--size-fluid-8) var(--size-11) var(--size-fluid-8);
+  flex-shrink: 0;
 
   header {
-    padding-top: var(--size-3);
     font-size: var(--font-size-4);
-    margin-block: var(--font-size-4);
+    margin: 0 var(--font-size-4) 1em 0;
   }
+}
+.main-wrapper {
+  padding: 1.5em 7em var(--size-11) 7em;
+  display: flex;
+  margin: auto;
 }
 
 .offers {

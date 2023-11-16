@@ -1,0 +1,118 @@
+.listing-filters {
+  padding: 0 1em 1em 0;
+  height: fit-content;
+  position: sticky;
+  top: 10px;
+
+  &.not-pinned {
+    position: relative;
+    top: unset;
+  }
+
+  & .pin-icon {
+    position: absolute;
+    right: 1.5em;
+    top: 5px;
+    cursor: pointer;
+    transition: transform 100ms ease-in-out;
+    z-index: 1;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  & > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3em;
+
+    & > li {
+      & > span {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+    }
+  }
+  .min-salary {
+    position: relative;
+    $dst: 10px;
+    label {
+      margin-top: 0.3em;
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 60%;
+      min-width: 150px;
+
+      span {
+        right: $dst;
+        position: absolute;
+      }
+    }
+    input {
+      outline: 1px solid var(--surface-4);
+      -moz-appearance: textfield;
+      appearance: textfield;
+      outline-offset: 0;
+      padding-right: calc($dst + 35px);
+      width: 100%;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+
+  li {
+    ul {
+      li {
+        display: flex;
+
+        label {
+          display: flex;
+          cursor: pointer;
+          gap: 6px;
+          align-items: center;
+          position: relative;
+          user-select: none;
+          width: 100%;
+
+          input {
+            position: absolute;
+            opacity: 0;
+
+            & + span {
+              position: relative;
+              width: 20px;
+              height: 20px;
+              border: 2px solid currentColor;
+
+              border-radius: 4px;
+
+              & svg path {
+                transition: all 0.6s ease;
+              }
+              & svg polyline {
+                transition: all 0.3s ease;
+              }
+            }
+          }
+
+          input:checked + span {
+            border: none;
+          }
+          input:checked + span svg path {
+            fill: var(--brand);
+          }
+          input:checked + span svg polyline {
+            stroke-dashoffset: 0;
+          }
+        }
+      }
+    }
+  }
+}
