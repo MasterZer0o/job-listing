@@ -3,6 +3,7 @@
 
 .listing-container {
   flex-shrink: 0;
+  flex-grow: 1;
 
   header {
     font-size: var(--font-size-4);
@@ -25,6 +26,7 @@
       display: flex;
       align-items: center;
       color: var(--text-2);
+      min-width: 100%;
     }
     border-radius: var(--size-1);
     padding: var(--size-1) var(--size-2) var(--size-1) var(--size-1);
