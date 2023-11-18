@@ -1,5 +1,5 @@
 export const useListingFilters = defineStore('listingFilters', () => {
-  const techSkills = ref([1, 3, 6])
+  const techSkills = ref<Set<string>>(new Set<string>())
 
   return { techSkills }
 })
