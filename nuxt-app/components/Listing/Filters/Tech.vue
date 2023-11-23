@@ -1,113 +1,160 @@
 <script setup lang="ts">
-const { techSkills } = storeToRefs(useListingFilters())
-type TechCategory = 'frontend' | 'backend' | 'mobile'
+export type TechCategory = 'frontend' | 'backend' | 'mobile'
 
-interface Skill {
+export interface Skill {
+  id: number
   name: string
   icon: ReturnType<typeof resolveComponent>
 }
+const { techSkills } = storeToRefs(useListingFilters())
 
 const allSelectedToggle: Record<TechCategory, boolean> = {
   frontend: false,
   backend: false,
   mobile: false
 }
+function clearAll() {
+  techSkills.value.clear()
+}
 
-function addSkillFilter(skill: string | Skill[], category?: TechCategory) {
+const selectedSkillsIds = ref(new Set<number>())
+const router = useRouter()
+const route = useRoute()
+const selectedTechSkills = computed(() => {
+  return Array.from(selectedSkillsIds.value).join(',')
+})
+
+// TODO: improve param types
+function addSkillFilter(skill: Skill | Skill[], category?: TechCategory) {
   if (Array.isArray(skill)) {
     if (allSelectedToggle[category!])
       skill.forEach((e) => {
         techSkills.value.delete(e.name)
+        selectedSkillsIds.value.delete(e.id)
       })
-    else
-      skill.forEach(s => techSkills.value.add(s.name))
+    else {
+      skill.forEach((s) => {
+        selectedSkillsIds.value.add(s.id)
+        techSkills.value.add(s.name)
+      })
+    }
 
     allSelectedToggle[category!] = !allSelectedToggle[category!]
     return
   }
 
-  if (techSkills.value.has(skill))
-    techSkills.value.delete(skill)
-  else
-    techSkills.value.add(skill)
+  if (techSkills.value.has(skill.name)) {
+    techSkills.value.delete(skill.name)
+    selectedSkillsIds.value.delete(skill.id)
+  }
+  else {
+    techSkills.value.add(skill.name)
+    selectedSkillsIds.value.add(skill.id)
+  }
+
+  router.push({
+    query: {
+      ...route.query,
+      id: selectedTechSkills.value.length !== 0 ? selectedTechSkills.value : undefined,
+    }
+  })
 }
 
 const skills: Record<TechCategory, Skill[]> = {
   frontend: [{
+    id: 1,
     name: 'JavaScript',
     icon: resolveComponent('IconsJS')
   },
   {
+    id: 2,
     name: 'TypeScript',
     icon: resolveComponent('IconsTS')
   },
   {
-    name: 'Vue.js',
+    id: 3,
+    name: 'Vue',
     icon: resolveComponent('IconsVue')
   },
   {
-    name: 'Angular.js',
+    id: 4,
+    name: 'Angular',
     icon: resolveComponent('IconsAngular')
   },
   {
-    name: 'React.js',
+    id: 5,
+    name: 'React',
     icon: resolveComponent('IconsReact')
   },
   {
+    id: 6,
     name: 'HTML/CSS',
     icon: resolveComponent('IconsHTML')
   }
   ],
   backend: [{
+    id: 7,
     name: 'Node.js',
     icon: resolveComponent('IconsNode')
   },
   {
+    id: 8,
     name: 'PHP',
     icon: resolveComponent('IconsPHP')
   },
   {
+    id: 9,
     name: 'Go',
     icon: resolveComponent('IconsGO')
   },
   {
+    id: 10,
     name: 'Python',
     icon: resolveComponent('IconsPython')
   },
   {
+    id: 11,
     name: 'SQL',
     icon: resolveComponent('IconsSQL')
   },
   {
+    id: 12,
     name: 'Rust',
     icon: resolveComponent('IconsRust')
   },
   {
+    id: 13,
     name: 'C',
     icon: resolveComponent('IconsC')
   },
   {
+    id: 14,
     name: 'C#',
     icon: resolveComponent('IconsCS')
   },
   {
+    id: 15,
     name: 'C++',
     icon: resolveComponent('IconsCPP')
   },
   {
+    id: 16,
     name: 'Java',
     icon: resolveComponent('IconsJava')
   },
   ],
   mobile: [{
+    id: 17,
     name: 'Swift',
     icon: resolveComponent('IconsSwift')
   },
   {
+    id: 18,
     name: 'Kotlin',
     icon: resolveComponent('IconsKotlin')
   },
   {
+    id: 19,
     name: 'Flutter',
     icon: resolveComponent('IconsFlutter')
   }
@@ -120,7 +167,10 @@ if (process.client) {
 </script>
 
 <template>
-  <span>Tech skills</span>
+  <div>
+    <span>Tech skills</span>
+    <span @click="clearAll">clear</span>
+  </div>
   <section class="tech-skills">
     <label aria-label="Search tech skill"><input type="text" placeholder="Skill name"></label>
     <div>
@@ -131,7 +181,7 @@ if (process.client) {
         <li
           v-for="frontendSkill in skills.frontend"
           :key="frontendSkill.name" class="tech-skill"
-          :class="{ selected: techSkills.has(frontendSkill.name) }" @click="addSkillFilter(frontendSkill.name)">
+          :class="{ selected: techSkills.has(frontendSkill.name) }" @click="addSkillFilter(frontendSkill)">
           <component :is="frontendSkill.icon" />
           {{ frontendSkill.name }}
           <svg v-if="techSkills.has(frontendSkill.name)" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="check">
@@ -149,7 +199,7 @@ if (process.client) {
         <li
           v-for="backendSkill in skills.backend"
           :key="backendSkill.name" class="tech-skill"
-          :class="{ selected: techSkills.has(backendSkill.name) }" @click="addSkillFilter(backendSkill.name)">
+          :class="{ selected: techSkills.has(backendSkill.name) }" @click="addSkillFilter(backendSkill)">
           <component :is="backendSkill.icon" />
 
           {{ backendSkill.name }}
@@ -169,7 +219,7 @@ if (process.client) {
         <li
           v-for="mobileSkill in skills.mobile"
           :key="mobileSkill.name" class="tech-skill"
-          :class="{ selected: techSkills.has(mobileSkill.name) }" @click="addSkillFilter(mobileSkill.name)">
+          :class="{ selected: techSkills.has(mobileSkill.name) }" @click="addSkillFilter(mobileSkill)">
           <component :is="mobileSkill.icon" />
 
           {{ mobileSkill.name }}

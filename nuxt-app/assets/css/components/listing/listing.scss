@@ -1,19 +1,20 @@
 @use './pagination.scss';
 @use './filters.scss';
 
-.listing-container {
-  flex-shrink: 0;
-  flex-grow: 1;
-
-  header {
-    font-size: var(--font-size-4);
-    margin: 0 var(--font-size-4) 1em 0;
-  }
-}
 .main-wrapper {
   padding: 1.5em 7em var(--size-11) 7em;
   display: flex;
   margin: auto;
+
+  & > div {
+    // flex-shrink: 0;
+    flex-grow: 1;
+
+    header {
+      font-size: var(--font-size-4);
+      margin: 0 var(--font-size-4) 1em 0;
+    }
+  }
 }
 
 .offers {
@@ -62,6 +63,7 @@
           display: flex;
           gap: var(--size-1);
           align-items: center;
+          flex-shrink: 0;
         }
       }
 

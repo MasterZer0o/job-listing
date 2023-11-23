@@ -1,11 +1,12 @@
 .listing-filters {
-  padding: 0 0 2em 2px;
+  padding: 0 0 2em 3em;
   margin-right: 1em;
   position: sticky;
   top: 10px;
   height: 100vh;
   overflow: auto;
   flex-shrink: 0;
+  scrollbar-gutter: stable;
 
   &.not-pinned {
     position: relative;
@@ -32,36 +33,69 @@
     gap: 1.3em;
 
     & > li {
-      & > span {
-        font-weight: bold;
-        display: block;
+      & > div {
+        display: flex;
+        align-items: center;
         margin-bottom: 0.5em;
+        justify-content: space-between;
+        &:has(+ .tech-skills) {
+          span:first-child {
+            cursor: default;
+            &:hover {
+              opacity: 1;
+            }
+          }
+
+          span:last-child {
+            margin-right: 2em;
+          }
+        }
+
+        span:first-child {
+          font-weight: bold;
+          display: block;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+        span:last-child {
+          font-style: italic;
+          margin-right: 1em;
+          font-size: 0.9em;
+
+          &:hover {
+            color: var(--brand);
+            cursor: pointer;
+          }
+        }
       }
     }
   }
   .min-salary {
     position: relative;
-    $dst: 10px;
+    & > p {
+      user-select: none;
+    }
     label {
       margin-top: 0.3em;
       position: relative;
       display: flex;
       align-items: center;
-      width: 60%;
-      min-width: 150px;
-
-      span {
-        right: $dst;
-        position: absolute;
-      }
+      width: fit-content;
+      border-radius: 4px;
+      padding-right: 6px;
+      outline: 1px solid var(--surface-4);
     }
     input {
-      outline: 1px solid var(--surface-4);
       -moz-appearance: textfield;
       appearance: textfield;
       outline-offset: 0;
-      padding-right: calc($dst + 35px);
+      padding-right: 5px;
       width: 100%;
+      width: 7em;
+      outline: none;
 
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
@@ -74,8 +108,6 @@
   li {
     ul {
       & > li {
-        // display: flex;
-
         label {
           display: flex;
           cursor: pointer;
@@ -121,7 +153,7 @@
   }
 
   .tech-skills {
-    max-width: 80%;
+    max-width: 90%;
     margin-bottom: 0.6em;
 
     & > div {
@@ -146,10 +178,13 @@
     }
 
     input {
-      outline: 1px solid var(--surface-invert);
+      outline: 1px solid var(--surface-4);
       outline-offset: 0;
       width: calc(100% - 4px);
-      margin-left: 4px;
+
+      &:focus {
+        outline: 1px solid var(--surface-invert);
+      }
     }
 
     ul {
@@ -183,6 +218,38 @@
           margin-left: auto;
           margin-right: 5px;
         }
+      }
+    }
+  }
+}
+
+.applied-filters {
+  display: flex;
+  gap: 0.8em;
+  flex-wrap: wrap;
+  padding-bottom: 1.5em;
+
+  & > div {
+    outline: 1px solid var(--brand);
+    padding: 2px 0.5em 2px 0.8em;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: default;
+    flex-shrink: 0;
+    font-size: 0.8em;
+    span {
+      user-select: none;
+    }
+
+    svg {
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+
+      &:hover {
+        color: #bf616a;
+        transform: scale(0.95);
       }
     }
   }

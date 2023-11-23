@@ -1,40 +1,54 @@
 <script setup lang="ts">
 interface Filter {
+  store: DefaultFilterStoreNames
   title: string
+  queryParamName: string
   options: {
+    id: number
     name: string
   }[]
 }
-const employmentType = {
+
+const employmentType: Filter = {
+  store: 'employmentTypes',
   title: 'Employment type',
+  queryParamName: 'emp',
   options: [
-    {
-      name: 'B2B'
-    }, { name: 'Permanent' }, { name: 'Internship' }, { name: 'Mandate Contract' }, { name: 'Specific-task Contract' }
+    { name: 'B2B', id: 1 },
+    { name: 'Permanent', id: 2 },
+    { name: 'Internship', id: 3 },
+    { name: 'Mandate Contract', id: 4 },
+    { name: 'Specific-task Contract', id: 5 }
   ]
 }
 const experience: Filter = {
+  store: 'experienceLevels',
   title: 'Experience',
+  queryParamName: 'exp',
   options: [
-    { name: 'Junior' },
-    { name: 'Mid' },
-    { name: 'Senior' }
+    { name: 'Junior', id: 1 },
+    { name: 'Mid', id: 2 },
+    { name: 'Senior', id: 3 }
   ]
 }
 const typeOfWork: Filter = {
+  store: 'typesOfWork',
   title: 'Type of work',
+  queryParamName: 'tow',
   options: [
-    { name: 'Full time' },
-    { name: 'Part time' },
-    { name: 'Temporary' },
+    { name: 'Full-time', id: 1 },
+    { name: 'Part-time', id: 2 },
+    { name: 'Temporary', id: 3 },
   ]
 }
 const workMode: Filter = {
+  store: 'workModes',
   title: 'Work mode',
+  queryParamName: 'mode',
   options: [
-    { name: 'Stationary' },
-    { name: 'Hybrid' },
-    { name: 'Remote' },
+    { name: 'Stationary', id: 1 },
+    { name: 'Hybrid', id: 2 },
+    { name: 'Remote', id: 3 },
   ]
 }
 const filters: Filter[] = [employmentType, experience, typeOfWork, workMode]

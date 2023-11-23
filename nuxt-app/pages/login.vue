@@ -19,6 +19,8 @@ useHead({
   title: 'Login'
 })
 
+// FIXME: error while coming from jobs page
+
 const emailInput = ref() as Ref<HTMLInputElement>
 const passwordInput = ref() as Ref<HTMLInputElement>
 const rememberCheckbox = ref() as Ref<HTMLInputElement>
