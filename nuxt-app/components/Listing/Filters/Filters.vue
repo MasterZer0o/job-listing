@@ -2,7 +2,7 @@
 interface Filter {
   store: DefaultFilterStoreNames
   title: string
-  queryParamName: string
+  queryParamName: FilterQueryName
   options: {
     id: number
     name: string
@@ -52,6 +52,18 @@ const workMode: Filter = {
   ]
 }
 const filters: Filter[] = [employmentType, experience, typeOfWork, workMode]
+const query = useRoute().query as Partial<Record<Filter['queryParamName'], string>>
+const store = useListingFilters()
+const keys = Object.keys(query)
+const filtersFromUrl = filters.filter((filter) => {
+  return keys.includes(filter.queryParamName)
+})
+filtersFromUrl.forEach((filter) => {
+  const ids = query[filter.queryParamName]!.split(',').map(e => Number.parseInt(e))
+  const filtered = filter.options.filter(e => ids.includes(e.id))
+  store[filter.store] = filtered
+})
+
 const pinned = ref(true)
 const wrapper = ref() as Ref<HTMLElement>
 function updatePin() {

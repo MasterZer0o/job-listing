@@ -2,10 +2,20 @@
 const { minSalary } = storeToRefs(useListingFilters())
 
 const input = ref() as Ref<HTMLInputElement>
+const route = useRoute()
+const router = useRouter()
 watch(minSalary, () => {
+  router.push({
+    query: {
+      ...route.query,
+      ms: minSalary.value !== 0 ? minSalary.value : undefined
+    }
+  })
   if (minSalary.value === 0)
     input.value.value = ''
 })
+const valueFromUrl = Number.parseInt(route.query.ms as string) || 0
+minSalary.value = valueFromUrl
 
 function addSalaryFilter() {
   const value = input.value.valueAsNumber
@@ -28,8 +38,8 @@ function addSalaryFilter() {
   <section class="min-salary">
     <p>Minimum salary</p>
     <label>
-      <input ref="input" type="number" min="0" placeholder="0" @change="addSalaryFilter">
-      <span>pln</span>
+      <input ref="input" type="number" min="0" placeholder="0" :value="minSalary === 0 ? undefined : minSalary" @change="addSalaryFilter">
+      <span>PLN</span>
     </label>
   </section>
 </template>

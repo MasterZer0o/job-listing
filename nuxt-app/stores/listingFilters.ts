@@ -1,5 +1,5 @@
 export const useListingFilters = defineStore('listingFilters', () => {
-  const techSkills = ref<Set<string>>(new Set<string>())
+  const techSkills = ref<Map<number, { name: string }>>(new Map())
   const employmentTypes = ref<DefaultFilterField[]>([])
   const experienceLevels = ref<DefaultFilterField[]>([])
   const typesOfWork = ref<DefaultFilterField[]>([])
@@ -26,4 +26,5 @@ declare global {
     id: number
     name: string
   }
+  export type FilterQueryName = 'emp' | 'tech' | 'tow' | 'mode' | 'exp' | 'ms'
 }

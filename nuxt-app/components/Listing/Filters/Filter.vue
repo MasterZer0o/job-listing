@@ -10,15 +10,16 @@ const props = defineProps<{
 
 const selectedFields = storeToRefs(useListingFilters())[props.config.store]
 
+let toggledAll = false
 function clearAll() {
   selectedFields.value = []
+  toggledAll = false
 }
 const selectedFieldsIds = computed(() => {
   return selectedFields.value.map(e => e.id).join(',')
 })
 const route = useRoute()
 const router = useRouter()
-let toggledAll = false
 
 function selectField(field: DefaultFilterField | DefaultFilterField[]) {
   if (Array.isArray(field)) {
@@ -26,14 +27,8 @@ function selectField(field: DefaultFilterField | DefaultFilterField[]) {
       selectedFields.value = []
     else
       selectedFields.value = [...field]
-    toggledAll = !toggledAll
 
-    router.push({
-      query: {
-        ...route.query,
-        [props.config.queryParamName]: selectedFieldsIds.value.length !== 0 ? selectedFieldsIds.value : undefined
-      }
-    })
+    toggledAll = !toggledAll
     return
   }
   if (selectedFields.value.some(selectedField => selectedField.name === field.name)) {
@@ -41,14 +36,16 @@ function selectField(field: DefaultFilterField | DefaultFilterField[]) {
   }
   else
     selectedFields.value.push(field)
+}
 
+watch(selectedFields, () => {
   router.push({
     query: {
       ...route.query,
       [props.config.queryParamName]: selectedFieldsIds.value.length !== 0 ? selectedFieldsIds.value : undefined
-    }
+    },
   })
-}
+}, { deep: true })
 </script>
 
 <template>

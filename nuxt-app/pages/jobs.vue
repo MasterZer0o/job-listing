@@ -17,14 +17,15 @@ async function initialFetchJobs() {
     }).catch()
 
     const jobs = await fetchJobs()
-    // TODO: handle errors
     store.displayedJobs = jobs!.data
     store.cid = jobs!.cid
   }
   catch (error) {
+    // TODO: handle errors
 
   }
 }
+
 onBeforeMount(() => {
   initialFetchJobs()
 })
