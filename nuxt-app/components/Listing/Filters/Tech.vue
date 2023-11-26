@@ -194,9 +194,6 @@ watch(techSkills.value, () => {
     <span @click="clearAll">clear</span>
   </div>
   <section class="tech-skills">
-    <label aria-label="Search tech skill">
-      <input type="text" placeholder="Skill name">
-    </label>
     <div>
       <p @click="addSkillFilter(skills.frontend, 'frontend')">
         Frontend

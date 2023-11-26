@@ -1,5 +1,5 @@
 .listing-filters {
-  padding: 0 0 2em 3em;
+  padding: 0 2em 2em 3em;
   margin-right: 1em;
   position: sticky;
   top: 10px;
@@ -30,7 +30,7 @@
   & > ul {
     display: flex;
     flex-direction: column;
-    gap: 1.3em;
+    gap: 1.8em;
 
     & > li {
       & > div {
@@ -45,10 +45,6 @@
               opacity: 1;
             }
           }
-
-          span:last-child {
-            margin-right: 2em;
-          }
         }
 
         span:first-child {
@@ -62,7 +58,6 @@
         }
         span:last-child {
           font-style: italic;
-          margin-right: 1em;
           font-size: 0.9em;
 
           &:hover {
@@ -159,7 +154,6 @@
   }
 
   .tech-skills {
-    max-width: 90%;
     margin-bottom: 0.6em;
 
     & > div {
@@ -169,7 +163,7 @@
       margin-top: 1em;
 
       & > p {
-        font-weight: bold;
+        font-style: italic;
         cursor: pointer;
         user-select: none;
 
@@ -180,16 +174,6 @@
         &:not(:first-child) {
           margin: 2em 8px 0.3em 8px;
         }
-      }
-    }
-
-    input {
-      outline: 1px solid var(--surface-4);
-      outline-offset: 0;
-      width: calc(100% - 4px);
-
-      &:focus {
-        outline: 1px solid var(--surface-invert);
       }
     }
 
