@@ -3,14 +3,27 @@ export const useJobs = defineStore('jobs', () => {
   const totalCount = ref<number>()
   const totalPages = ref<number>()
   const cid = ref<number>()
+  const paginatedResults = ref(new Map<PageNumber, Offer[]>())
 
   const currentPage = ref<number>(1)
+
+  function clear() {
+    displayedJobs.value = []
+    totalCount.value = undefined
+    totalPages.value = undefined
+    currentPage.value = 1
+    cid.value = undefined
+  }
 
   return {
     displayedJobs,
     totalCount,
     totalPages,
     currentPage,
-    cid
+    cid,
+    clear,
+    paginatedResults
   }
 })
+
+type PageNumber = number

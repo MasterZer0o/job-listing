@@ -9,7 +9,7 @@ const props = defineProps<{
 }>()
 
 const selectedFields = storeToRefs(useListingFilters())[props.config.store]
-
+const jobsStore = useJobs()
 let toggledAll = false
 function clearAll() {
   selectedFields.value = []
@@ -18,7 +18,7 @@ function clearAll() {
 const selectedFieldsIds = computed(() => {
   return selectedFields.value.map(e => e.id).join(',')
 })
-const route = useRoute()
+const route = useRoute('jobs')
 const router = useRouter()
 
 function selectField(field: DefaultFilterField | DefaultFilterField[]) {
@@ -37,13 +37,13 @@ function selectField(field: DefaultFilterField | DefaultFilterField[]) {
   else
     selectedFields.value.push(field)
 }
-
 watch(selectedFields, () => {
+  jobsStore.currentPage = 1
   router.push({
     query: {
       ...route.query,
       [props.config.queryParamName]: selectedFieldsIds.value.length !== 0 ? selectedFieldsIds.value : undefined
-    },
+    }
   })
 }, { deep: true })
 </script>
@@ -51,7 +51,9 @@ watch(selectedFields, () => {
 <template>
   <div>
     <span @click="selectField(config.options)">{{ config.title }}</span>
-    <span @click="clearAll">clear</span>
+    <button type="button" @click="clearAll">
+      clear
+    </button>
   </div>
   <ul>
     <li v-for="option in config.options" :key="option.name">

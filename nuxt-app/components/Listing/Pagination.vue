@@ -2,9 +2,9 @@
 defineProps<{ pageFromQuery: number }>()
 const store = useJobs()
 
-type PageNumber = number
-const paginatedResults = new Map<PageNumber, Offer[]>()
+const route = useRoute()
 
+const paginatedResults = store.paginatedResults
 paginatedResults.set(store.currentPage, store.displayedJobs)
 
 const lastPage = computed(() => store.totalPages ?? 0)
@@ -14,6 +14,18 @@ const nextPage = computed(() => {
 })
 const previousPage = computed(() => {
   return store.currentPage === 1 ? 1 : store.currentPage - 1
+})
+
+const filtersUrlPart = computed(() => {
+  const filtersFromUrl = route.query as Partial<Record<FilterQueryName, string>>
+  delete filtersFromUrl.p
+  let part = ''
+  for (const filterQueryName in filtersFromUrl) {
+    const value = filtersFromUrl[filterQueryName as FilterQueryName]
+    part += `&${filterQueryName}=${value}`
+  }
+
+  return part
 })
 
 const TOTAL_VISIBLE_PAGES = 5
@@ -42,6 +54,7 @@ async function changePage(page: number) {
   if (cachedPage) {
     store.displayedJobs = cachedPage
     store.currentPage = page
+    document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
     return
   }
   // go back to uncached page OR jump pages
@@ -50,12 +63,9 @@ async function changePage(page: number) {
   }
 
   store.currentPage = page
-  const newJobs = await fetchJobs()
-  store.displayedJobs = newJobs!.data
-  store.cid = newJobs!.cid
-  paginatedResults.set(store.currentPage, newJobs!.data)
+  await fetchJobs()
 
-  // document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
+  document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 
@@ -64,7 +74,7 @@ async function changePage(page: number) {
     <div>
       <NuxtLink
         :class="{ disabled: store.currentPage === 1 }"
-        to="/jobs?p=1"
+        :to="`/jobs?p=1${filtersUrlPart}`"
         aria-label="Go to page 1"
         @click.prevent="changePage(1)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
@@ -72,7 +82,7 @@ async function changePage(page: number) {
         </svg>
       </NuxtLink>
       <NuxtLink
-        :to="`/jobs?p=${previousPage}`" :aria-label="`Go to page ${previousPage}`"
+        :to="`/jobs?p=${previousPage}${filtersUrlPart}`" :aria-label="`Go to page ${previousPage}`"
         :class="{ disabled: store.currentPage === 1 }"
         @click.prevent="changePage(previousPage)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -81,7 +91,7 @@ async function changePage(page: number) {
       </NuxtLink>
       <ul>
         <li v-for="page in visiblePages" :key="page" :class="{ active: store.currentPage === page }" @click.prevent="changePage(page)">
-          <NuxtLink :to="`/jobs?p=${page}`" :aria-label="`Go to page ${page}`">
+          <NuxtLink :to="`/jobs?p=${page}${filtersUrlPart}`" :aria-label="`Go to page ${page}`">
             {{ page }}
           </NuxtLink>
         </li>
@@ -89,13 +99,13 @@ async function changePage(page: number) {
           ...
         </li>
         <li :class="{ active: store.currentPage === lastPage }" @click.prevent="changePage(lastPage)">
-          <NuxtLink :to="`/jobs?p=${lastPage}`">
+          <NuxtLink :to="`/jobs?p=${lastPage}${filtersUrlPart}`">
             {{ lastPage }}
           </NuxtLink>
         </li>
       </ul>
       <NuxtLink
-        :to="`/jobs?p=${nextPage}`" :aria-label="`Go to page ${nextPage}`"
+        :to="`/jobs?p=${nextPage}${filtersUrlPart}`" :aria-label="`Go to page ${nextPage}`"
         :class="{ disabled: store.currentPage === lastPage }"
         @click.prevent="changePage(nextPage)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -103,7 +113,7 @@ async function changePage(page: number) {
         </svg>
       </NuxtLink>
       <NuxtLink
-        :to="`/jobs?p=${lastPage}`" :aria-label="`Go to page ${lastPage}`"
+        :to="`/jobs?p=${lastPage}${filtersUrlPart}`" :aria-label="`Go to page ${lastPage}`"
         :class="{ disabled: store.currentPage === lastPage }"
         @click.prevent="changePage(lastPage)">
         <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">

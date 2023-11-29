@@ -6,12 +6,11 @@ async function clearAllFilters() {
     query: undefined
   })
 
-  filters.minSalary = 0
-  filters.experienceLevels = []
-  filters.employmentTypes = []
-  filters.techSkills.clear()
-  filters.workModes = []
-  filters.typesOfWork = []
+  filters.clearAll()
+
+  useJobs().paginatedResults.clear()
+  // TODO: move reset logic to withCount block in fetchJobs
+  await fetchJobs({ withCount: true })
 }
 </script>
 
@@ -25,33 +24,34 @@ async function clearAllFilters() {
         :option="{ name: `Min. ${filters.minSalary} PLN`, id: 0 }" />
 
       <ListingAppliedFiltersAppliedFilter
-        v-for="workMode in filters.workModes"
-        filter-query-name="mode"
-        :option="workMode"
-        store="workModes" />
-
-      <ListingAppliedFiltersAppliedFilter
         v-for="employmentType in filters.employmentTypes"
         filter-query-name="emp"
         :option="employmentType"
         store="employmentTypes" />
 
       <ListingAppliedFiltersAppliedFilter
-        v-for="typeOfWork in filters.typesOfWork"
-        filter-query-name="tow"
-        :option="typeOfWork"
-        store="typesOfWork" />
-
-      <ListingAppliedFiltersAppliedFilter
         v-for="expLevel in filters.experienceLevels"
         filter-query-name="exp"
         store="experienceLevels"
         :option="expLevel" />
+
       <ListingAppliedFiltersAppliedFilter
         v-for="techSkill in filters.techSkills"
         filter-query-name="tech"
         store="techSkills"
         :option="{ name: techSkill[1].name, id: techSkill[0] }" />
+
+      <ListingAppliedFiltersAppliedFilter
+        v-for="workMode in filters.workModes"
+        filter-query-name="mode"
+        :option="workMode"
+        store="workModes" />
+
+      <ListingAppliedFiltersAppliedFilter
+        v-for="typeOfWork in filters.typesOfWork"
+        filter-query-name="tow"
+        :option="typeOfWork"
+        store="typesOfWork" />
     </div>
     <button type="button" @click="clearAllFilters">
       clear all

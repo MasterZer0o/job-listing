@@ -52,12 +52,14 @@ const workMode: Filter = {
   ]
 }
 const filters: Filter[] = [employmentType, experience, typeOfWork, workMode]
-const query = useRoute().query as Partial<Record<Filter['queryParamName'], string>>
+const route = useRoute()
+const query = route.query as Partial<Record<Filter['queryParamName'], string>>
 const store = useListingFilters()
 const keys = Object.keys(query)
 const filtersFromUrl = filters.filter((filter) => {
   return keys.includes(filter.queryParamName)
 })
+
 filtersFromUrl.forEach((filter) => {
   const ids = query[filter.queryParamName]!.split(',').map(e => Number.parseInt(e))
   const filtered = filter.options.filter(e => ids.includes(e.id))
@@ -68,6 +70,22 @@ const pinned = ref(true)
 const wrapper = ref() as Ref<HTMLElement>
 function updatePin() {
   pinned.value = !pinned.value
+}
+
+let savedFilters = { ...route.query as Partial<Record<Filter['queryParamName'], string>> }
+const jobsStore = useJobs()
+async function applyFilters() {
+  for (const k in savedFilters) {
+    if (savedFilters[k as Filter['queryParamName']] !== route.query[k as Filter['queryParamName']]) {
+      savedFilters = route.query
+      const results = await fetchJobs({ withCount: true })
+      jobsStore.paginatedResults.clear()
+      if (results!.data) {
+        jobsStore.displayedJobs = results!.data
+      }
+      return
+    }
+  }
 }
 </script>
 
@@ -91,5 +109,8 @@ function updatePin() {
         <ListingFiltersFilter :config="filter" />
       </li>
     </ul>
+    <button type="button" @click="applyFilters">
+      Apply
+    </button>
   </section>
 </template>

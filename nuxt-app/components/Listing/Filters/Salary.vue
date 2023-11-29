@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const { minSalary } = storeToRefs(useListingFilters())
-
+const jobsStore = useJobs()
 const input = ref() as Ref<HTMLInputElement>
 const route = useRoute()
 const router = useRouter()
 watch(minSalary, () => {
+  jobsStore.currentPage = 1
   router.push({
     query: {
       ...route.query,

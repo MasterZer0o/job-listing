@@ -5,30 +5,14 @@ useHead({
 
 const route = useRoute('jobs')
 const pageFromQuery = Number.parseInt(route.query.p as string)
-const store = useJobs()
-store.currentPage = pageFromQuery || 1
-
-async function initialFetchJobs() {
-  const apiUrl = useRuntimeConfig().public.API_BASE
-  try {
-    $fetch<{ count: number;totalPages: number }>(`${apiUrl}/jobs/count`).then(({ count, totalPages }) => {
-      store.totalCount = count
-      store.totalPages = totalPages
-    }).catch()
-
-    const jobs = await fetchJobs()
-    store.displayedJobs = jobs!.data
-    store.cid = jobs!.cid
-  }
-  catch (error) {
-    // TODO: handle errors
-
-  }
-}
+const jobsStore = useJobs()
+jobsStore.currentPage = pageFromQuery || 1
 
 onBeforeMount(() => {
-  initialFetchJobs()
+  fetchJobs({ withCount: true })
 })
+
+onUnmounted(() => { jobsStore.clear(); useListingFilters().clearAll() })
 </script>
 
 <template>
@@ -37,11 +21,11 @@ onBeforeMount(() => {
     <div>
       <ListingAppliedFilters />
       <header>
-        <span>Results {{ store.totalCount !== undefined ? `(${store.totalCount})` : '' }}</span>
+        <span>Results {{ jobsStore.totalCount !== undefined ? `(${jobsStore.totalCount})` : '' }}</span>
       </header>
       <main class="listing-container">
-        <ListingOffers :offers="store.displayedJobs" />
-        <ListingPagination v-if="store.displayedJobs.length > 0 && (store.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
+        <ListingOffers :offers="jobsStore.displayedJobs" />
+        <ListingPagination v-if="jobsStore.displayedJobs.length > 0 && (jobsStore.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
       </main>
     </div>
   </div>

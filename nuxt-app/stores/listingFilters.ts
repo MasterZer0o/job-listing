@@ -12,7 +12,16 @@ export const useListingFilters = defineStore('listingFilters', () => {
       || minSalary.value > 0
   })
 
-  return { techSkills, employmentTypes, experienceLevels, typesOfWork, workModes, minSalary, shouldShowApplied }
+  function clearAll() {
+    minSalary.value = 0
+    experienceLevels.value = []
+    employmentTypes.value = []
+    techSkills.value.clear()
+    workModes.value = []
+    typesOfWork.value = []
+  }
+
+  return { techSkills, employmentTypes, experienceLevels, typesOfWork, workModes, minSalary, shouldShowApplied, clearAll }
 })
 
 function filtersAreNotEmpty(...arr: Ref<any[]>[]) {
@@ -26,5 +35,5 @@ declare global {
     id: number
     name: string
   }
-  export type FilterQueryName = 'emp' | 'tech' | 'tow' | 'mode' | 'exp' | 'ms'
+  export type FilterQueryName = 'emp' | 'tech' | 'tow' | 'mode' | 'exp' | 'ms' | 'p'
 }

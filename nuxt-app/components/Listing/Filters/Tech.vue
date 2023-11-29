@@ -12,7 +12,7 @@ interface Skill {
   icon: ReturnType<typeof resolveComponent>
 }
 const router = useRouter()
-const route = useRoute()
+const route = useRoute('jobs')
 
 const { techSkills } = storeToRefs(useListingFilters())
 
@@ -137,11 +137,7 @@ techSkillsFromUrl.forEach((skill) => {
   techSkills.value.set(skill.id, { name: skill.name })
   selectedSkillsIds.value.add(skill.id)
 })
-
-const selectedTechSkills = computed(() => {
-  return Array.from(selectedSkillsIds.value).join(',')
-})
-
+const jobsStore = useJobs()
 function addSkillFilter(skill: Skill | Skill[], category?: TechCategory) {
   if (Array.isArray(skill)) {
     if (allSelectedToggle[category!])
@@ -168,15 +164,9 @@ function addSkillFilter(skill: Skill | Skill[], category?: TechCategory) {
     techSkills.value.set(skill.id, { name: skill.name })
     selectedSkillsIds.value.add(skill.id)
   }
-
-  router.push({
-    query: {
-      ...route.query,
-      tech: selectedTechSkills.value.length !== 0 ? selectedTechSkills.value : undefined,
-    }
-  })
 }
 watch(techSkills.value, () => {
+  jobsStore.currentPage = 1
   const ids: number[] = []
   techSkills.value.forEach((_, k) => ids.push(k))
   router.push({
@@ -191,11 +181,13 @@ watch(techSkills.value, () => {
 <template>
   <div>
     <span>Tech skills</span>
-    <span @click="clearAll">clear</span>
+    <button type="button" @click="clearAll">
+      clear
+    </button>
   </div>
   <section class="tech-skills">
     <div>
-      <p @click="addSkillFilter(skills.frontend, 'frontend')">
+      <p title="Click to select all" @click="addSkillFilter(skills.frontend, 'frontend')">
         Frontend
       </p>
       <ul>
@@ -213,7 +205,7 @@ watch(techSkills.value, () => {
           </svg>
         </li>
       </ul>
-      <p @click="addSkillFilter(skills.backend, 'backend')">
+      <p title="Click to select all" @click="addSkillFilter(skills.backend, 'backend')">
         Backend
       </p>
       <ul>
@@ -233,7 +225,7 @@ watch(techSkills.value, () => {
         </li>
       </ul>
 
-      <p @click="addSkillFilter(skills.mobile, 'mobile')">
+      <p title="Click to select all" @click="addSkillFilter(skills.mobile, 'mobile')">
         Mobile
       </p>
       <ul>

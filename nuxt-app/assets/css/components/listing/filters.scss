@@ -7,6 +7,7 @@
   overflow: auto;
   flex-shrink: 0;
   scrollbar-gutter: stable;
+  border-right: 1px solid rgba(128, 128, 128, 0.208);
 
   &.not-pinned {
     position: relative;
@@ -56,7 +57,8 @@
             opacity: 0.8;
           }
         }
-        span:last-child {
+        button {
+          background: none;
           font-style: italic;
           font-size: 0.9em;
 
@@ -209,6 +211,25 @@
           margin-right: 5px;
         }
       }
+    }
+  }
+
+  & > button {
+    background-color: var(--brand-4);
+    width: 100%;
+    margin-top: 1em;
+    border-radius: 10px;
+    padding: 0.5em 0;
+    position: sticky;
+    bottom: -12px;
+    font-weight: bold;
+    transition: background-color 150ms ease-in-out;
+    letter-spacing: 1px;
+    color: var(--gray-2);
+    box-shadow: var(--shadow-2);
+
+    &:hover {
+      background-color: var(--brand-3);
     }
   }
 }
