@@ -1,8 +1,7 @@
 package db
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -10,21 +9,24 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func Migrate() {
-
+func Migrate(forceVer *int) {
 	m, err := migrate.New(
 		"file://db/migrations",
 		os.Getenv("DATABASE_URL"))
 
-	// m.Force()
+	if forceVer != nil {
+		m.Force(*forceVer)
+	}
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
+		return
 	}
 
 	if err := m.Up(); err != nil {
-		log.Fatal(err)
+		slog.Error("Migration error: ", "", err.Error())
+		return
 	}
 
-	fmt.Println("Migration successful.")
+	slog.Info("Migration successful.")
 }

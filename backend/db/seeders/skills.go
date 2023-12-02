@@ -20,7 +20,7 @@ type jobId int
 func SeedSkills() {
 	fmt.Println("\nStart seeding job skills...")
 	rows, err := db.DB.Query(context.Background(), "SELECT id FROM jobs")
-
+	
 	if err != nil {
 		log.Fatal("Error reading job ids: ", err)
 	}

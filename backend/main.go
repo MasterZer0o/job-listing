@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	db "main/db"
+	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
+	"gitlab.com/greyxor/slogor"
 )
-
 
 func main() {
 	app := fiber.New(fiber.Config{
@@ -27,8 +30,14 @@ func main() {
 	}))
 
 	app.Use(compress.New(compress.Config{
-		Level: compress.LevelBestSpeed, // 1
+		Level: compress.LevelBestSpeed,
 	}))
+
+	slog.SetDefault(slog.New(slogor.NewHandler(os.Stdout, &slogor.Options{
+		TimeFormat: time.TimeOnly,
+		Level:      slog.LevelDebug,
+		ShowSource: true,
+	})))
 
 	Router(app)
 

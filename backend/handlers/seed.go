@@ -20,11 +20,11 @@ func SeedHandler(ctx *fiber.Ctx) error {
 			"error":   "Count or target query param not provided",
 		})
 	}
-	countInt, _ := strconv.ParseUint(count, 10, 64)
+	countInt, _ := strconv.ParseInt(count, 10, 64)
 
 	switch seedTarget {
 	case "jobs":
-		seeders.SeedJobs(countInt)
+		seeders.SeedJobs(int(countInt), parameters["reset"]=="true")
 
 	case "skills":
 		seeders.SeedSkills()

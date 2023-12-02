@@ -20,6 +20,8 @@ func Router(app *fiber.App) {
 	app.Get("/jobs/count", jobs.GetCount)
 	app.Get("/job/:id", jobs.GetJob)
 
+	// TO BE REMOVED
 	app.Get("/db/seed", handlers.SeedHandler)
+	app.Get("/db/migrate", handlers.Migrate)
 
 }

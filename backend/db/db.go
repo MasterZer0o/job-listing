@@ -19,8 +19,6 @@ func Connect() {
 		log.Fatal("DATABASE URL ENV not set")
 	}
 
-	// Migrate()
-
 	pool, err := pgxpool.New(context.Background(), DATABASE_URL)
 	if err != nil {
 		log.Fatal("Database connection error: ", err)

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "companies" (
 	"created_at" TIMESTAMPTZ DEFAULT NOW(),
 	"updated_at" TIMESTAMPTZ
 );
-CREATE UNIQUE INDEX companies_id_idx ON companies (id);
+CREATE UNIQUE INDEX IF NOT EXISTS companies_id_idx ON companies (id);
 
 
 CREATE TABLE IF NOT EXISTS "currencies" (
@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS "jobs" (
   "location" VARCHAR(255),
   "remote_available" BOOLEAN,
   "company_id" INTEGER,
-  "level" VARCHAR(20),
   "title" VARCHAR(255),
   "salary_from" INTEGER,
   "salary_to" INTEGER,
@@ -30,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "jobs" (
 	CONSTRAINT "fk_company_id" FOREIGN KEY ("company_id") REFERENCES "companies" ("id") ON DELETE CASCADE,
 	CONSTRAINT "fk_currency_id" FOREIGN KEY ("currency_id") REFERENCES "currencies" ("id")
 );
-CREATE UNIQUE INDEX id_idx ON jobs (id);
+CREATE UNIQUE INDEX IF NOT EXISTS id_idx ON jobs (id);
 
 
 CREATE TABLE IF NOT EXISTS "known_skills" (
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS "known_skills" (
 );
 
 
-CREATE TABLE IF NOT EXISTS "job_skills" (
+CREATE TABLE IF NOT EXISTS "tech_skills" (
 	"id" SERIAL PRIMARY KEY,
   "name" VARCHAR(50),
   "job_id" INTEGER,
@@ -46,5 +45,5 @@ CREATE TABLE IF NOT EXISTS "job_skills" (
 	"updated_at" TIMESTAMPTZ,
 	CONSTRAINT "fk_job_id" FOREIGN KEY ("job_id") REFERENCES "jobs" ("id") ON DELETE CASCADE
 );
-CREATE INDEX job_id_skill_idx ON job_skills (job_id);
+CREATE INDEX IF NOT EXISTS job_id_skill_idx ON job_skills (job_id);
 
