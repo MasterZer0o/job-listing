@@ -32,11 +32,6 @@ CREATE TABLE IF NOT EXISTS "jobs" (
 CREATE UNIQUE INDEX IF NOT EXISTS id_idx ON jobs (id);
 
 
-CREATE TABLE IF NOT EXISTS "known_skills" (
-  "name" VARCHAR(100)
-);
-
-
 CREATE TABLE IF NOT EXISTS "tech_skills" (
 	"id" SERIAL PRIMARY KEY,
   "name" VARCHAR(50),
@@ -45,5 +40,4 @@ CREATE TABLE IF NOT EXISTS "tech_skills" (
 	"updated_at" TIMESTAMPTZ,
 	CONSTRAINT "fk_job_id" FOREIGN KEY ("job_id") REFERENCES "jobs" ("id") ON DELETE CASCADE
 );
-CREATE INDEX IF NOT EXISTS job_id_skill_idx ON job_skills (job_id);
 

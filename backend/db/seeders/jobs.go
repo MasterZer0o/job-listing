@@ -6,13 +6,14 @@ import (
 	"log/slog"
 	"main/db"
 	"math/rand"
-	"slices"
+
+	// "slices"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
+	// "github.com/jackc/pgx/v5/pgtype"
 )
 
 type SeededJob struct {
@@ -23,14 +24,17 @@ type SeededJob struct {
 	SalaryFrom      uint16
 	SalaryTo        uint16
 	CurrencyId      string
-	WorkModes       pgtype.FlatArray[int]
-	TypeOfWorks     pgtype.FlatArray[int]
-	ExpLevels       pgtype.FlatArray[int]
-	EmpTypes        pgtype.FlatArray[int]
-	TechSkills      pgtype.FlatArray[int]
+	// WorkModes       pgtype.FlatArray[int]
+	// TypeOfWorks     pgtype.FlatArray[int]
+	// ExpLevels       pgtype.FlatArray[int]
+	// EmpTypes        pgtype.FlatArray[int]
+	// TechSkills      pgtype.FlatArray[int]
 }
 
 func SeedJobs(rowCount int, idReset bool) {
+
+	SeedFilters()
+	return
 	start := time.Now()
 
 	rowSources := make([]SeededJob, 0, rowCount)
@@ -70,7 +74,7 @@ func SeedJobs(rowCount int, idReset bool) {
 		[]string{"location", "remote_available", "company_id", "title", "salary_from", "salary_to",
 			"currency_id", "work_modes", "types_of_work", "exp_levels", "employment_types", "skills"}, pgx.CopyFromSlice(len(rowSources), func(i int) ([]interface{}, error) {
 			return []interface{}{
-				rowSources[i].Location, rowSources[i].RemoteAvailable, rowSources[i].CompanyId, rowSources[i].Title, rowSources[i].SalaryFrom, rowSources[i].SalaryTo, rowSources[i].CurrencyId, rowSources[i].WorkModes, rowSources[i].TypeOfWorks, rowSources[i].ExpLevels, rowSources[i].EmpTypes, rowSources[i].TechSkills}, nil
+				rowSources[i].Location, rowSources[i].RemoteAvailable, rowSources[i].CompanyId, rowSources[i].Title, rowSources[i].SalaryFrom, rowSources[i].SalaryTo, rowSources[i].CurrencyId}, nil
 		}))
 
 	if err != nil {
@@ -88,13 +92,13 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 	for i := 0; i < randomLocationsCount; i++ {
 		locations = append(locations, "Location"+strconv.Itoa(rand.Intn(50)))
 	}
-	expLevels := getPossibleValues("experience_levels")
-	companyIds := getPossibleValues("companies")
-	currencyIds := getPossibleValues("currencies")
-	empTypes := getPossibleValues("employment_types")
-	typesOfWork := getPossibleValues("types_of_work")
-	workModes := getPossibleValues("work_modes")
-	techSkills := getPossibleValues("tech_skills")
+	companyIds := GetPossibleValues("companies")
+	currencyIds := GetPossibleValues("currencies")
+	// expLevels := GetPossibleValues("experience_levels")
+	// empTypes := getPossibleValues("employment_types")
+	// typesOfWork := getPossibleValues("types_of_work")
+	// workModes := getPossibleValues("work_modes")
+	// techSkills := getPossibleValues("tech_skills")
 
 	wg := sync.WaitGroup{}
 	for i, v := range rowSplit {
@@ -104,15 +108,15 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 			start := time.Now()
 			rc := *rowCount
 			var titleLevel string
-			randLevel := expLevels.values[rand.Intn(expLevels.len)]
-			switch randLevel {
-			case 1:
-				titleLevel = "Junior"
-			case 2:
-				titleLevel = "Mid"
-			case 3:
-				titleLevel = "Senior"
-			}
+			// randLevel := expLevels.values[rand.Intn(expLevels.len)]
+			// switch randLevel {
+			// case 1:
+			// 	titleLevel = "Junior"
+			// case 2:
+			// 	titleLevel = "Mid"
+			// case 3:
+			// 	titleLevel = "Senior"
+			// }
 
 			for j := 0; j < rc; j++ {
 				remoteAvailable := rand.Intn(2) == 0
@@ -120,13 +124,13 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 				randomLocation := locations[rand.Intn(randomLocationsCount)]
 				salaryFrom := rand.Intn(6000-3200) + 3200
 				salaryTo := rand.Intn(15500-salaryFrom) + salaryFrom
-				randomExpLevels := expLevels.generateRandVal()
 				randomCompanyId := companyIds.values[rand.Intn(companyIds.len)]
 				randomCurrencyId := currencyIds.values[rand.Intn(currencyIds.len)]
-				randomWorkModes := workModes.generateRandVal()
-				randomTypeOfWorks := typesOfWork.generateRandVal()
-				randomEmpTypes := empTypes.generateRandVal()
-				randomSkills := techSkills.generateRandVal(6)
+				// randomExpLevels := expLevels.generateRandVal()
+				// randomWorkModes := workModes.generateRandVal()
+				// randomTypeOfWorks := typesOfWork.generateRandVal()
+				// randomEmpTypes := empTypes.generateRandVal()
+				// randomSkills := techSkills.generateRandVal(6)
 
 				jobC <- SeededJob{
 					Location:        randomLocation,
@@ -136,11 +140,11 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 					SalaryFrom:      uint16(salaryFrom),
 					SalaryTo:        uint16(salaryTo),
 					CurrencyId:      fmt.Sprint(randomCurrencyId),
-					ExpLevels:       randomExpLevels,
-					WorkModes:       randomWorkModes,
-					TypeOfWorks:     randomTypeOfWorks,
-					EmpTypes:        randomEmpTypes,
-					TechSkills:      randomSkills,
+					// ExpLevels:       randomExpLevels,
+					// WorkModes:       randomWorkModes,
+					// TypeOfWorks:     randomTypeOfWorks,
+					// EmpTypes:        randomEmpTypes,
+					// TechSkills:      randomSkills,
 				}
 			}
 			slog.Info(fmt.Sprintf("Worker #%d finished generating data. [%s]\n", workerId+1, time.Since(start)))
@@ -152,34 +156,34 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 }
 
 type PossibleValues struct {
-	values []int
+	values []string
 	len    int
 }
 
-func (v *PossibleValues) generateRandVal(maxVals ...int) pgtype.FlatArray[int] {
-	var values pgtype.FlatArray[int]
+// func (v *PossibleValues) generateRandVal(maxVals ...int) pgtype.FlatArray[int] {
+// 	var values pgtype.FlatArray[int]
 
-	var valuesCount int
-	if len(maxVals) > 0 {
-		valuesCount = rand.Intn(maxVals[0] + 1)
-	} else {
-		valuesCount = rand.Intn(v.len + 1)
+// 	var valuesCount int
+// 	if len(maxVals) > 0 {
+// 		valuesCount = rand.Intn(maxVals[0] + 1)
+// 	} else {
+// 		valuesCount = rand.Intn(v.len + 1)
 
-	}
-	for i := 0; i < valuesCount; i++ {
-		randomVal := v.values[rand.Intn(v.len)]
+// 	}
+// 	for i := 0; i < valuesCount; i++ {
+// 		randomVal := v.values[rand.Intn(v.len)]
 
-		if slices.Contains[[]int](values, randomVal) {
-			valuesCount++
-			continue
-		} else {
-			values = append(values, randomVal)
-		}
-	}
-	return values
-}
+// 		if slices.Contains[[]int](values, randomVal) {
+// 			valuesCount++
+// 			continue
+// 		} else {
+// 			values = append(values, randomVal)
+// 		}
+// 	}
+// 	return values
+// }
 
-func getPossibleValues(tableName string) PossibleValues {
+func GetPossibleValues(tableName string) PossibleValues {
 	rows, err := db.DB.Query(context.Background(), fmt.Sprintf("SELECT id from %s LIMIT 50", tableName))
 
 	if err != nil {
@@ -187,8 +191,8 @@ func getPossibleValues(tableName string) PossibleValues {
 		return PossibleValues{}
 	}
 
-	var value int
-	var values []int
+	var value string
+	var values []string
 	for rows.Next() {
 		rows.Scan(&value)
 		values = append(values, value)
