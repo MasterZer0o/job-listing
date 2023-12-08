@@ -215,7 +215,7 @@
   }
 
   & > button {
-    background-color: var(--brand-4);
+    background: linear-gradient(90deg, var(--brand-4), var(--brand));
     width: 100%;
     margin-top: 1em;
     border-radius: 10px;
@@ -223,13 +223,14 @@
     position: sticky;
     bottom: -12px;
     font-weight: bold;
-    transition: background-color 150ms ease-in-out;
+    transition: outline 150ms ease-in-out;
+    outline: 0px solid transparent;
     letter-spacing: 1px;
     color: var(--gray-2);
     box-shadow: var(--shadow-2);
 
     &:hover {
-      background-color: var(--brand-3);
+      outline: 1px solid var(--brand);
     }
   }
 }

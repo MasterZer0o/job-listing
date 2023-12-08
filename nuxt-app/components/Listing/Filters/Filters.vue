@@ -73,16 +73,21 @@ function updatePin() {
 }
 
 let savedFilters = { ...route.query as Partial<Record<Filter['queryParamName'], string>> }
+
 const jobsStore = useJobs()
+const queryParamNames = ['tech', ...filters.map(f => f.queryParamName)]
 async function applyFilters() {
-  for (const k in savedFilters) {
-    if (savedFilters[k as Filter['queryParamName']] !== route.query[k as Filter['queryParamName']]) {
+  for (const k of queryParamNames) {
+    if (savedFilters[k as FilterQueryName] !== route.query[k]) {
       savedFilters = route.query
       const results = await fetchJobs({ withCount: true })
+
       jobsStore.paginatedResults.clear()
       if (results!.data) {
         jobsStore.displayedJobs = results!.data
       }
+      document.querySelector('.main-wrapper > div header')?.scrollIntoView({ behavior: 'smooth' })
+
       return
     }
   }

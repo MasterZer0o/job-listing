@@ -63,6 +63,7 @@ async function changePage(page: number) {
   }
 
   store.currentPage = page
+
   await fetchJobs()
 
   document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })

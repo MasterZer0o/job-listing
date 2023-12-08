@@ -14,13 +14,7 @@ async function linkToLocation(e: MouseEvent) {
   })
 }
 async function withSkill(e: MouseEvent, skill: number) {
-  e.preventDefault()
 
-  await router.push({
-    query: {
-      skills: skill
-    }
-  })
 }
 async function linkToCompany(e: MouseEvent) {
   e.preventDefault()

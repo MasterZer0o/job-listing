@@ -6,8 +6,11 @@ import (
 	"log/slog"
 	"main/db"
 	"math/rand"
+	"reflect"
 	"sync"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
 
 type JobId = string
@@ -25,14 +28,17 @@ type AllFiltersPossibleValues struct {
 }
 
 type ValueInputs struct {
-	empTypes    chan Value
-	typesOfWork chan Value
-	workModes   chan Value
-	techSkills  chan Value
-	expLevels   chan Value
+	EmpTypes    chan Value
+	TypesOfWork chan Value
+	WorkModes   chan Value
+	TechSkills  chan Value
+	ExpLevels   chan Value
 }
 
 func SeedFilters() {
+	slog.Info("Starting seeding job filters")
+	fullStartTime := time.Now()
+
 	empTypes := GetPossibleValues("employment_types")
 	typesOfWork := GetPossibleValues("types_of_work")
 	workModes := GetPossibleValues("work_modes")
@@ -59,8 +65,8 @@ func SeedFilters() {
 	wg := sync.WaitGroup{}
 	const VALUES_PER_WORKER = 500
 	isDividableByValuesPerWorker := jobIdsCount%500 == 0
-	// share := jobIdsCount / VALUES_PER_WORKER
 	workers := 1
+
 	if jobIdsCount > VALUES_PER_WORKER {
 		if isDividableByValuesPerWorker {
 			workers = jobIdsCount / VALUES_PER_WORKER
@@ -92,59 +98,111 @@ func SeedFilters() {
 
 	}
 	valueInputs := ValueInputs{
-		empTypes:    make(chan Value, 2*workers),
-		typesOfWork: make(chan Value, 2*workers),
-		workModes:   make(chan Value, 2*workers),
-		techSkills:  make(chan Value, 2*workers),
-		expLevels:   make(chan Value, 2*workers),
+		EmpTypes:    make(chan Value, 2*workers),
+		TypesOfWork: make(chan Value, 2*workers),
+		WorkModes:   make(chan Value, 2*workers),
+		TechSkills:  make(chan Value, 2*workers),
+		ExpLevels:   make(chan Value, 2*workers),
 	}
+
 	timeStart := time.Now()
 	for idx, share := range workerShare {
 		wg.Add(1)
 		go jobFilterGenerator(&valueInputs, &allPosValues, &wg, share, idx+1)
-
 	}
 
+	outputs := Outputs{
+		"EmpTypes":    {},
+		"TypesOfWork": {},
+		"WorkModes":   {},
+		"TechSkills":  {},
+		"ExpLevels":   {},
+	}
+
+	nwg := sync.WaitGroup{}
+	go drainInputs(&valueInputs, outputs, &nwg)
 	wg.Wait()
-	slog.Info(fmt.Sprintf("%d Finished generating data", workers), "time spent", time.Since(timeStart))
+	slog.Info(fmt.Sprintf("%d Workers finished generating data", workers), "time spent", time.Since(timeStart))
+
+	close(valueInputs.EmpTypes)
+	close(valueInputs.ExpLevels)
+	close(valueInputs.WorkModes)
+	close(valueInputs.TypesOfWork)
+	close(valueInputs.TechSkills)
+
+	nwg.Wait()
+
+	insertingWg := sync.WaitGroup{}
+
+	go insertFilters("job_employment_types", "emp_type_id", *outputs["EmpTypes"], &insertingWg)
+	go insertFilters("job_experience_levels", "exp_level_id", *outputs["ExpLevels"], &insertingWg)
+	go insertFilters("job_tech_skills", "tech_skill_id", *outputs["TechSkills"], &insertingWg)
+	go insertFilters("job_work_modes", "work_mode_id", *outputs["WorkModes"], &insertingWg)
+	go insertFilters("job_types_of_work", "type_of_work_id", *outputs["TypesOfWork"], &insertingWg)
+	insertingWg.Wait()
+
+	slog.Info("Seeding filters finished.", "time taken", time.Since(fullStartTime))
+}
+
+type Outputs = map[string]*[]Value
+
+func drainInputs(inputs *ValueInputs, outputs Outputs, parentWg *sync.WaitGroup) {
+	wg := sync.WaitGroup{}
+	parentWg.Add(1)
+	structV := reflect.ValueOf(*inputs)
+
+	for i := 0; i < structV.NumField(); i++ {
+		wg.Add(1)
+
+		inputChan := structV.Field(i).Interface().(chan Value)
+		outputSlc := outputs[structV.Type().Field(i).Name]
+
+		go func(input chan Value, output *[]Value) {
+			for v := range input {
+				*output = append(*output, v)
+			}
+			wg.Done()
+
+		}(inputChan, outputSlc)
+	}
+	wg.Wait()
+	parentWg.Done()
 
 }
 
-// TODO: drain values from channels
 func jobFilterGenerator(inputs *ValueInputs, possVals *AllFiltersPossibleValues, wg *sync.WaitGroup, share []JobId, workerId int) {
-	slog.Info("start", "workerId", workerId)
 	timeStart := time.Now()
 	for _, jobId := range share {
 		for i := 0; i < rand.Intn(6)+1; i++ {
-			inputs.techSkills <- Value{
+			inputs.TechSkills <- Value{
 				jobId:    jobId,
 				filterId: possVals.techSkills.values[rand.Intn(possVals.techSkills.len)],
 			}
 		}
 
 		for i := 0; i < rand.Intn(5)+1; i++ {
-			inputs.empTypes <- Value{
+			inputs.EmpTypes <- Value{
 				jobId:    jobId,
 				filterId: possVals.empTypes.values[rand.Intn(possVals.empTypes.len)],
 			}
 		}
 
 		for i := 0; i < rand.Intn(3)+1; i++ {
-			inputs.expLevels <- Value{
+			inputs.ExpLevels <- Value{
 				jobId:    jobId,
 				filterId: possVals.expLevels.values[rand.Intn(possVals.expLevels.len)],
 			}
 		}
 
 		for i := 0; i < rand.Intn(3)+1; i++ {
-			inputs.typesOfWork <- Value{
+			inputs.TypesOfWork <- Value{
 				jobId:    jobId,
 				filterId: possVals.typesOfWork.values[rand.Intn(possVals.typesOfWork.len)],
 			}
 		}
 
 		for i := 0; i < rand.Intn(3)+1; i++ {
-			inputs.workModes <- Value{
+			inputs.WorkModes <- Value{
 				jobId:    jobId,
 				filterId: possVals.workModes.values[rand.Intn(possVals.workModes.len)],
 			}
@@ -155,6 +213,24 @@ func jobFilterGenerator(inputs *ValueInputs, possVals *AllFiltersPossibleValues,
 	slog.Info(fmt.Sprintf("Worker %d finished generating data.", workerId), "time spent", time.Since(timeStart))
 }
 
-func insertFilters() {
+func insertFilters(tableName string, filterCol string, input []Value, wg *sync.WaitGroup) {
+	wg.Add(1)
+	defer wg.Done()
+	startTime := time.Now()
+	rowsCopied, err := db.DB.CopyFrom(context.Background(), pgx.Identifier{tableName}, []string{
+		"job_id", filterCol,
+	}, pgx.CopyFromSlice(len(input), func(i int) ([]interface{}, error) {
+		return []interface{}{
+			input[i].jobId, input[i].filterId,
+		}, nil
+	}))
+
+	if err != nil {
+		slog.Error(fmt.Sprintf("Error while COPYing into %s", tableName), "err", err)
+	}
+
+	slog.Info(fmt.Sprintf("Seeding table %s finished.", tableName),
+		"time taken", time.Since(startTime),
+		"rows copied", fmt.Sprintf("%d/%d", rowsCopied, len(input)))
 
 }

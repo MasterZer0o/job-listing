@@ -4,7 +4,14 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
   const filters = Object.fromEntries(new URLSearchParams(window.location.search).entries())
 
   if (withCount) {
-    $fetch<{ count: number;totalPages: number }>(`${API_URL}/jobs/count`).then(({ count, totalPages }) => {
+    store.cid = undefined
+    $fetch<{ count: number; totalPages: number }>(`${API_URL}/jobs/count`, {
+      query: {
+        p: store.currentPage === 1 ? undefined : store.currentPage,
+        cid: store.cid,
+        ...filters
+      }
+    }).then(({ count, totalPages }) => {
       store.totalCount = count
       store.totalPages = totalPages
     }).catch()

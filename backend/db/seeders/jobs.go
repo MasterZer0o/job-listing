@@ -7,13 +7,11 @@ import (
 	"main/db"
 	"math/rand"
 
-	// "slices"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v5"
-	// "github.com/jackc/pgx/v5/pgtype"
 )
 
 type SeededJob struct {
@@ -24,17 +22,10 @@ type SeededJob struct {
 	SalaryFrom      uint16
 	SalaryTo        uint16
 	CurrencyId      string
-	// WorkModes       pgtype.FlatArray[int]
-	// TypeOfWorks     pgtype.FlatArray[int]
-	// ExpLevels       pgtype.FlatArray[int]
-	// EmpTypes        pgtype.FlatArray[int]
-	// TechSkills      pgtype.FlatArray[int]
+	Level           string
 }
 
 func SeedJobs(rowCount int, idReset bool) {
-
-	SeedFilters()
-	return
 	start := time.Now()
 
 	rowSources := make([]SeededJob, 0, rowCount)
@@ -71,10 +62,10 @@ func SeedJobs(rowCount int, idReset bool) {
 	}
 
 	rowsCopied, err := db.DB.CopyFrom(context.Background(), pgx.Identifier{"jobs"},
-		[]string{"location", "remote_available", "company_id", "title", "salary_from", "salary_to",
-			"currency_id", "work_modes", "types_of_work", "exp_levels", "employment_types", "skills"}, pgx.CopyFromSlice(len(rowSources), func(i int) ([]interface{}, error) {
+		[]string{"location", "remote_available", "company_id", "level", "title", "salary_from", "salary_to",
+			"currency_id"}, pgx.CopyFromSlice(len(rowSources), func(i int) ([]interface{}, error) {
 			return []interface{}{
-				rowSources[i].Location, rowSources[i].RemoteAvailable, rowSources[i].CompanyId, rowSources[i].Title, rowSources[i].SalaryFrom, rowSources[i].SalaryTo, rowSources[i].CurrencyId}, nil
+				rowSources[i].Location, rowSources[i].RemoteAvailable, rowSources[i].CompanyId, rowSources[i].Level, rowSources[i].Title, rowSources[i].SalaryFrom, rowSources[i].SalaryTo, rowSources[i].CurrencyId}, nil
 		}))
 
 	if err != nil {
@@ -84,6 +75,8 @@ func SeedJobs(rowCount int, idReset bool) {
 
 	slog.Info(fmt.Sprintf("Seeding %d jobs took: %s.\nJob rows inserted: %d/%d\n",
 		rowCount, time.Since(start), rowsCopied, rowCount))
+
+	SeedFilters()
 }
 
 func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
@@ -94,11 +87,6 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 	}
 	companyIds := GetPossibleValues("companies")
 	currencyIds := GetPossibleValues("currencies")
-	// expLevels := GetPossibleValues("experience_levels")
-	// empTypes := getPossibleValues("employment_types")
-	// typesOfWork := getPossibleValues("types_of_work")
-	// workModes := getPossibleValues("work_modes")
-	// techSkills := getPossibleValues("tech_skills")
 
 	wg := sync.WaitGroup{}
 	for i, v := range rowSplit {
@@ -108,15 +96,15 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 			start := time.Now()
 			rc := *rowCount
 			var titleLevel string
-			// randLevel := expLevels.values[rand.Intn(expLevels.len)]
-			// switch randLevel {
-			// case 1:
-			// 	titleLevel = "Junior"
-			// case 2:
-			// 	titleLevel = "Mid"
-			// case 3:
-			// 	titleLevel = "Senior"
-			// }
+			randLevel := rand.Intn(3) + 1
+			switch randLevel {
+			case 1:
+				titleLevel = "Junior"
+			case 2:
+				titleLevel = "Mid"
+			case 3:
+				titleLevel = "Senior"
+			}
 
 			for j := 0; j < rc; j++ {
 				remoteAvailable := rand.Intn(2) == 0
@@ -126,11 +114,6 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 				salaryTo := rand.Intn(15500-salaryFrom) + salaryFrom
 				randomCompanyId := companyIds.values[rand.Intn(companyIds.len)]
 				randomCurrencyId := currencyIds.values[rand.Intn(currencyIds.len)]
-				// randomExpLevels := expLevels.generateRandVal()
-				// randomWorkModes := workModes.generateRandVal()
-				// randomTypeOfWorks := typesOfWork.generateRandVal()
-				// randomEmpTypes := empTypes.generateRandVal()
-				// randomSkills := techSkills.generateRandVal(6)
 
 				jobC <- SeededJob{
 					Location:        randomLocation,
@@ -140,11 +123,7 @@ func generateJobs(workers int, rowSplit []int, jobC chan<- SeededJob) {
 					SalaryFrom:      uint16(salaryFrom),
 					SalaryTo:        uint16(salaryTo),
 					CurrencyId:      fmt.Sprint(randomCurrencyId),
-					// ExpLevels:       randomExpLevels,
-					// WorkModes:       randomWorkModes,
-					// TypeOfWorks:     randomTypeOfWorks,
-					// EmpTypes:        randomEmpTypes,
-					// TechSkills:      randomSkills,
+					Level:           titleLevel,
 				}
 			}
 			slog.Info(fmt.Sprintf("Worker #%d finished generating data. [%s]\n", workerId+1, time.Since(start)))

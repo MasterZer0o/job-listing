@@ -29,7 +29,7 @@ create table if not exists "job_types_of_work" (
 create table if not exists "job_work_modes" (
   "id" SERIAL PRIMARY KEY UNIQUE,
   "job_id" INTEGER NOT NULL REFERENCES "jobs" ("id") ON DELETE CASCADE,
-  "work_modes_id" INTEGER NOT NULL REFERENCES "work_modes" ("id") ON DELETE CASCADE,
+  "work_mode_id" INTEGER NOT NULL REFERENCES "work_modes" ("id") ON DELETE CASCADE,
   "created_at" TIMESTAMPTZ DEFAULT NOW()
 );
 

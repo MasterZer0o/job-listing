@@ -29,20 +29,81 @@ type JobsResult struct {
 	SalaryTo        string        `json:"salaryTo"`
 	Currency        string        `json:"currency"`
 	PostedAt        time.Time     `json:"postedAt"`
-	SkillsJSON      string        `json:"-"`
 	Skills          []string      `json:"skills"`
-	EmploymentTypes []string      `json:"empTypes"`
-	WorkModes       []string      `json:"workModes"`
-	WorkTypes       []string      `json:"workTypes"`
 }
+// TODO: add "minimum salary filter"
 
 func GetCount(ctx *fiber.Ctx) error {
-	r, _ := db.DB.Query(ctx.Context(), "SELECT COUNT(*) FROM jobs")
+	params := ctx.Queries()
+	var filters []string
+
+	sqlQuery := "SELECT COUNT(*) FROM jobs"
+
+	for k := range params {
+		switch k {
+		case "tech":
+			sqlQuery += ` LEFT JOIN (
+				SELECT job_id, array_agg(tech_skills.id) AS skills
+				FROM job_tech_skills
+				LEFT JOIN tech_skills ON job_tech_skills.tech_skill_id = tech_skills.id
+				GROUP BY job_id
+				) AS skills ON skills.job_id = jobs.id`
+			filters = append(filters, "skills && "+"ARRAY["+params["tech"]+"]::smallint[]")
+
+		case "tow":
+			sqlQuery += ` LEFT JOIN (
+				SELECT job_id, array_agg(types_of_work.id) AS tow
+				FROM job_types_of_work
+				LEFT JOIN types_of_work ON job_types_of_work.type_of_work_id = types_of_work.id
+				GROUP BY job_id
+				) AS tow ON tow.job_id = jobs.id`
+			filters = append(filters, "tow && "+"ARRAY["+params["tow"]+"]::smallint[]")
+
+		case "exp":
+			sqlQuery += ` LEFT JOIN (
+				SELECT job_id, array_agg(experience_levels.id) AS exp
+				FROM job_experience_levels
+				LEFT JOIN experience_levels ON job_experience_levels.exp_level_id = experience_levels.id
+				GROUP BY job_id
+				) AS exp ON exp.job_id = jobs.id`
+			filters = append(filters, "exp && "+"ARRAY["+params["exp"]+"]::smallint[]")
+		case "emp":
+			sqlQuery += ` LEFT JOIN (
+				SELECT job_id, array_agg(employment_types.id) AS emp
+				FROM job_employment_types
+				LEFT JOIN employment_types ON job_employment_types.emp_type_id = employment_types.id
+				GROUP BY job_id
+				) AS emp ON emp.job_id = jobs.id`
+			filters = append(filters, "emp && "+"ARRAY["+params["emp"]+"]::smallint[]")
+		case "mode":
+			sqlQuery += ` LEFT JOIN (
+				SELECT job_id, array_agg(work_modes.id) AS mode
+				FROM job_work_modes
+				LEFT JOIN work_modes ON job_work_modes.work_mode_id = work_modes.id
+				GROUP BY job_id
+				) AS mode ON mode.job_id = jobs.id`
+			filters = append(filters, "mode && "+"ARRAY["+params["mode"]+"]::smallint[]")
+
+		}
+	}
+
+	if len(filters) > 0 {
+		sqlQuery += " WHERE"
+
+		for idx, filterStr := range filters {
+			sqlQuery += " " + filterStr
+
+			if idx+1 != len(filters) {
+				sqlQuery += " AND"
+			}
+		}
+	}
+	// slog.Info(sqlQuery)
+	r, _ := db.DB.Query(ctx.Context(), sqlQuery)
 	var count uint64
 	r.Next()
 	r.Scan(&count)
 	r.Close()
-	time.Sleep(time.Second)
 
 	const PER_PAGE = 20
 	var totalPages uint64
@@ -61,98 +122,140 @@ func GetCount(ctx *fiber.Ctx) error {
 func GetJobs(ctx *fiber.Ctx) error {
 	results := []JobsResult{}
 	params := ctx.Queries()
-	slog.Info("filters", slog.Any("", params))
+
 
 	page := params["p"]
 	cid := params["cid"]
 
-	filters := ""
+	var filters []string
+	var filterSelectFields string
+	joins := ""
 	for k := range params {
 		switch k {
-		case "tow":
-		case "exp":
-		case "emp":
-		case "mode":
 		case "tech":
+			joins += ` LEFT JOIN (
+				SELECT job_id, array_agg(tech_skills.id) AS skills
+				FROM job_tech_skills
+				LEFT JOIN tech_skills ON job_tech_skills.tech_skill_id = tech_skills.id
+				GROUP BY job_id
+				) AS skills ON skills.job_id = jobs.id`
+			filters = append(filters, "skills && "+"ARRAY["+params["tech"]+"]::smallint[]")
+
+		case "tow":
+			joins += ` LEFT JOIN (
+				SELECT job_id, array_agg(types_of_work.id) AS tow
+				FROM job_types_of_work
+				LEFT JOIN types_of_work ON job_types_of_work.type_of_work_id = types_of_work.id
+				GROUP BY job_id
+				) AS tow ON tow.job_id = jobs.id`
+			filters = append(filters, "tow && "+"ARRAY["+params["tow"]+"]::smallint[]")
+
+		case "exp":
+			joins += ` LEFT JOIN (
+				SELECT job_id, array_agg(experience_levels.id) AS exp
+				FROM job_experience_levels
+				LEFT JOIN experience_levels ON job_experience_levels.exp_level_id = experience_levels.id
+				GROUP BY job_id
+				) AS exp ON exp.job_id = jobs.id`
+			filters = append(filters, "exp && "+"ARRAY["+params["exp"]+"]::smallint[]")
+		case "emp":
+			joins += ` LEFT JOIN (
+				SELECT job_id, array_agg(employment_types.id) AS emp
+				FROM job_employment_types
+				LEFT JOIN employment_types ON job_employment_types.emp_type_id = employment_types.id
+				GROUP BY job_id
+				) AS emp ON emp.job_id = jobs.id`
+			filters = append(filters, "emp && "+"ARRAY["+params["emp"]+"]::smallint[]")
+		case "mode":
+			joins += ` LEFT JOIN (
+				SELECT job_id, array_agg(work_modes.id) AS mode
+				FROM job_work_modes
+				LEFT JOIN work_modes ON job_work_modes.work_mode_id = work_modes.id
+				GROUP BY job_id
+				) AS mode ON mode.job_id = jobs.id`
+			filters = append(filters, "mode && "+"ARRAY["+params["mode"]+"]::smallint[]")
 
 		}
 	}
 
 	if cid != "" {
-		filters = "WHERE jobs.id > $1"
+		filters = append(filters, "jobs.id > $1")
 	}
 
 	if cid == "" && page != "" {
 		const JOBS_PER_PAGE = 20
 		pageNumber, _ := strconv.Atoi(page)
-		filters += fmt.Sprintf(`WHERE jobs.id >= (SELECT MIN(jobs.id) FROM jobs WHERE jobs.id > %d)
+		filters = append(filters, fmt.Sprintf(`jobs.id >= (SELECT MIN(jobs.id) FROM jobs WHERE jobs.id > %d)
 		AND jobs.id <= (SELECT MAX(jobs.id) FROM jobs WHERE jobs.id > %d)`,
-			(pageNumber-1)*JOBS_PER_PAGE, (pageNumber-1)*JOBS_PER_PAGE)
+			(pageNumber-1)*JOBS_PER_PAGE, (pageNumber-1)*JOBS_PER_PAGE))
 	}
 
-	query := fmt.Sprintf(`SELECT jobs.id, location, title, jobs.created_at, remote_available,salary_from, salary_to,
-	companies.name, companies.image, currencies.short_name, experience_levels.name,
-json_agg(DISTINCT tech_skills.name),
-json_agg(DISTINCT work_modes.name),
-json_agg(DISTINCT employment_types.name),
-json_agg(DISTINCT types_of_work.name)
+	filtersStr := ""
+	if len(filters) > 0 {
+		filtersStr += "WHERE"
+
+		for idx, filterStr := range filters {
+			filtersStr += " " + filterStr
+
+			if idx+1 != len(filters) {
+				filtersStr += " AND"
+			}
+		}
+	}
+
+	query := fmt.Sprintf(`SELECT jobs.id, 
+(SELECT json_agg(tech_skills.name) FROM job_tech_skills LEFT JOIN tech_skills ON job_tech_skills.tech_skill_id = tech_skills.id WHERE job_tech_skills.job_id = jobs.id), location, title, jobs.created_at, remote_available,salary_from, salary_to,
+	companies.name, companies.image, currencies.short_name %s
 FROM jobs
-JOIN job_tech_skills on job_tech_skills.job_id = jobs.id
-JOIN tech_skills ON job_tech_skills.tech_skill_id = tech_skills.id
-
-JOIN job_employment_types on job_employment_types.job_id = jobs.id
-JOIN employment_types on job_employment_types.emp_type_id= employment_types.id
-
-JOIN job_experience_levels on job_experience_levels.job_id = jobs.id
-JOIN experience_levels ON  job_experience_levels.exp_level_id = experience_levels.id
-
-JOIN job_types_of_work on job_types_of_work.job_id = jobs.id
-JOIN types_of_work ON  job_types_of_work.type_of_work_id = types_of_work.id
-
-JOIN job_work_modes on job_work_modes.job_id = jobs.id
-JOIN work_modes ON  job_work_modes.work_modes_id = work_modes.id
-
 LEFT JOIN companies on companies.id = jobs.company_id
-LEFT JOIN currencies on jobs.currency_id = currencies.id
+LEFT JOIN currencies on jobs.currency_id = currencies.id %s
 %s
-GROUP by jobs.id ,companies.name,companies.image,currencies.short_name, experience_levels.name LIMIT 20`, filters)
-	// TODO: create new seeders for new tables, remove unused handle WHERE from query params,
+GROUP by jobs.id , companies.name, companies.image, currencies.short_name
+ORDER BY jobs.id 
+LIMIT 20`, filterSelectFields, joins, filtersStr)
 	var rows pgx.Rows
-
+	var err error
+	slog.Info(query)
 	if cid != "" {
 		s := time.Now()
+		rows, err = db.DB.Query(ctx.Context(), query, cid)
 
-		rows, _ = db.DB.Query(ctx.Context(), query, cid)
+		if err != nil {
+			slog.Error("Query error", "err", err)
+
+		}
 
 		slog.Info("With cid, time: ", slog.Any("", time.Since(s)))
 	} else {
 		s := time.Now()
-
 		rows, _ = db.DB.Query(ctx.Context(), query)
 		slog.Info("With page, time", slog.Any("", time.Since(s)), "page", page)
 	}
 
-	var err error
 	for rows.Next() {
 		var result JobsResult
-		err = rows.Scan(&result.Id, &result.Location, &result.Title, &result.PostedAt, &result.RemoteAvailable, &result.SalaryFrom, &result.SalaryTo, &result.Company.Name, &result.Company.Image, &result.Currency, &result.ExpLevel, &result.Skills, &result.WorkModes, &result.EmploymentTypes, &result.WorkTypes)
+		err = rows.Scan(&result.Id, &result.Skills, &result.Location, &result.Title, &result.PostedAt, &result.RemoteAvailable, &result.SalaryFrom, &result.SalaryTo, &result.Company.Name, &result.Company.Image, &result.Currency)
 
 		if err != nil {
 			slog.Error("Scan error: ", "err", err)
 		}
-
-		// if result.SkillsJSON != "[null]" {
-		// 	json.Unmarshal([]byte(result.SkillsJSON), &result.Skills)
-		// } else {
-		// 	result.Skills = []string{}
-		// }
 		results = append(results, result)
 	}
 	rows.Close()
-	return ctx.JSON(map[string]interface{}{
-		"data": results,
-		// "cid":  results[len(results)-1].Id,
+	var newCid string
+	if len(results) > 0 {
+		newCid = results[len(results)-1].Id
+	}
+
+	return ctx.JSON(Response{
+		Results: results,
+		Cid:     newCid,
 	})
+}
+
+type Response struct {
+	Results []JobsResult `json:"data"`
+	Cid     string       `json:"cid,omitempty"`
 }
 
 func GetJob(ctx *fiber.Ctx) error {
