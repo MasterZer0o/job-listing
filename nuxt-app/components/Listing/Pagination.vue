@@ -66,8 +66,9 @@ async function changePage(page: number) {
 
   await fetchJobs()
 
-  document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
+  document.querySelector('.main-wrapper > div header')?.scrollIntoView({ behavior: 'smooth' })
 }
+// TODO: refetch when removing filters individually from applied filters with long debounce (2-3s after clicking)
 </script>
 
 <template>
