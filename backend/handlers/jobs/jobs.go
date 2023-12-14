@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	// "encoding/json"
 	"fmt"
 	"log/slog"
 	"main/db"
@@ -32,7 +31,6 @@ type JobsResult struct {
 	Skills          []string      `json:"skills"`
 }
 
-// TODO: add "minimum salary filter"
 func GetCount(ctx *fiber.Ctx) error {
 	params := ctx.Queries()
 	var filters []string
@@ -63,6 +61,10 @@ func GetCount(ctx *fiber.Ctx) error {
 			sqlQuery += ` LEFT JOIN job_work_modes ON job_work_modes.job_id = jobs.id
 			LEFT JOIN work_modes ON job_work_modes.work_mode_id = work_modes.id`
 			filters = append(filters, "job_work_modes.work_mode_id IN ("+params["mode"]+")")
+
+		case "ms":
+			filters = append(filters, "salary_from >"+params["ms"])
+
 		}
 	}
 
@@ -131,6 +133,8 @@ func GetJobs(ctx *fiber.Ctx) error {
 			joins += ` LEFT JOIN job_work_modes ON job_work_modes.job_id = jobs.id
 			LEFT JOIN work_modes ON job_work_modes.work_mode_id = work_modes.id`
 			filters = append(filters, "job_work_modes.work_mode_id IN ("+params["mode"]+")")
+		case "ms":
+			filters = append(filters, "salary_from >"+params["ms"])
 		}
 	}
 
@@ -173,7 +177,7 @@ GROUP by jobs.id, companies.name, companies.image, currencies.short_name
 %s
 ORDER BY jobs.id 
 LIMIT 20`, joins, filtersStr, having)
-	slog.Info(query)
+
 	var rows pgx.Rows
 	var err error
 

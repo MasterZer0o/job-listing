@@ -68,7 +68,6 @@ async function changePage(page: number) {
 
   document.querySelector('.main-wrapper > div header')?.scrollIntoView({ behavior: 'smooth' })
 }
-// TODO: refetch when removing filters individually from applied filters with long debounce (2-3s after clicking)
 </script>
 
 <template>

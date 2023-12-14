@@ -75,7 +75,7 @@ function updatePin() {
 let savedFilters = { ...route.query as Partial<Record<Filter['queryParamName'], string>> }
 
 const jobsStore = useJobs()
-const queryParamNames = ['tech', ...filters.map(f => f.queryParamName)]
+const queryParamNames = ['tech', 'ms', ...filters.map(f => f.queryParamName)]
 async function applyFilters() {
   for (const k of queryParamNames) {
     if (savedFilters[k as FilterQueryName] !== route.query[k]) {
