@@ -8,8 +8,6 @@ async function clearAllFilters() {
 
   filters.clearAll()
 
-  useJobs().paginatedResults.clear()
-  // TODO: move reset logic to withCount block in fetchJobs
   await fetchJobs({ withCount: true })
 }
 </script>

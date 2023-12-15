@@ -7,6 +7,8 @@ export const useJobs = defineStore('jobs', () => {
 
   const currentPage = ref<number>(1)
 
+  const isLoading = ref(false)
+
   function clear() {
     displayedJobs.value = []
     totalCount.value = undefined
@@ -22,7 +24,8 @@ export const useJobs = defineStore('jobs', () => {
     currentPage,
     cid,
     clear,
-    paginatedResults
+    paginatedResults,
+    isLoading
   }
 })
 

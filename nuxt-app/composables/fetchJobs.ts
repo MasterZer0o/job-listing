@@ -5,6 +5,7 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
 
   if (withCount) {
     store.cid = undefined
+    store.paginatedResults.clear()
     $fetch<{ count: number; totalPages: number }>(`${API_URL}/jobs/count`, {
       query: {
         p: store.currentPage === 1 ? undefined : store.currentPage,
@@ -16,7 +17,9 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
       store.totalPages = totalPages
     }).catch()
   }
-
+  const timeout = setTimeout(() => {
+    store.isLoading = true
+  }, 100)
   try {
     const response = await $fetch<{ data: Offer[]; cid: number }>(`${API_URL}/jobs`, {
       query: {
@@ -25,6 +28,7 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
         ...filters
       }
     })
+    clearTimeout(timeout)
 
     if (response.data) {
       store.displayedJobs = response!.data
@@ -35,6 +39,9 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
     return response
   }
   catch (error) {
-
+    clearTimeout(timeout)
+  }
+  finally {
+    store.isLoading = false
   }
 }

@@ -105,18 +105,6 @@
       svg {
         margin: auto;
       }
-
-      .loader {
-        path {
-          transform-origin: center;
-          animation: spin 0.75s linear infinite;
-        }
-      }
-      @keyframes spin {
-        100% {
-          transform: rotate(360deg);
-        }
-      }
     }
     div:last-of-type {
       & .validation-error {

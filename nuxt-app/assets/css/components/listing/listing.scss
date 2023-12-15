@@ -20,6 +20,24 @@
   display: flex;
   flex-direction: column;
   gap: var(--size-3);
+  position: relative;
+
+  .overlay {
+    position: absolute;
+    background-color: rgba(var(--overlay), 0.65);
+    inset: 0;
+
+    .loader {
+      position: sticky;
+      top: 50%;
+      margin-bottom: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      path {
+        fill: var(--surface-invert);
+      }
+    }
+  }
 
   article {
     & > a {
@@ -121,4 +139,14 @@
       }
     }
   }
+}
+
+.ov-fade-enter-active,
+.ov-fade-leave-active {
+  transition: opacity 300ms ease-in-out;
+}
+
+.ov-fade-enter-from,
+.ov-fade-leave-to {
+  opacity: 0;
 }

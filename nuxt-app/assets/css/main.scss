@@ -49,16 +49,27 @@ ul,
 li {
   padding: 0;
 }
+.loader {
+  path {
+    transform-origin: center;
+    animation: spin 0.75s linear infinite;
+  }
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
+  background: var(--surface-3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-3);
+  background: var(--surface-4);
 }
 
 .scroll-up {

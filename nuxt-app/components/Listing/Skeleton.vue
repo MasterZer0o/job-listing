@@ -1,0 +1,62 @@
+<template>
+  <div class=":uno: flex">
+    <div class="skeleton skeleton-img"></div>
+
+    <div class="skeleton-item">
+      <div class=":uno: mb-2 skeleton skeleton-bar"></div>
+
+      <div class=":uno: w-3/4 skeleton skeleton-bar"></div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+.skeleton-item {
+  position: relative;
+  align-self: center;
+  flex: 1;
+}
+
+.skeleton-img {
+  width: 4rem;
+  height: 4rem;
+  margin-right: 0.5rem;
+  position: relative;
+}
+.skeleton,
+.skeleton-img {
+  &::after {
+    content: '';
+    animation: skeleton-animation 1.2s infinite;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(-100%);
+    z-index: 1;
+    background-image: linear-gradient(90deg, rgba(var(--skele), 0), rgba(var(--skele), 0.04), rgba(var(--skele), 0));
+  }
+}
+.skeleton, .skeleton-item {
+  overflow: hidden;
+}
+.skeleton {
+  background-color: rgba(var(--skele), 0.06);
+  border-radius: 6px;
+}
+
+.skeleton-bar {
+  height: 1rem;
+  position: relative;
+}
+
+@keyframes skeleton-animation {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+</style>
