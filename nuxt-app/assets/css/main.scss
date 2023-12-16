@@ -65,11 +65,11 @@ li {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-3);
+  background: hsla(var(--scrollthumb-color), .8);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-4);
+  background: hsla(var(--scrollthumb-color), 1);
 }
 
 .scroll-up {

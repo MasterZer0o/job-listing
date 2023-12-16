@@ -82,7 +82,7 @@ async function applyFilters() {
       savedFilters = route.query
       const results = await fetchJobs({ withCount: true })
 
-      if (results!.data) {
+      if (results?.data) {
         jobsStore.displayedJobs = results!.data
       }
       document.querySelector('.main-wrapper > div header')?.scrollIntoView({ behavior: 'smooth' })

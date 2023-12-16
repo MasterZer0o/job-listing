@@ -18,9 +18,8 @@
 
     & > button:first-child {
       background: linear-gradient(90deg, var(--brand-4), var(--brand));
-
       width: 90%;
-      border-radius: 10px;
+      border-radius: 6px;
       padding: 0.5em 0;
       font-weight: bold;
       transition: transform 150ms ease-in-out;

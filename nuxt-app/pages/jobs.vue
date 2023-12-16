@@ -33,7 +33,7 @@ onUnmounted(() => { jobsStore.clear(); useListingFilters().clearAll() })
       </header>
       <main class="listing-container">
         <ListingOffers :offers="jobsStore.displayedJobs" :is-fetching="isFetching" />
-        <ListingPagination v-if="jobsStore.displayedJobs.length > 0 && (jobsStore.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
+        <ListingPagination v-if="!jobsStore.error.value && jobsStore.displayedJobs.length > 0 && (jobsStore.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
       </main>
     </div>
   </div>

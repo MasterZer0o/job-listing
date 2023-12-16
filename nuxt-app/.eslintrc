@@ -12,6 +12,7 @@
     "prefer-const": "off",
     "n/prefer-global/process": "off",
     "vue/html-self-closing": "off",
-    "vue/html-closing-bracket-newline": "off"
+    "vue/html-closing-bracket-newline": "off",
+    "@typescript-eslint/consistent-type-definitions": "off"
   }
 }

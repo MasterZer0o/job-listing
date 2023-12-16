@@ -16,6 +16,9 @@ export const useJobs = defineStore('jobs', () => {
     currentPage.value = 1
     cid.value = undefined
   }
+  const error = ref<Error>({ value: false })
+  const MAX_ERROR_RETRIES = 2
+  let retries = 0
 
   return {
     displayedJobs,
@@ -25,8 +28,18 @@ export const useJobs = defineStore('jobs', () => {
     cid,
     clear,
     paginatedResults,
-    isLoading
+    isLoading,
+    error,
+    MAX_ERROR_RETRIES,
+    retries
   }
 })
+interface Error {
+  value: boolean
+  message?: string
+  net?: {
+    restored: boolean
+  }
+}
 
 type PageNumber = number
