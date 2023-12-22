@@ -53,6 +53,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print("Server started on port 5000.\n")
+	fmt.Print("Server started on port " + PORT + ".\n")
 	app.Listen(":" + PORT)
 }
