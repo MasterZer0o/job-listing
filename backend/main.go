@@ -20,12 +20,25 @@ func main() {
 		Network:               "tcp",
 	})
 
+	slog.SetDefault(slog.New(slogor.NewHandler(os.Stdout, &slogor.Options{
+		TimeFormat: time.TimeOnly,
+		Level:      slog.LevelDebug,
+		ShowSource: true,
+	})))
+
 	godotenv.Load()
 
 	db.Connect()
 
+	allowedOrigin, ok := os.LookupEnv("ALLOWED_ORIGIN")
+
+	if !ok {
+		slog.Error("ALLOWED_ORIGIN ENV not set")
+		os.Exit(1)
+	}
+
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",
+		AllowOrigins:     allowedOrigin,
 		AllowCredentials: true,
 	}))
 
@@ -33,14 +46,13 @@ func main() {
 		Level: compress.LevelBestSpeed,
 	}))
 
-	slog.SetDefault(slog.New(slogor.NewHandler(os.Stdout, &slogor.Options{
-		TimeFormat: time.TimeOnly,
-		Level:      slog.LevelDebug,
-		ShowSource: true,
-	})))
-
 	Router(app)
+	PORT, ok := os.LookupEnv("PORT")
+	if !ok {
+		slog.Error("PORT ENV not set")
+		os.Exit(1)
+	}
 
 	fmt.Print("Server started on port 5000.\n")
-	app.Listen(":5000")
+	app.Listen(":" + PORT)
 }

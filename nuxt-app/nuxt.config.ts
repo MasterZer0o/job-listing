@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['stores']
   },
+  nitro: {
+    preset: 'vercel_edge'
+  },
   experimental: {
     inlineSSRStyles: false,
     typedPages: true
@@ -19,7 +22,12 @@ export default defineNuxtConfig({
     }
   },
   vite: {
+    css: {
+
+    },
     build: {
+      cssCodeSplit: false,
+
       rollupOptions: {
         output: {
           assetFileNames: 'public/assets/[hash][extname]',
@@ -68,7 +76,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      API_BASE: 'http://localhost:5000'
+      API_BASE: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://attractive-lucilia-mynoorg.koyeb.app'
     }
 
   }
