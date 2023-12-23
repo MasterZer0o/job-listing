@@ -28,7 +28,7 @@ const store = useJobs()
         <p v-if="store.error.net" class=":uno: text-center">
           {{ store.error.net?.restored ? "Your connection has been restored." : "It seems you have no internet connection." }}  You are <span :style="{ color: store.error.net?.restored ? '#A3BE8C' : '#BF616A' }">{{ store.error.net.restored ? 'online' : 'offline' }}.</span>
         </p>
-        <p v-if="store.error.message" class=":uno: text-center">
+        <p v-if="store.error.message" class=":uno: text-center m-auto">
           {{ store.error.message }}
         </p>
         <button :style="store.error.net && !store.error.net.restored && 'opacity:0.5;pointer-events:none' || undefined" class=":uno: w-fit px-4 py-2 rounded bg-[var(--surface-2)] self-center hover:bg-[var(--surface-3)] shadow  shadow-dark-400" @click="fetchJobs({ withCount: true })">

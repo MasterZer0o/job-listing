@@ -17,4 +17,23 @@ declare global {
     postedAt: Date
     skills: string[]
   }
+
+  export interface JobDetailsResponse {
+    data: {
+      title: string
+      salaryFrom: number
+      salaryTo: number
+      level: string
+      company: {
+        id: string
+        name: string
+        image: string
+      }
+      remote: boolean
+      createdAt: string
+      skills: string[]
+    }
+  }
+
+  export type JobDetails = JobDetailsResponse['data']
 }

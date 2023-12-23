@@ -164,7 +164,7 @@ func GetJobs(ctx *fiber.Ctx) error {
 	}
 
 	query := fmt.Sprintf(`SELECT jobs.id, 
-	array_agg(distinct tech_skills.name) AS tech_skills, location, title, jobs.created_at, remote_available,salary_from, salary_to,
+	array_agg(distinct tech_skills.name) AS tech_skills, location,level, title, jobs.created_at, remote_available,salary_from, salary_to,
 	companies.name, companies.image, currencies.short_name
 FROM jobs
 LEFT JOIN companies on companies.id = jobs.company_id
@@ -185,27 +185,29 @@ LIMIT 20`, joins, filtersStr, having)
 		s := time.Now()
 		rows, err = db.DB.Query(ctx.Context(), query, cid)
 
-		if err != nil {
-			slog.Error("Query error", "err", err)
-		}
-
-		slog.Info("With cid, time: ", slog.Any("", time.Since(s)))
+		slog.Info("With cid", "time", time.Since(s))
 	} else {
 		s := time.Now()
-		rows, _ = db.DB.Query(ctx.Context(), query)
-		slog.Info("With page, time", slog.Any("", time.Since(s)), "page", page)
+		rows, err = db.DB.Query(ctx.Context(), query)
+		slog.Info("With page", "time", time.Since(s), "page", page)
+	}
+
+	if err != nil {
+		slog.Error("Query error", "err", err)
 	}
 
 	for rows.Next() {
 		var result JobsResult
-		err = rows.Scan(&result.Id, &result.Skills, &result.Location, &result.Title, &result.PostedAt, &result.RemoteAvailable, &result.SalaryFrom, &result.SalaryTo, &result.Company.Name, &result.Company.Image, &result.Currency)
+		err = rows.Scan(&result.Id, &result.Skills, &result.Location, &result.ExpLevel, &result.Title, &result.PostedAt, &result.RemoteAvailable, &result.SalaryFrom, &result.SalaryTo, &result.Company.Name, &result.Company.Image, &result.Currency)
 
 		if err != nil {
 			slog.Error("Scan error: ", "err", err)
+
 		}
 		results = append(results, result)
 	}
 	rows.Close()
+
 	var newCid string
 	if len(results) > 0 {
 		newCid = results[len(results)-1].Id
@@ -218,10 +220,11 @@ LIMIT 20`, joins, filtersStr, having)
 }
 
 type Response struct {
-	Results []JobsResult `json:"data"`
+	Results []JobsResult `json:"data,omitempty"`
 	Cid     string       `json:"cid,omitempty"`
+	Error   string       `json:"error,omitempty"`
 }
 
-func GetJob(ctx *fiber.Ctx) error {
-	return nil
-}
+// func GetJob(ctx *fiber.Ctx) error {
+// 	return nil
+// }

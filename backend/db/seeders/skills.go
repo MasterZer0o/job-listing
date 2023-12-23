@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"main/db"
-
-	// "log"
 	"math/rand"
 	"strconv"
 	"sync"
@@ -116,30 +114,6 @@ func generateSkills(jobIds []jobId) *[]Skill {
 			fmt.Printf("Worker %d finished generating skills for %d jobs in %s.\n", workerId, len(idsShare), time.Since(start))
 		}(i+1, jobIdsShares[i], skillsChan)
 	}
-	// var wg2 sync.WaitGroup
-	// wg2.Add(1)
-	// go func(c <-chan Skill, count int) {
-	// 	isok := true
-	// 	for {
-	// 		skill, ok := <-c
-	// 		if !ok {
-	// 			isok = false
-	// 			break
-	// 		}
-	// 		skills = append(skills, skill)
-
-	// 		if !isok {
-	// 			wg2.Done()
-	// 			break
-	// 		}
-	// 	}
-
-	// 	// for skill := range c {
-	// 	// 	skills = append(skills, skill)
-	// 	// }
-
-	// }(skillsChan, jobIdsCount)
-	// wg2.Wait()
 	go func(c chan Skill) {
 		for skill := range c {
 			skills = append(skills, skill)

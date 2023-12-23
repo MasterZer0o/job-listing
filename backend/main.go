@@ -36,7 +36,7 @@ func main() {
 		slog.Error("ALLOWED_ORIGIN ENV not set")
 		os.Exit(1)
 	}
-
+	slog.Info(allowedOrigin)
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigin,
 		AllowCredentials: true,

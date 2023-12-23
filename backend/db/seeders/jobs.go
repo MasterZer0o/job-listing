@@ -139,29 +139,6 @@ type PossibleValues struct {
 	len    int
 }
 
-// func (v *PossibleValues) generateRandVal(maxVals ...int) pgtype.FlatArray[int] {
-// 	var values pgtype.FlatArray[int]
-
-// 	var valuesCount int
-// 	if len(maxVals) > 0 {
-// 		valuesCount = rand.Intn(maxVals[0] + 1)
-// 	} else {
-// 		valuesCount = rand.Intn(v.len + 1)
-
-// 	}
-// 	for i := 0; i < valuesCount; i++ {
-// 		randomVal := v.values[rand.Intn(v.len)]
-
-// 		if slices.Contains[[]int](values, randomVal) {
-// 			valuesCount++
-// 			continue
-// 		} else {
-// 			values = append(values, randomVal)
-// 		}
-// 	}
-// 	return values
-// }
-
 func GetPossibleValues(tableName string) PossibleValues {
 	rows, err := db.DB.Query(context.Background(), fmt.Sprintf("SELECT id from %s LIMIT 50", tableName))
 

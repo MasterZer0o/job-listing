@@ -76,7 +76,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      API_BASE: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://attractive-lucilia-mynoorg.koyeb.app'
+      API_BASE: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://attractive-lucilia-mynoorg.koyeb.app',
+      lastUpdate: `${new Date().toLocaleDateString('pl')} ${new Date().toLocaleTimeString('pl', { timeStyle: 'short' })}`
     }
 
   }
