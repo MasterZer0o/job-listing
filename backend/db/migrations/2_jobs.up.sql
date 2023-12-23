@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS "jobs" (
   "location" VARCHAR(255),
   "remote_available" BOOLEAN,
   "company_id" INTEGER,
+  "level" VARCHAR(20),
   "title" VARCHAR(255),
   "salary_from" INTEGER,
   "salary_to" INTEGER,

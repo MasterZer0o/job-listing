@@ -4,6 +4,8 @@
 
 <template>
   <nav class="app-nav">
+    <span class=":uno: absolute top-0 left-0 text-xs">last update: {{ useRuntimeConfig().public.lastUpdate }}</span>
+
     <div class=":uno: text-4xl mr-10">
       LOGO
     </div>

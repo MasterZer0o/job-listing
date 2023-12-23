@@ -36,7 +36,7 @@ func main() {
 		slog.Error("ALLOWED_ORIGIN ENV not set")
 		os.Exit(1)
 	}
-
+	slog.Info(allowedOrigin)
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigin,
 		AllowCredentials: true,
@@ -53,6 +53,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print("Server started on port 5000.\n")
+	fmt.Print("Server started on port " + PORT + ".\n")
 	app.Listen(":" + PORT)
 }

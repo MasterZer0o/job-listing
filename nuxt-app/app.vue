@@ -24,7 +24,6 @@ function changeTheme() {
   }, 350)
   theme.value = theme.value === 'dark' ? 'light' : 'dark'
 }
-// TODO: handle errors everywhere
 useHead({
   titleTemplate: title => title ?? 'Home'
 })
@@ -35,7 +34,7 @@ useHead({
   <DevOnly>
     <button
       type="button"
-      style="position: absolute;"
+      style="position: absolute; z-index: 999;"
       @click="changeTheme">
       theme
     </button>
