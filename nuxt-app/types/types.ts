@@ -32,7 +32,10 @@ declare global {
       remote: boolean
       createdAt: string
       skills: string[]
+<<<<<<< HEAD
       isSaved: boolean
+=======
+>>>>>>> 04f36aef4b0e458a5c49573d2629164ff8017be7
     }
   }
 

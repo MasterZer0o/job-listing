@@ -2,8 +2,6 @@
 const jobId = useRoute('job-jobId').params.jobId
 provide('job_details_jobId', jobId)
 
-let num = 10000
-num.toLocaleString('en-US').replaceAll(',', ' ')
 const { data: response } = await useAsyncData(() => fetchApi<JobDetailsResponse>(`/job/${jobId}`, {
   headers: {
     cookie: useRequestHeaders().cookie
