@@ -105,6 +105,14 @@
       li {
         font-size: var(--font-size-3);
         position: relative;
+        white-space: nowrap;
+
+        > div,
+        a {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
 
         $dist: 8px;
         &::after {
@@ -118,10 +126,19 @@
           opacity: 0;
           transition: all 150ms ease-in-out;
         }
+        &:first-child:hover svg {
+          color: var(--brand);
+        }
+
+        &:nth-child(2):hover svg {
+          color: #ebcb8b;
+        }
+
+        &:last-child:hover svg {
+          color: #bf616a;
+        }
 
         &:hover {
-          color: var(--brand);
-
           &::after {
             opacity: 1;
             transform: translateX(calc($dist - 6px));

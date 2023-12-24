@@ -32,6 +32,7 @@ declare global {
       remote: boolean
       createdAt: string
       skills: string[]
+      isSaved: boolean
     }
   }
 

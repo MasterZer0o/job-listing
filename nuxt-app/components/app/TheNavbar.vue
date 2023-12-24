@@ -11,7 +11,7 @@
     </div>
     <ul>
       <li>
-        <NuxtLink to="/jobs">
+        <NuxtLink to="/jobs" :prefetch="false">
           Jobs
         </NuxtLink>
       </li>

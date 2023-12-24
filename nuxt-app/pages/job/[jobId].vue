@@ -1,10 +1,18 @@
 <script setup lang="ts">
 const jobId = useRoute('job-jobId').params.jobId
+provide('job_details_jobId', jobId)
 
 let num = 10000
 num.toLocaleString('en-US').replaceAll(',', ' ')
+const { data: response } = await useAsyncData(() => fetchApi<JobDetailsResponse>(`/job/${jobId}`, {
+  headers: {
+    cookie: useRequestHeaders().cookie
+  }
+}),
+)
 
-const { data: response } = await useFetch<JobDetailsResponse>(`${useRuntimeConfig().public.API_BASE}/job/${jobId}`)
+provide('is_job_saved', response.value?.data.isSaved)
+
 useHead({
   titleTemplate() {
     return response.value?.data.title ?? 'Job offer'
@@ -18,6 +26,7 @@ useHead({
       <JobDetailsHeader
         :company="response.data.company" :title="response.data.title"
         :salary="{ from: response.data.salaryFrom, to: response.data.salaryTo }" />
+      <JobDetailsContent :posted-at="response.data.createdAt" />
     </main>
     <JobDetailsSidePane />
   </div>

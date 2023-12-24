@@ -1,17 +1,43 @@
+$gap: 1.5em;
+
 .job-details-wrapper {
   display: flex;
-  padding: 1em 4em;
-  gap: 2em;
+  padding: 1em clamp(15px, 6vw, 8em);
+  gap: $gap;
 
-  main,
-  .side-pane {
+  .job-title,
+  .side-pane > div:first-child,
+  .details-content,
+  .related-offers {
     border-radius: 5px;
-    padding: 0.3em;
-    outline: 1px solid var(--surface-4);
+    padding: 0.5em;
+    outline: 1px solid var(--surface-3);
   }
 
   main {
     flex: 3;
+    gap: $gap;
+    display: flex;
+    flex-direction: column;
+    .details-content {
+      padding: 1.5em;
+      margin-top: 0.5em;
+      position: relative;
+
+      & > span:first-child {
+        position: absolute;
+        top: 5px;
+        right: 8px;
+        font-style: italic;
+      }
+
+      ul {
+        list-style-position: inside;
+        li {
+          list-style-type: circle;
+        }
+      }
+    }
 
     .job-title {
       display: flex;
@@ -38,10 +64,15 @@
         }
       }
       & > div:last-child {
+        color: #ffffff;
         display: flex;
         align-items: center;
+        flex-shrink: 0;
         gap: 10px;
         margin: auto 1em auto auto;
+        padding: 0.8em;
+        border-radius: 4px;
+        background-color: hsl(207, 86%, 50%);
 
         span {
           font-weight: bold;
@@ -53,18 +84,76 @@
   .side-pane {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    gap: $gap;
+    height: fit-content;
+    position: sticky;
+    top: 8px;
+    flex: 0 1 300px;
 
-    button:first-of-type {
-      background-color: var(--brand-3);
-      border-radius: 15px;
-      font-size: 1.3em;
-      padding: 0.5em 1em;
-      font-weight: bold;
-      color: var(--gray-2);
+    .related-offers {
+      height: 150px;
+      padding: 0.8em;
+      & > p:first-child {
+        font-weight: bold;
+      }
+    }
 
-      &:hover {
-        background-color: var(--brand-2);
+    & div:first-child {
+      padding: 0;
+
+      ul {
+        margin-top: 1.5em;
+        display: flex;
+
+        li {
+          flex: 1;
+          background-color: var(--surface-2);
+          padding: 0.5em 0 0.5em 0;
+          cursor: pointer;
+
+          &:where(:nth-child(1), :nth-child(2)) {
+            position: relative;
+            &::after {
+              content: '';
+              position: absolute;
+              top: 5px;
+              bottom: 5px;
+              right: 0;
+              width: 2px;
+              background-color: var(--surface-3);
+            }
+          }
+
+          &:hover {
+            background-color: var(--surface-3);
+          }
+
+          button {
+            background: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin: auto;
+          }
+        }
+      }
+      > button:first-of-type {
+        background-color: hsl(207, 86%, 50%);
+        border-radius: 15px;
+        font-size: 1.3em;
+        padding: 0.5em 1em;
+        font-weight: bold;
+        margin: 1em auto 0 auto;
+        max-width: 250px;
+        display: block;
+        width: calc(100% - 2em);
+        color: var(--gray-2);
+
+        &:hover {
+          background-color: hsl(207, 86%, 55%);
+        }
       }
     }
   }

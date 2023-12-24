@@ -22,6 +22,10 @@
   caret-color: var(--brand, var(--link));
   color: var(--text-2);
 }
+:where(h2, h3) {
+  font-size: 1.5em;
+  max-inline-size: initial;
+}
 
 body {
   background-color: var(--surface-1);
@@ -32,6 +36,11 @@ body {
       background-color 300ms ease-in-out,
       color 300ms ease-in-out;
   }
+}
+
+:where(img, svg, video) {
+  block-size: initial;
+  max-inline-size: initial;
 }
 
 a {
@@ -66,7 +75,7 @@ li {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsla(var(--scrollthumb-color), .8);
+  background: hsla(var(--scrollthumb-color), 0.8);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {

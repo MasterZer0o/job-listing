@@ -36,7 +36,7 @@ func main() {
 		slog.Error("ALLOWED_ORIGIN ENV not set")
 		os.Exit(1)
 	}
-	slog.Info(allowedOrigin)
+
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigin,
 		AllowCredentials: true,
@@ -46,7 +46,8 @@ func main() {
 		Level: compress.LevelBestSpeed,
 	}))
 
-	Router(app)
+	SetupRoutes(app)
+
 	PORT, ok := os.LookupEnv("PORT")
 	if !ok {
 		slog.Error("PORT ENV not set")
