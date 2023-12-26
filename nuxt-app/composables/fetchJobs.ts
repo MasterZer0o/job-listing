@@ -14,13 +14,12 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
     }
   }
 
-  const API_URL = useRuntimeConfig().public.API_BASE
   const filters = Object.fromEntries(new URLSearchParams(window.location.search).entries())
 
   if (withCount) {
     store.cid = undefined
     store.paginatedResults.clear()
-    $fetch<{ count: number; totalPages: number }>(`${API_URL}/jobs/count`, {
+    fetchApi<{ count: number; totalPages: number }>('/jobs/count', {
       query: {
         p: store.currentPage === 1 ? undefined : store.currentPage,
         cid: store.cid,
@@ -40,7 +39,7 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
 
   store.error.value = false
   try {
-    const response = await $fetch<Response>(`${API_URL}/jobs`, {
+    const response = await fetchApi<Response>('/jobs', {
       query: {
         p: store.currentPage === 1 ? undefined : store.currentPage,
         cid: store.cid,

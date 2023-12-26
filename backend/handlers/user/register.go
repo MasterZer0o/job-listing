@@ -3,7 +3,6 @@ package handlers
 import (
 	"errors"
 	"main/db"
-	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -49,7 +48,6 @@ func Register(ctx *fiber.Ctx) error {
 		})
 	}
 
-	time.Sleep(time.Millisecond * 700)
 	return ctx.SendStatus(202)
 }
 

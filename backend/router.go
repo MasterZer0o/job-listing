@@ -16,7 +16,7 @@ func SetupRoutes(app *fiber.App) {
 	userGroup.Post("/login", user.Login)
 	userGroup.Get("/auth", user.Authenticate)
 	userGroup.Post("/logout", user.Logout)
-	userGroup.Post("/saved-jobs", user.SaveJob)
+	userGroup.Post("/saved-jobs", user.SaveOrRemoveJob)
 
 	app.Get("/jobs", jobs.GetJobs)
 	app.Get("/jobs/count", jobs.GetCount)

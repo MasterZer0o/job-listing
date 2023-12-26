@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	db "main/db"
 	"os"
@@ -53,6 +52,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print("Server started on port " + PORT + ".\n")
+	slog.Info("Server started on port " + PORT)
 	app.Listen(":" + PORT)
 }

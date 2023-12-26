@@ -1,8 +1,7 @@
 <script setup lang="ts">
 if (process.server) {
   try {
-    const response = await $fetch<{ success: boolean }>(`${useRuntimeConfig().public.API_BASE}/user/auth`, {
-      credentials: 'include',
+    const response = await fetchApi<{ success: boolean }>('/user/auth', {
       headers: {
         ...useRequestHeaders()
       }

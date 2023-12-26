@@ -2,8 +2,7 @@
 const user = useUser()
 async function logout() {
   try {
-    await $fetch(`${useRuntimeConfig().public.API_BASE}/user/logout`, {
-      credentials: 'include',
+    await fetchApi('/user/logout', {
       method: 'POST'
     })
   }

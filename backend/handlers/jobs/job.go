@@ -28,18 +28,17 @@ type JobData struct {
 
 func GetJob(ctx *fiber.Ctx) error {
 	jobId := ctx.Params("id")
-	slog.Info(ctx.Cookies("session"))
 
 	t := time.Now()
 	row := db.DB.QueryRow(ctx.Context(), `SELECT title, salary_from, salary_to,level, remote_available, companies.name, companies.image, companies.id, jobs.created_at, array_agg(tech_skills.name), (SELECT EXISTS (SELECT saved_jobs.job_id FROM sessions
 		JOIN users ON users.id = sessions.user_id
 		JOIN saved_jobs ON saved_jobs.user_id = users.id
-		WHERE sessions.id=$1
+		WHERE sessions.id=$1 AND saved_jobs.job_id=$2
 		LIMIT 1)) FROM jobs
 	JOIN companies on jobs.company_id = companies.id
   JOIN job_tech_skills ON job_tech_skills.job_id = jobs.id
   JOIN tech_skills ON tech_skills.id = job_tech_skills.tech_skill_id
-	 WHERE jobs.id = $2
+	WHERE jobs.id = $2
   GROUP BY jobs.title, jobs.salary_from, jobs.salary_to, jobs.level, jobs.remote_available,companies.name,companies.image,companies.id, jobs.created_at`, ctx.Cookies("session"), jobId)
 
 	slog.Info("Time taken to query job", "job id", jobId, "time", time.Since(t))
@@ -51,7 +50,6 @@ func GetJob(ctx *fiber.Ctx) error {
 		slog.Error("Scan Error", "err", err)
 	}
 
-	// time.Sleep(1 * time.Second)
 	return ctx.JSON(map[string]interface{}{
 		"data": data,
 	})

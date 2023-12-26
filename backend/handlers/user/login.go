@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
+	"log/slog"
 	"main/db"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -26,16 +25,10 @@ type foundUser struct {
 
 func Login(ctx *fiber.Ctx) error {
 	loginData := loginBody{}
-	err := ctx.BodyParser(&loginData)
-
-	if err != nil {
-		fmt.Println("Body parse error: ", err)
-	}
-
-	time.Sleep(1 * time.Second)
+	ctx.BodyParser(&loginData)
 
 	user := foundUser{}
-	err = db.DB.QueryRow(ctx.Context(), "SELECT email, password, id FROM users WHERE email = $1",
+	err := db.DB.QueryRow(ctx.Context(), "SELECT email, password, id FROM users WHERE email = $1",
 		loginData.Email).Scan(&user.Email, &user.Password, &user.Id)
 
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -59,8 +52,13 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    sessionId.String(),
 		Secure:   true,
 		SameSite: "none",
+		Domain:   "vercel.app",
 	}
-	// TODO: return sessionId in response instead of cookie
+
+	if err != nil {
+		slog.Error("Failed to create user session in db.", "err", err)
+	}
+
 	if loginData.Remember {
 		cookie.MaxAge = 2590000
 	} else {

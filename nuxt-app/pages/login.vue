@@ -8,7 +8,6 @@ definePageMeta({
   }
 })
 if (process.server) {
-  console.log(useUser().loggedIn)
   if (useUser().loggedIn) {
     // sendRedirect(useRequestEvent(), '/')
     await navigateTo('/')
@@ -83,15 +82,13 @@ async function login() {
   rememberedValues.email = emailValue
   rememberedValues.password = passwordValue
 
-  const apiUrl = useRuntimeConfig().public.API_BASE
-  const response = await $fetch<{ error?: string }>(`${apiUrl}/user/login`, {
+  const response = await fetchApi<{ error?: string }>('/user/login', {
     method: 'POST',
     body: {
       email: emailValue,
       password: passwordValue,
       remember: rememberValue
-    },
-    credentials: 'include'
+    }
   })
 
   if (!response.error) {
@@ -134,7 +131,7 @@ async function login() {
                 <input ref="rememberCheckbox" type="checkbox" />
                 <span>
                   <svg
-                    fill="none" width="12px" height="11px" viewBox="0 0 12 11" stroke-linecap="rounded" stroke-linejoin="rounded" stroke-width="2" stroke-dasharray="17"
+                    fill="none" width="12px" height="11px" viewBox="0 0 12 11" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke-dasharray="17"
                     stroke-dashoffset="17" stroke="#fff">
                     <polyline points="1 6.29411765 4.5 10 11 1"></polyline>
                   </svg>

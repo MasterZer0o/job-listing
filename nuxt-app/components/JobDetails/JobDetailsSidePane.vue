@@ -1,13 +1,33 @@
 <script setup lang="ts">
 const jobId = inject<string>('job_details_jobId', '')
 const isSaved = ref(inject('is_job_saved', false))
-
+const shouldShowLoginModal = ref(false)
+const shouldImportLoginModal = ref(false)
+const copyButtonText = ref('Copy')
+function copyJobLink() {
+  window.navigator.clipboard.writeText(window.location.href)
+  copyButtonText.value = 'Copied!'
+  setTimeout(() => {
+    copyButtonText.value = 'Copy'
+  }, 10000)
+}
+function onLoginSuccess() {
+  shouldShowLoginModal.value = false
+  _saveJob()
+}
 async function _saveJob() {
+  if (!useUser().loggedIn) {
+    shouldShowLoginModal.value = true
+    if (!shouldShowLoginModal.value)
+      shouldImportLoginModal.value = true
+
+    return
+  }
   try {
-    const response = await saveJob(jobId)
+    const response = await saveJob(jobId, isSaved.value)
 
     if (response.success) {
-      isSaved.value = true
+      isSaved.value = isSaved.value = !isSaved.value
     }
   }
   catch (error) {
@@ -23,8 +43,8 @@ async function _saveJob() {
         Apply
       </button>
       <ul>
-        <li>
-          <button type="button" @click="_saveJob">
+        <li @click="_saveJob">
+          <button type="button">
             <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" :fill="isSaved ? '#ebcb8b' : 'none'" viewBox="0 0 21 20">
               <path :stroke="isSaved ? '#ebcb8b' : 'currentColor'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
             </svg>
@@ -40,16 +60,24 @@ async function _saveJob() {
             Share
           </button>
         </li>
-        <li>
+        <li @click="copyJobLink">
           <button type="button">
             <svg width="18" height="18" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91zm0 341V133H128v299z" />
             </svg>
-            Copy
+            {{ copyButtonText }}
           </button>
         </li>
       </ul>
     </div>
     <JobDetailsRelated />
   </section>
+
+  <Teleport to="body">
+    <ClientOnly>
+      <Transition v-show="shouldShowLoginModal" name="logreg" mode="out-in">
+        <LazyAppLoginModal v-if="shouldShowLoginModal" :callback="onLoginSuccess" @close="shouldShowLoginModal = false" />
+      </Transition>
+    </ClientOnly>
+  </Teleport>
 </template>

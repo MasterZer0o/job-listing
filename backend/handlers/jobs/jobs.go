@@ -224,7 +224,3 @@ type Response struct {
 	Cid     string       `json:"cid,omitempty"`
 	Error   string       `json:"error,omitempty"`
 }
-
-// func GetJob(ctx *fiber.Ctx) error {
-// 	return nil
-// }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log/slog"
 	"main/db"
 
@@ -8,19 +9,38 @@ import (
 )
 
 type body struct {
-	JobId string `json:"jobId"`
+	JobId   string `json:"jobId"`
+	IsSaved bool   `json:"isSaved"`
 }
 
-func SaveJob(ctx *fiber.Ctx) error {
+func SaveOrRemoveJob(ctx *fiber.Ctx) error {
 	var data body
 	ctx.BodyParser(&data)
 
-	slog.Info(ctx.Cookies("session"))
 	userId := getUserId(ctx, ctx.Cookies("session"))
+	var err error
 
-	db.DB.Exec(ctx.Context(), "INSERT INTO saved_jobs (user_id, job_id) VALUES ($1,$2)", userId, data.JobId)
+	if data.IsSaved {
+		err = removeSavedJob(userId, data.JobId)
+	} else {
+		err = saveJob(userId, data.JobId)
+	}
+
+	if err != nil {
+		return ctx.SendStatus(500)
+	}
 
 	return ctx.SendStatus(200)
+}
+
+func saveJob(userId string, jobId string) error {
+	_, err := db.DB.Exec(context.Background(), "INSERT INTO saved_jobs (user_id, job_id) VALUES ($1,$2)", userId, jobId)
+	return err
+}
+
+func removeSavedJob(userId string, jobId string) error {
+	_, err := db.DB.Exec(context.Background(), "DELETE FROM saved_jobs WHERE user_id=$1 AND job_id=$2", userId, jobId)
+	return err
 }
 
 func getUserId(ctx *fiber.Ctx, sessionId string) string {
