@@ -52,7 +52,6 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    sessionId.String(),
 		Secure:   true,
 		SameSite: "none",
-		Domain:   "jl-tldr.vercel.app",
 	}
 
 	if err != nil {
