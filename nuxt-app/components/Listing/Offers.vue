@@ -18,7 +18,7 @@ const store = useJobs()
         </transition>
         <ListingOffer v-for="offer in offers" :key="offer.id" :offer="offer" />
         <p v-if="offers.length === 0 && !store.isLoading" class=":uno: text-center text-3xl mt-10">
-          Sorry, no results
+          Sorry, no results.
         </p>
       </template>
       <template v-else>

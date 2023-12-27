@@ -5,6 +5,7 @@ export const useListingFilters = defineStore('listingFilters', () => {
   const typesOfWork = ref<DefaultFilterField[]>([])
   const workModes = ref<DefaultFilterField[]>([])
   const minSalary = ref<number>(0)
+  const filtersApplied = ref(true)
 
   const shouldShowApplied = computed(() => {
     return techSkills.value.size !== 0
@@ -21,7 +22,17 @@ export const useListingFilters = defineStore('listingFilters', () => {
     typesOfWork.value = []
   }
 
-  return { techSkills, employmentTypes, experienceLevels, typesOfWork, workModes, minSalary, shouldShowApplied, clearAll }
+  return {
+    techSkills,
+    employmentTypes,
+    experienceLevels,
+    typesOfWork,
+    workModes,
+    minSalary,
+    shouldShowApplied,
+    clearAll,
+    filtersApplied
+  }
 })
 
 function filtersAreNotEmpty(...arr: Ref<any[]>[]) {

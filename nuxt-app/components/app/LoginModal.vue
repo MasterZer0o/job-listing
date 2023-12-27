@@ -4,7 +4,6 @@ import { email, minLength, object, safeParse, string } from 'valibot'
 const props = defineProps<{
   callback?: () => void
 }>()
-
 const emit = defineEmits(['close'])
 const emailInput = ref() as Ref<HTMLInputElement>
 const passwordInput = ref() as Ref<HTMLInputElement>

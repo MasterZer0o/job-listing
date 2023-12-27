@@ -7,8 +7,8 @@ const props = defineProps<{
     options: DefaultFilterField[]
   }
 }>()
-
-const selectedFields = storeToRefs(useListingFilters())[props.config.store]
+const store = useListingFilters()
+const selectedFields = storeToRefs(store)[props.config.store]
 const jobsStore = useJobs()
 let toggledAll = false
 function clearAll() {
@@ -36,15 +36,18 @@ function selectField(field: DefaultFilterField | DefaultFilterField[]) {
   }
   else
     selectedFields.value.push(field)
+
+  store.filtersApplied = false
 }
-watch(selectedFields, () => {
+watch(selectedFields, async () => {
   jobsStore.currentPage = 1
-  router.push({
+  await router.push({
     query: {
       ...route.query,
       [props.config.queryParamName]: selectedFieldsIds.value.length !== 0 ? selectedFieldsIds.value : undefined
     }
   })
+  useLoadingIndicator().finish()
 }, { deep: true })
 </script>
 

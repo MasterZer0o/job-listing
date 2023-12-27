@@ -47,6 +47,8 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
       }
     })
     clearTimeout(timeout)
+    useListingFilters().filtersApplied = true
+
     if ('error' in response) {
       store.error.value = true
       store.isLoading = false

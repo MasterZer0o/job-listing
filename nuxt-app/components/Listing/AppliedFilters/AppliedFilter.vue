@@ -21,7 +21,8 @@ function removeFilter(id: number) {
 }
 
 const refetch = debounce(async () => {
-  await fetchJobs({ withCount: true })
+  if (useListingFilters().filtersApplied)
+    await fetchJobs({ withCount: true })
 }, 1000)
 </script>
 

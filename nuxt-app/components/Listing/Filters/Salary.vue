@@ -4,14 +4,17 @@ const jobsStore = useJobs()
 const input = ref() as Ref<HTMLInputElement>
 const route = useRoute()
 const router = useRouter()
-watch(minSalary, () => {
+watch(minSalary, async () => {
   jobsStore.currentPage = 1
-  router.push({
+  await router.push({
     query: {
       ...route.query,
       ms: minSalary.value !== 0 ? minSalary.value : undefined
     }
   })
+  useListingFilters().filtersApplied = false
+
+  useLoadingIndicator().finish()
   if (minSalary.value === 0)
     input.value.value = ''
 })

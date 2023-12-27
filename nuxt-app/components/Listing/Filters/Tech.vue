@@ -14,7 +14,8 @@ interface Skill {
 const router = useRouter()
 const route = useRoute('jobs')
 
-const { techSkills } = storeToRefs(useListingFilters())
+const store = useListingFilters()
+const { techSkills } = storeToRefs(store)
 
 const allSelectedToggle: Record<TechCategory, boolean> = {
   frontend: false,
@@ -164,17 +165,20 @@ function addSkillFilter(skill: Skill | Skill[], category?: TechCategory) {
     techSkills.value.set(skill.id, { name: skill.name })
     selectedSkillsIds.value.add(skill.id)
   }
+
+  store.filtersApplied = false
 }
-watch(techSkills.value, () => {
+watch(techSkills.value, async () => {
   jobsStore.currentPage = 1
   const ids: number[] = []
   techSkills.value.forEach((_, k) => ids.push(k))
-  router.push({
+  await router.push({
     query: {
       ...route.query,
       tech: ids.length !== 0 ? ids.join(',') : undefined
     }
   })
+  useLoadingIndicator().finish()
 })
 </script>
 

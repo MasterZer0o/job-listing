@@ -220,7 +220,7 @@ LIMIT 20`, joins, filtersStr, having)
 }
 
 type Response struct {
-	Results []JobsResult `json:"data,omitempty"`
+	Results []JobsResult `json:"data"`
 	Cid     string       `json:"cid,omitempty"`
 	Error   string       `json:"error,omitempty"`
 }
