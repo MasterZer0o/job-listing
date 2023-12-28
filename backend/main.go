@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
+
 	"github.com/joho/godotenv"
 	"gitlab.com/greyxor/slogor"
 )
@@ -20,7 +21,7 @@ func main() {
 		Network:               "tcp",
 	})
 
-	// app.Use(helmet.New())
+	app.Use(helmet.New())
 
 	slog.SetDefault(slog.New(slogor.NewHandler(os.Stdout, &slogor.Options{
 		TimeFormat: time.TimeOnly,

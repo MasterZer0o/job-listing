@@ -4,10 +4,11 @@ provide('job_details_jobId', jobId)
 
 const { data: response } = await useAsyncData(() => fetchApi<JobDetailsResponse>(`/job/${jobId}`, {
   headers: {
-    cookie: useRequestHeaders().cookie
+    cookie: useCookie('session').value ? `session=${useCookie('session').value}` : undefined!
   }
 }),
 )
+
 provide('is_job_saved', response.value?.data.isSaved)
 
 useHead({
