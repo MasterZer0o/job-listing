@@ -7,13 +7,13 @@ const copyButtonText = ref('Copy')
 function copyJobLink() {
   window.navigator.clipboard.writeText(window.location.href)
   copyButtonText.value = 'Copied!'
-  setTimeout(() => {
-    copyButtonText.value = 'Copy'
-  }, 10000)
+  setTimeout(() => copyButtonText.value = 'Copy', 10000)
 }
-function onLoginSuccess() {
+function onLoginSuccess(_isSaved?: boolean) {
   shouldShowLoginModal.value = false
-  _saveJob()
+  if (_isSaved)
+    isSaved.value = true
+  else _saveJob()
 }
 async function _saveJob() {
   if (!useUser().loggedIn) {
@@ -27,7 +27,7 @@ async function _saveJob() {
     const response = await saveJob(jobId, isSaved.value)
 
     if (response.success) {
-      isSaved.value = isSaved.value = !isSaved.value
+      isSaved.value = !isSaved.value
     }
   }
   catch (error) {

@@ -8,7 +8,6 @@ const { data: response } = await useAsyncData(() => fetchApi<JobDetailsResponse>
   }
 }),
 )
-
 provide('is_job_saved', response.value?.data.isSaved)
 
 useHead({

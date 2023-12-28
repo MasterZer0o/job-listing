@@ -27,6 +27,7 @@ func SaveOrRemoveJob(ctx *fiber.Ctx) error {
 	}
 
 	if err != nil {
+		slog.Error("Save or remove saved job error", "err", err)
 		return ctx.SendStatus(500)
 	}
 

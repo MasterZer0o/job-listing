@@ -82,7 +82,7 @@ async function login() {
   rememberedValues.email = emailValue
   rememberedValues.password = passwordValue
 
-  const response = await fetchApi<{ error?: string }>('/user/login', {
+  const response = await fetchApi<{ error?: string;sid: string }>('/user/login', {
     method: 'POST',
     body: {
       email: emailValue,
@@ -93,6 +93,11 @@ async function login() {
 
   if (!response.error) {
     useUser().loggedIn = true
+    useCookie('session', {
+      secure: true,
+      maxAge: rememberValue ? 2590000 : undefined
+    }).value = response.sid
+
     return navigateTo('/')
   }
 

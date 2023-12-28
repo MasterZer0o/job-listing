@@ -2,7 +2,7 @@
 import { email, minLength, object, safeParse, string } from 'valibot'
 
 const props = defineProps<{
-  callback?: () => void
+  callback?: (...args: any[]) => any
 }>()
 const emit = defineEmits(['close'])
 const emailInput = ref() as Ref<HTMLInputElement>
@@ -69,19 +69,25 @@ async function login() {
   rememberedValues.email = emailValue
   rememberedValues.password = passwordValue
 
-  const response = await fetchApi<{ error?: string }>('/user/login', {
+  const response = await fetchApi<{ error?: string; sid: string;saved?: boolean }>('/user/login', {
     method: 'POST',
     body: {
       email: emailValue,
       password: passwordValue,
-      remember: rememberValue
+      remember: rememberValue,
+      checkSaved: true
     }
   })
 
   if (!response.error) {
     useUser().loggedIn = true
+    useCookie('session', {
+      secure: true,
+      maxAge: rememberValue ? 2590000 : undefined
+    }).value = response.sid
+
     if (props.callback)
-      props.callback()
+      setTimeout(() => props.callback!(response.saved), 0)
   }
 
   isLoading.value = false
