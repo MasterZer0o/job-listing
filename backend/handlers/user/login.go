@@ -58,26 +58,11 @@ func Login(ctx *fiber.Ctx) error {
 
 	sessionId := uuid.New()
 	_, err = db.DB.Exec(ctx.Context(), "INSERT into sessions (id, user_id) VALUES ($1, $2)", sessionId, user.Id)
-	// cookie := &fiber.Cookie{
-	// 	Name:     "session",
-	// 	HTTPOnly: true,
-	// 	Value:    sessionId.String(),
-	// 	Secure:   true,
-	// 	SameSite: "none",
-	// 	// Domain:   "vercel.app",
-	// }
 
 	if err != nil {
 		slog.Error("Failed to create user session in db.", "err", err)
 	}
 
-	// if loginData.Remember {
-	// 	cookie.MaxAge = 2590000
-	// } else {
-	// 	cookie.SessionOnly = true
-	// }
-
-	// ctx.Cookie(cookie)
 	if !loginData.CheckSaved {
 		return ctx.JSON(map[string]interface{}{
 			"sid": sessionId.String(),

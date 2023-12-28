@@ -20,7 +20,7 @@ func main() {
 		Network:               "tcp",
 	})
 
-	app.Use(helmet.New())
+	// app.Use(helmet.New())
 
 	slog.SetDefault(slog.New(slogor.NewHandler(os.Stdout, &slogor.Options{
 		TimeFormat: time.TimeOnly,

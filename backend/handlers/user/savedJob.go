@@ -8,8 +8,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type userId = string
+type jobId = string
+
 type body struct {
-	JobId   string `json:"jobId"`
+	JobId   jobId `json:"jobId"`
 	IsSaved bool   `json:"isSaved"`
 }
 
@@ -34,19 +37,19 @@ func SaveOrRemoveJob(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(200)
 }
 
-func saveJob(userId string, jobId string) error {
-	_, err := db.DB.Exec(context.Background(), "INSERT INTO saved_jobs (user_id, job_id) VALUES ($1,$2)", userId, jobId)
+func saveJob(userId userId, jobId jobId) error {
+	_, err := db.DB.Exec(context.Background(), "INSERT INTO saved_jobs (user_id, job_id) VALUES ($1, $2)", userId, jobId)
 	return err
 }
 
-func removeSavedJob(userId string, jobId string) error {
+func removeSavedJob(userId userId, jobId jobId) error {
 	_, err := db.DB.Exec(context.Background(), "DELETE FROM saved_jobs WHERE user_id=$1 AND job_id=$2", userId, jobId)
 	return err
 }
 
-func getUserId(ctx *fiber.Ctx, sessionId string) string {
+func getUserId(ctx *fiber.Ctx, sessionId string) userId {
 	row := db.DB.QueryRow(ctx.Context(), "SELECT user_id from sessions WHERE id = $1", sessionId)
-	var userId string
+	var userId userId
 	err := row.Scan(&userId)
 
 	if err != nil {
