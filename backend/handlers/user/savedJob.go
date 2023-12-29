@@ -13,7 +13,7 @@ type jobId = string
 
 type body struct {
 	JobId   jobId `json:"jobId"`
-	IsSaved bool   `json:"isSaved"`
+	IsSaved bool  `json:"isSaved"`
 }
 
 func SaveOrRemoveJob(ctx *fiber.Ctx) error {
