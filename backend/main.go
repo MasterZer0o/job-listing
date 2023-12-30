@@ -48,11 +48,6 @@ func main() {
 		Level: compress.LevelBestSpeed,
 	}))
 
-	app.Use(func(ctx *fiber.Ctx) error {
-		ctx.Set("Access-Control-Allow-Headers", "Content-Type, *")
-		return ctx.Next()
-	})
-
 	SetupRoutes(app)
 
 	PORT, ok := os.LookupEnv("PORT")
