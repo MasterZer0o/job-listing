@@ -81,11 +81,6 @@ async function login() {
 
   if (!response.error) {
     useUser().loggedIn = true
-    // useCookie('session', {
-    //   secure: true,
-    //   httpOnly: true,
-    //   maxAge: rememberValue ? 2590000 : undefined
-    // }).value = response.sid
 
     if (props.callback)
       setTimeout(() => props.callback!(response.saved), 0)

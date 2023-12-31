@@ -65,7 +65,7 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    sessionId.String(),
 		Secure:   true,
 		SameSite: "none",
-		// Domain:   "vercel.app",
+		Domain:   ".jl-tldr.fun",
 	}
 
 	if err != nil {
@@ -80,18 +80,6 @@ func Login(ctx *fiber.Ctx) error {
 
 	ctx.Cookie(cookie)
 
-	// if !loginData.CheckSaved {
-	// 	return ctx.JSON(map[string]interface{}{
-	// 		"sid": sessionId.String(),
-	// 	})
-	// }
-	// return ctx.JSON(map[string]interface{}{
-	// 	"sid":   sessionId.String(),
-	// 	"saved": user.IsSaved,
-	// })
-	if !loginData.CheckSaved {
-		ctx.SendStatus(200)
-	}
 	return ctx.JSON(map[string]interface{}{
 		"saved": user.IsSaved,
 	})

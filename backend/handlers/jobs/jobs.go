@@ -213,13 +213,13 @@ LIMIT 20`, joins, filtersStr, having)
 		newCid = results[len(results)-1].Id
 	}
 
-	return ctx.JSON(Response{
+	return ctx.JSON(response{
 		Results: results,
 		Cid:     newCid,
 	})
 }
 
-type Response struct {
+type response struct {
 	Results []JobsResult `json:"data"`
 	Cid     string       `json:"cid,omitempty"`
 	Error   string       `json:"error,omitempty"`

@@ -18,8 +18,6 @@ useHead({
   title: 'Login'
 })
 
-// FIXME: error while coming from jobs page
-
 const emailInput = ref() as Ref<HTMLInputElement>
 const passwordInput = ref() as Ref<HTMLInputElement>
 const rememberCheckbox = ref() as Ref<HTMLInputElement>
@@ -93,10 +91,6 @@ async function login() {
 
   if (!response.error) {
     useUser().loggedIn = true
-    // useCookie('session', {
-    //   secure: true,
-    //   maxAge: rememberValue ? 2590000 : undefined
-    // }).value = response.sid
 
     return navigateTo('/')
   }
