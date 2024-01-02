@@ -1,5 +1,8 @@
 <script setup lang="ts">
-defineProps<{ pageFromQuery: number }>()
+const props = defineProps<{
+  pageFromQuery: number
+  scrollToElement: HTMLElement
+}>()
 const store = useJobs()
 
 const route = useRoute()
@@ -35,6 +38,14 @@ const visiblePages = computed(() => {
   if (totalPages === 1)
     return [1]
 
+  if (totalPages && totalPages <= TOTAL_VISIBLE_PAGES) {
+    const arr = []
+    for (let i = 0; i < totalPages; i++)
+      arr.push(i + 1)
+
+    return arr
+  }
+
   if (totalPages && totalPages - currPage < TOTAL_VISIBLE_PAGES) {
     return [totalPages - 5, totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1]
   }
@@ -46,6 +57,8 @@ const visiblePages = computed(() => {
 })
 
 async function changePage(page: number) {
+  useLoadingIndicator().finish()
+
   if (page === store.currentPage)
     return
 
@@ -54,7 +67,7 @@ async function changePage(page: number) {
   if (cachedPage) {
     store.displayedJobs = cachedPage
     store.currentPage = page
-    document.querySelector('.listing-container')?.scrollIntoView({ behavior: 'smooth' })
+    scrollToTop()
     return
   }
   // go back to uncached page OR jump pages
@@ -66,11 +79,15 @@ async function changePage(page: number) {
 
   await fetchJobs()
 
-  document.querySelector('.main-wrapper > div header')?.scrollIntoView({ behavior: 'smooth' })
+  scrollToTop()
+}
+function scrollToTop() {
+  props.scrollToElement.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 
 <template>
+  {{ visiblePages }}
   <section class="pagination">
     <div>
       <NuxtLink
