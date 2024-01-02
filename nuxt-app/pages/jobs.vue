@@ -19,6 +19,7 @@ onBeforeMount(async () => {
     isFetching.value = false
   }
 })
+const scrollToElement = ref() as Ref<HTMLElement>
 
 onUnmounted(() => { jobsStore.clear(); useListingFilters().clearAll() })
 </script>
@@ -28,12 +29,12 @@ onUnmounted(() => { jobsStore.clear(); useListingFilters().clearAll() })
     <ListingFilters />
     <div>
       <ListingAppliedFilters />
-      <header>
+      <header ref="scrollToElement">
         <span>Results {{ jobsStore.totalCount !== undefined ? `(${jobsStore.totalCount})` : '' }}</span>
       </header>
       <main class="listing-container">
         <ListingOffers :offers="jobsStore.displayedJobs" :is-fetching="isFetching" />
-        <ListingPagination v-if="!jobsStore.error.value && jobsStore.displayedJobs.length > 0 && (jobsStore.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" />
+        <ListingPagination v-if="!jobsStore.error.value && jobsStore.displayedJobs.length > 0 && (jobsStore.totalPages ?? 0) > 0" :page-from-query="pageFromQuery" :scroll-to-element="scrollToElement" />
       </main>
     </div>
   </div>
