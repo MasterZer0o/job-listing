@@ -87,7 +87,6 @@ function scrollToTop() {
 </script>
 
 <template>
-  {{ visiblePages }}
   <section class="pagination">
     <div>
       <NuxtLink
