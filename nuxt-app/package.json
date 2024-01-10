@@ -18,10 +18,10 @@
     "@unocss/nuxt": "^0.58.3",
     "@unocss/transformer-compile-class": "^0.58.3",
     "consola": "^3.2.3",
-    "nuxt": "^3.9.0",
-    "open-props": "^1.6.16",
+    "nuxt": "^3.9.1",
+    "open-props": "^1.6.17",
     "postcss-jit-props": "^1.0.13",
-    "sass": "^1.69.6",
+    "sass": "^1.69.7",
     "typescript": "^5.3.3"
   },
   "dependencies": {

@@ -18,6 +18,7 @@
       a {
         text-decoration: none;
         transition: color $time ease-in-out;
+        display: block;
 
         &::after {
           content: '';

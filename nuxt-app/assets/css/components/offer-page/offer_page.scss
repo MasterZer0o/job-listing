@@ -1,3 +1,4 @@
+@use './related_offers.scss';
 $gap: 1.5em;
 
 .job-details-wrapper {
@@ -90,15 +91,7 @@ $gap: 1.5em;
     top: 8px;
     flex: 0 1 300px;
 
-    .related-offers {
-      height: 150px;
-      padding: 0.8em;
-      & > p:first-child {
-        font-weight: bold;
-      }
-    }
-
-    & div:first-child {
+    & > div:first-child {
       padding: 0;
 
       ul {

@@ -1,4 +1,18 @@
 .form {
+  &[data-login-modal] {
+    button.close-modal {
+      right: 0.25rem;
+      top: 0.25rem;
+      position: absolute;
+      padding: 0;
+      background-color: transparent;
+
+      &:hover {
+        background-color: var(--surface-2);
+      }
+    }
+  }
+
   .wrapper {
     width: fit-content;
     margin: var(--size-10) auto 0 auto;
