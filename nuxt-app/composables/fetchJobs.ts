@@ -22,7 +22,7 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
       query: {
         cid: store.cid,
         ...filters,
-        p: store.currentPage === 1 ? undefined : store.currentPage,
+        p: store.currentPage === 1 ? undefined : store.currentPage
       }
     }).then(({ count, totalPages }) => {
       store.totalCount = count
@@ -42,7 +42,7 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
       query: {
         cid: store.cid,
         ...filters,
-        p: store.currentPage === 1 ? undefined : store.currentPage,
+        p: store.currentPage === 1 ? undefined : store.currentPage
       }
     })
     clearTimeout(timeout)
