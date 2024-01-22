@@ -70,7 +70,7 @@ async function _saveJob() {
         </li>
       </ul>
     </div>
-    <JobDetailsRelated />
+    <JobDetailsRelated @save-job="_saveJob" />
   </section>
 
   <Teleport to="body">

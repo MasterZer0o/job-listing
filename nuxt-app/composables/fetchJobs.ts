@@ -15,15 +15,14 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
   }
 
   const filters = Object.fromEntries(new URLSearchParams(window.location.search).entries())
-
   if (withCount) {
     store.cid = undefined
     store.paginatedResults.clear()
     fetchApi<{ count: number; totalPages: number }>('/jobs/count', {
       query: {
-        p: store.currentPage === 1 ? undefined : store.currentPage,
         cid: store.cid,
-        ...filters
+        ...filters,
+        p: store.currentPage === 1 ? undefined : store.currentPage,
       }
     }).then(({ count, totalPages }) => {
       store.totalCount = count
@@ -41,9 +40,9 @@ export async function fetchJobs({ withCount } = { withCount: false }) {
   try {
     const response = await fetchApi<Response>('/jobs', {
       query: {
-        p: store.currentPage === 1 ? undefined : store.currentPage,
         cid: store.cid,
-        ...filters
+        ...filters,
+        p: store.currentPage === 1 ? undefined : store.currentPage,
       }
     })
     clearTimeout(timeout)

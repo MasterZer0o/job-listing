@@ -1,3 +1,3 @@
 Job listing project
 
-https://jl-tldr.vercel.app/jobs
+https://jl-tldr.fun

@@ -6,6 +6,7 @@
       position: absolute;
       padding: 0;
       background-color: transparent;
+      z-index: 999;
 
       &:hover {
         background-color: var(--surface-2);
@@ -254,4 +255,24 @@
 .logreg-enter-from,
 .logreg-leave-to {
   opacity: 0;
+}
+
+.line-anim {
+  &::after {
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: -2px;
+    left: 1rem;
+    right: 1rem;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: line-under 500ms forwards ease-in-out;
+  }
+}
+@keyframes line-under {
+  to {
+    transform: scaleX(1);
+  }
 }
