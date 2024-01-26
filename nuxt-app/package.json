@@ -15,8 +15,8 @@
     "@antfu/eslint-config": "0.42.0",
     "@nuxt/devtools": "^1.0.4",
     "@nuxtjs/html-validator": "^1.6.0",
-    "@unocss/nuxt": "^0.58.3",
-    "@unocss/transformer-compile-class": "^0.58.3",
+    "@unocss/nuxt": "^0.58.4",
+    "@unocss/transformer-compile-class": "^0.58.4",
     "consola": "^3.2.3",
     "nuxt": "^3.9.3",
     "open-props": "^1.6.17",
@@ -27,6 +27,6 @@
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
     "perfect-debounce": "^1.0.0",
-    "valibot": "^0.26.0"
+    "valibot": "^0.27.0"
   }
 }
