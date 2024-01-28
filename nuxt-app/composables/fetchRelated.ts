@@ -2,6 +2,8 @@ export interface RelatedOffer {
   id: string
   title: string
   remoteAvailable: boolean
+  companyName: string
+  isSaved: boolean
   salary: {
     from: string
     to: string

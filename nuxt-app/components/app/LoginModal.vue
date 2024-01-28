@@ -95,7 +95,7 @@ async function login() {
 </script>
 
 <template>
-  <div class=":uno: absolute inset-0 z-50 bg-[var(--overlay-modal)] form flex" data-login-modal @click.self="closeModal">
+  <div class=":uno: fixed inset-0 z-50 bg-[var(--overlay-modal)] form flex" data-login-modal @click.self="closeModal">
     <div class=":uno: w-fit m-auto bg-[var(--surface-1)] shadow-[var(--shadow-2)] rounded-[5px] relative">
       <button type="button" class="close-modal" @click="closeModal">
         <svg width="25" height="25" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">

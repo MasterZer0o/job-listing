@@ -25,4 +25,5 @@ func Connect() {
 	}
 
 	DB = pool
+	DB.Exec(context.Background(), "CREATE extension fuzzystrmatch")
 }

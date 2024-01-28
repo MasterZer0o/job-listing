@@ -87,12 +87,15 @@ $gap: 1.5em;
     flex-direction: column;
     gap: $gap;
     height: fit-content;
-    position: sticky;
-    top: 8px;
     flex: 0 1 330px;
 
     & > div:first-child {
       padding: 0;
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-2);
 
       ul {
         margin-top: 1.5em;

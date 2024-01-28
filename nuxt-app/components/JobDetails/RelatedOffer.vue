@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const props = defineProps<{
-  isSaved: boolean
   data: RelatedOffer
 }>()
 const emit = defineEmits(['saveJob'])
@@ -16,7 +15,7 @@ const salaryTo = props.data.salary.to[0]
           {{ data.title }}
         </p>
         <div>
-          <span class="comp-name" title="Comp nameasdasdsdsd">Comp nameasdasdsdsd</span>
+          <span class="comp-name" :title="data.companyName">{{ data.companyName }}</span>
           <span v-if="data.remoteAvailable">
             Remote
 
@@ -43,11 +42,11 @@ const salaryTo = props.data.salary.to[0]
       <ul>
         <li @click="emit('saveJob')">
           <button type="button">
-            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" :fill="isSaved ? '#ebcb8b' : 'none'" viewBox="0 0 21 20">
-              <path :stroke="isSaved ? '#ebcb8b' : 'currentColor'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
+            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" :fill="data.isSaved ? '#ebcb8b' : 'none'" viewBox="0 0 21 20">
+              <path :stroke="data.isSaved ? '#ebcb8b' : 'currentColor'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
             </svg>
 
-            {{ isSaved ? "Saved" : "Save" }}
+            {{ data.isSaved ? "Saved" : "Save" }}
           </button>
         </li>
         <li>

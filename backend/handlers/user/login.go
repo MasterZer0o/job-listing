@@ -65,7 +65,7 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    sessionId.String(),
 		Secure:   true,
 		SameSite: "none",
-		Domain:   ".jl-tldr.fun",
+		// Domain:   ".jl-tldr.fun",
 	}
 
 	if err != nil {

@@ -21,6 +21,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/jobs", jobs.GetJobs)
 	app.Get("/jobs/count", jobs.GetCount)
 	app.Get("/job/:id", jobs.GetJob)
+	app.Get("/job/:id/related", jobs.GetRelated)
 
 	isDev, _ := os.LookupEnv("DEVELOPMENT")
 
