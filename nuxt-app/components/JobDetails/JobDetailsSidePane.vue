@@ -4,6 +4,7 @@ const isSaved = ref(inject('is_job_saved', false))
 const shouldShowLoginModal = ref(false)
 const shouldImportLoginModal = ref(false)
 const copyButtonText = ref('Copy')
+// TODO: if not logged in, and clicked on "Save" button, check somehow if target related job isnt already saved
 function copyJobLink() {
   window.navigator.clipboard.writeText(window.location.href)
   copyButtonText.value = 'Copied!'
@@ -61,7 +62,7 @@ async function _saveJob() {
           </button>
         </li>
         <li @click="copyJobLink">
-          <button type="button">
+          <button type="button" class="sp-copy">
             <svg width="18" height="18" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91zm0 341V133H128v299z" />
             </svg>

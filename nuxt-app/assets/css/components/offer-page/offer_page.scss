@@ -93,7 +93,7 @@ $gap: 1.5em;
       padding: 0;
       position: sticky;
       top: 8px;
-      z-index: 10;
+      z-index: 11;
       background-color: var(--surface-1);
       box-shadow: var(--shadow-2);
 
@@ -132,6 +132,13 @@ $gap: 1.5em;
             font-weight: bold;
             font-size: 0.9em;
             margin: auto;
+
+            &.sp-copy {
+              transition: transform 100ms ease-in-out;
+              &:active {
+                transform: scale(0.95);
+              }
+            }
           }
         }
       }

@@ -33,7 +33,7 @@ useHead({
   <DevOnly>
     <button
       type="button"
-      style="position: absolute; z-index: 999;"
+      style="position: absolute; z-index: 9999;"
       @click="changeTheme">
       theme
     </button>
