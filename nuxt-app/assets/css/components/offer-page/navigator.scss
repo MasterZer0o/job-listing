@@ -1,0 +1,50 @@
+.section-navigator {
+  ul {
+    display: flex;
+    gap: 1em;
+
+    &,
+    li {
+      position: relative;
+
+      &::before {
+        content: '';
+        height: 2px;
+        position: absolute;
+        bottom: 0;
+        border-radius: 15px;
+        z-index: 1;
+        transition:
+          transform 200ms ease-in-out,
+          width 200ms ease-in-out;
+      }
+    }
+    &::before {
+      background-color: var(--brand);
+      width: var(--indicator-width);
+      transform: translateX(var(--indicator-distance));
+      z-index: 1;
+      transition:
+        transform 250ms ease-in-out,
+        width 250ms ease-in-out;
+    }
+
+    li {
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        opacity: 0.95;
+        &::before {
+          background-color: var(--surface-4);
+        }
+      }
+      &::before {
+        z-index: 0;
+        left: 5%;
+        right: 5%;
+        transition: background-color 100ms ease-in-out;
+      }
+    }
+  }
+}

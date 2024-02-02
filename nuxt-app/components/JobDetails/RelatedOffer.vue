@@ -3,8 +3,8 @@ const props = defineProps<{
   data: RelatedOffer
 }>()
 const emit = defineEmits(['saveJob'])
-const salaryFrom = props.data.salary.from[0]
-const salaryTo = props.data.salary.to[0]
+const salaryFrom = props.data?.salary?.from[0]
+const salaryTo = props.data?.salary?.to[0]
 const isExpanded = ref(false)
 </script>
 
@@ -41,8 +41,8 @@ const isExpanded = ref(false)
         </div>
       </div>
       <ul v-show="isExpanded">
-        <li v-for="i in 8">
-          <span>test</span>
+        <li v-for="skill in data.skills" :key="skill">
+          <span>{{ skill }}</span>
         </li>
       </ul>
     </div>

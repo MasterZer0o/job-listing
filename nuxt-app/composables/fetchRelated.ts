@@ -4,6 +4,7 @@ export interface RelatedOffer {
   remoteAvailable: boolean
   companyName: string
   isSaved: boolean
+  skills: string[]
   salary: {
     from: string
     to: string
