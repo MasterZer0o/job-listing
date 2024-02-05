@@ -29,6 +29,8 @@ declare global {
         name: string
         image: string
       }
+      content: string
+      contentSections: string[]
       remote: boolean
       createdAt: string
       skills: string[]

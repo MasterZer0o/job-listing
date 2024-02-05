@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineProps<{
+  elements: string[]
+}>()
 const allElements = ref([]) as Ref<HTMLElement[]>
 const selectedIndex = ref<number>(1)
 const indicatorWidth = ref<number>(0)
@@ -10,9 +13,7 @@ watch(selectedIndex, () => {
   indicatorWidth.value = selectedEl.clientWidth
   indicatorDistance.value = selectedEl.offsetLeft
 })
-const allOptions = [
-  'test', 'testtest', 'testtesttest'
-]
+
 const style = computed(() => {
   return `--indicator-width:${indicatorWidth.value - (indicatorWidth.value * 0.1)}px;--indicator-distance:${indicatorDistance.value + (indicatorWidth.value * 0.05)}px;`
 })
@@ -21,7 +22,7 @@ const style = computed(() => {
 <template>
   <section class="section-navigator">
     <ul :style="style">
-      <li v-for="(option, i) in allOptions" ref="allElements" :key="option" @click="selectedIndex = i">
+      <li v-for="(option, i) in elements" ref="allElements" :key="option" @click="selectedIndex = i">
         {{ option }}
       </li>
     </ul>

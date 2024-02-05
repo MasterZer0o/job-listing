@@ -28,7 +28,7 @@ $gap: 1.5em;
 
       & > span:first-child {
         position: absolute;
-        top: 5px;
+        top: 8px;
         right: 8px;
         font-style: italic;
       }
@@ -134,13 +134,10 @@ $gap: 1.5em;
             font-weight: bold;
             font-size: 0.9em;
             margin: auto;
-
-            &.sp-copy {
-              transition: transform 100ms ease-in-out;
+            transition: transform 100ms ease-in-out;
               &:active {
                 transform: scale(0.95);
               }
-            }
           }
         }
       }
