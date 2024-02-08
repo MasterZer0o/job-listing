@@ -11,9 +11,12 @@ export default defineNuxtConfig({
     preset: 'vercel_edge'
   },
   experimental: {
-    inlineSSRStyles: false,
     typedPages: true
   },
+  features: {
+    inlineStyles: false,
+  },
+
   css: ['@/assets/css/main.scss'],
   postcss: {
     plugins: {
@@ -21,6 +24,7 @@ export default defineNuxtConfig({
       'autoprefixer': {}
     }
   },
+
   vite: {
     css: {
 

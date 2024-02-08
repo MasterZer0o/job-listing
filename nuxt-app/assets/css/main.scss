@@ -92,6 +92,7 @@ li {
   cursor: pointer;
   transition: transform 150ms ease-in-out;
   animation: showScrollUp 300ms ease-in-out;
+
   &:hover {
     transform: scale(1.1);
   }
