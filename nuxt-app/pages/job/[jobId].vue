@@ -26,7 +26,7 @@ useHead({
       <JobDetailsHeader
         :company="response.data.company" :title="response.data.title"
         :salary="{ from: response.data.salaryFrom, to: response.data.salaryTo }" />
-      <JobDetailsSectionNavigator :elements="response.data.contentSections" />
+      <JobDetailsSectionNavigator v-if="response.data.contentSections.length > 0" :elements="response.data.contentSections" />
       <JobDetailsContent :posted-at="response.data.createdAt" :content="response.data.content" />
     </main>
     <JobDetailsSidePane />

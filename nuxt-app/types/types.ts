@@ -30,7 +30,7 @@ declare global {
         image: string
       }
       content: string
-      contentSections: string[]
+      contentSections: `${string}#${string}`[]
       remote: boolean
       createdAt: string
       skills: string[]
