@@ -1,7 +1,7 @@
 {
   "name": "nuxt-app",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,6 +10,11 @@
     "deps": "pnpm up -i --latest",
     "postdeps": "nuxt prepare",
     "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "perfect-debounce": "^1.0.0",
+    "valibot": "^0.28.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "0.42.0",
@@ -23,10 +28,5 @@
     "postcss-jit-props": "^1.0.13",
     "sass": "^1.70.0",
     "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
-    "perfect-debounce": "^1.0.0",
-    "valibot": "^0.27.1"
   }
 }

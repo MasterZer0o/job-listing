@@ -4,7 +4,6 @@ const props = defineProps<{
   content: string
 }>()
 
-// Description, tech, responsibilities, requirements, benefits, what we offer, recruitment process
 const postedAt = new Date(props.postedAt).toLocaleDateString('pl')
 </script>
 

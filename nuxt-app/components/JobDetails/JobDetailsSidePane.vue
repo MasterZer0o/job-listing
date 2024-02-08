@@ -4,7 +4,7 @@ const isSaved = ref(inject('is_job_saved', false))
 const shouldShowLoginModal = ref(false)
 const shouldImportLoginModal = ref(false)
 const copyButtonText = ref('Copy')
-// TODO: if not logged in, and clicked on "Save" button, check somehow if target related job isnt already saved
+
 function copyJobLink() {
   window.navigator.clipboard.writeText(window.location.href)
   copyButtonText.value = 'Copied!'
@@ -16,6 +16,7 @@ function onLoginSuccess(_isSaved?: boolean) {
     isSaved.value = true
   else _saveJob()
 }
+
 async function _saveJob() {
   if (!useUser().loggedIn) {
     shouldShowLoginModal.value = true

@@ -1,17 +1,28 @@
 .section-navigator {
+  position: relative;
+  padding-bottom: 1.5em;
+
   ul {
+    $padding: 4px;
     display: flex;
+    position: absolute;
+    overflow: auto;
+    padding-bottom: $padding;
+    margin-bottom: 10px;
+    width: 100%;
     gap: 1em;
+
+    &::-webkit-scrollbar {
+      height: 5px;
+    }
 
     &,
     li {
-      position: relative;
-
       &::before {
         content: '';
         height: 2px;
         position: absolute;
-        bottom: 0;
+        bottom: calc(0px + $padding);
         border-radius: 15px;
         z-index: 1;
         transition:
@@ -19,10 +30,11 @@
           width 200ms ease-in-out;
       }
     }
+
     &::before {
       background-color: var(--brand);
       width: var(--indicator-width);
-      transform: translateX(var(--indicator-distance));
+      transform: translateX(var(--indicator-posX));
       z-index: 1;
       transition:
         transform 250ms ease-in-out,
@@ -32,6 +44,9 @@
     li {
       cursor: pointer;
       user-select: none;
+      white-space: nowrap;
+      position: relative;
+      font-size: 0.9em;
 
       &:hover {
         opacity: 0.95;
@@ -40,6 +55,7 @@
         }
       }
       &::before {
+        bottom: 0;
         z-index: 0;
         left: 5%;
         right: 5%;

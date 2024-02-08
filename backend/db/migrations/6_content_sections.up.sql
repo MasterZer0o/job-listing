@@ -1,6 +1,6 @@
 CREATE table "jobs_content" (
   "id" SERIAL PRIMARY KEY,
-  "job_id" int not null REFERENCES "jobs" ("id") ON DELETE CASCADE,
+  "job_id" int not null unique REFERENCES "jobs" ("id") ON DELETE CASCADE,
   "content" TEXT,
   "sections" VARCHAR[],
   "created_at" TIMESTAMPTZ DEFAULT NOW()
