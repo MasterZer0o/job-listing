@@ -32,13 +32,13 @@ export default defineNuxtConfig({
     build: {
       cssCodeSplit: false,
 
-      rollupOptions: {
-        output: {
-          assetFileNames: 'public/assets/[hash][extname]',
-          chunkFileNames: 'public/[hash].js',
-          entryFileNames: 'public/[hash].js'
-        }
-      }
+      // rollupOptions: {
+      //   output: {
+      //     assetFileNames: 'public/assets/[hash][extname]',
+      //     chunkFileNames: 'public/[hash].js',
+      //     entryFileNames: 'public/[hash].js'
+      //   }
+      // }
     }
   },
   devtools: { enabled: false },
