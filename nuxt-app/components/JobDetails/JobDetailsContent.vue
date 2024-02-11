@@ -9,7 +9,7 @@ const postedAt = new Date(props.postedAt).toLocaleDateString('pl')
 
 <template>
   <section class="details-content">
-    <span>Posted at {{ postedAt }}</span>
+    <span>Posted {{ postedAt }}</span>
     <div v-html="content"></div>
   </section>
 </template>

@@ -17,7 +17,7 @@ defineProps<{
         {{ title }}
       </h1>
       <span>{{ company.name }} -
-        <NuxtLink :to="`/company/${company.id}`">
+        <NuxtLink :to="`/company/${company.id}`" :prefetch="false">
           o firmie
         </NuxtLink></span>
     </div>

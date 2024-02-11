@@ -75,11 +75,11 @@ async function _saveJob() {
     <JobDetailsRelated @save-job="_saveJob" />
   </section>
 
-  <Teleport to="body">
-    <ClientOnly>
+  <ClientOnly style="position: absolute;">
+    <Teleport to="body">
       <Transition v-show="shouldShowLoginModal" name="logreg" mode="out-in">
         <LazyAppLoginModal v-if="shouldShowLoginModal" :callback="onLoginSuccess" @close="shouldShowLoginModal = false" />
       </Transition>
-    </ClientOnly>
-  </Teleport>
+    </Teleport>
+  </ClientOnly>
 </template>

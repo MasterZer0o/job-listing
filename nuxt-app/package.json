@@ -14,7 +14,8 @@
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
     "perfect-debounce": "^1.0.0",
-    "valibot": "^0.28.1"
+    "valibot": "^0.28.1",
+    "vue": "^3.4.18"
   },
   "devDependencies": {
     "@antfu/eslint-config": "0.42.0",

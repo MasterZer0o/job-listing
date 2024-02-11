@@ -32,13 +32,13 @@ export default defineNuxtConfig({
     build: {
       cssCodeSplit: false,
 
-      // rollupOptions: {
-      //   output: {
-      //     assetFileNames: 'public/assets/[hash][extname]',
-      //     chunkFileNames: 'public/[hash].js',
-      //     entryFileNames: 'public/[hash].js'
-      //   }
-      // }
+      rollupOptions: {
+        output: {
+          assetFileNames: 'public/assets/[hash][extname]',
+          chunkFileNames: 'public/[hash].js',
+          entryFileNames: 'public/[hash].js'
+        }
+      }
     }
   },
   devtools: { enabled: false },
@@ -50,6 +50,7 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en'
       },
+
       link: [
 
         // {
@@ -70,12 +71,17 @@ export default defineNuxtConfig({
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'
         },
+
         // * font *
         {
           rel: 'icon',
           href: '/favicon.svg'
         }
-      ]
+      ],
+      script: [{
+        innerHTML: '(()=>{let e=localStorage.getItem("theme");if(["dark","light"].includes(e)){document.documentElement.setAttribute("color-scheme", e);return}let t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";localStorage.setItem("theme",t),document.documentElement.setAttribute("color-scheme", t)})();',
+        tagPosition: 'bodyOpen'
+      }],
     }
   },
   runtimeConfig: {

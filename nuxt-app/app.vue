@@ -15,30 +15,12 @@ if (process.server) {
     logError(error)
   }
 }
-const theme = ref('dark')
-function changeTheme() {
-  document.body.setAttribute('class', 'theming')
-  setTimeout(() => {
-    document.body.removeAttribute('class')
-  }, 350)
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
-}
 useHead({
   titleTemplate: title => title ?? 'Home'
 })
 </script>
 
 <template>
-  <Html :color-scheme="theme" />
-  <DevOnly>
-    <button
-      type="button"
-      style="position: absolute; z-index: 9999;"
-      @click="changeTheme">
-      theme
-    </button>
-  </DevOnly>
-
   <NuxtLoadingIndicator
     :duration="500"
     :height="2"

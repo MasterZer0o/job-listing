@@ -1,3 +1,5 @@
+@use './theme_switcher.scss';
+
 .app-nav {
   border-bottom: 1px solid var(--gray-7);
   padding: var(--size-4);
@@ -48,8 +50,8 @@
   }
 
   .user {
-    margin-left: auto;
     position: relative;
+    margin-left: 2em;
     z-index: 1;
     cursor: pointer;
 

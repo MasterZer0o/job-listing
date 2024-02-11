@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['saveJob'])
 const store = jobDetailsStore()
+
 </script>
 
 <template>

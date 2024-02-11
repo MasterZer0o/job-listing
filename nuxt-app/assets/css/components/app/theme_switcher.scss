@@ -1,0 +1,50 @@
+.theme-switcher {
+  position: relative;
+  margin-left: auto;
+
+  input {
+    height: 0;
+    width: 0;
+    position: absolute;
+
+    &:checked + label {
+      background-color: var(--surface-2);
+
+      &::after {
+        left: calc(100% - 2.5%);
+        transform: translateX(-100%);
+        background-color: var(--surface-4);
+      }
+    }
+  }
+
+  label {
+    $size: 50px;
+
+    cursor: pointer;
+    width: $size;
+    height: calc($size / 2);
+    background-color: hsl(222, 16%, 32%);
+    display: flex;
+    justify-content: space-around;
+    border-radius: 100px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 1.5px;
+      bottom: 2px;
+      width: calc(50% - 5%);
+      height: calc(100% - 11%);
+      background-color: var(--surface-4);
+      border-radius: 90px;
+      transition: 0.3s;
+    }
+  }
+}
+
+// .theme-switcher label:active::after {
+//   width: 55%;
+// }

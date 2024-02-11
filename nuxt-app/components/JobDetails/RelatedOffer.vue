@@ -37,7 +37,7 @@ const isExpanded = ref(false)
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M11.605 18.236097V16.02567607142857" stroke-width="1.79"></path>
             </g>
           </svg>
-          <span>{{ salaryFrom }}K - {{ salaryTo }}K</span>
+          <span :title="`${data?.salary?.from} - ${data?.salary?.to}`">{{ salaryFrom }}K - {{ salaryTo }}K</span>
         </div>
       </div>
       <ul v-show="isExpanded">

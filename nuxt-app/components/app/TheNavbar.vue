@@ -31,7 +31,7 @@
         </NuxtLink>
       </li>
     </ul>
-
+    <AppThemeSwitcher />
     <AppNavUser />
   </nav>
 </template>
