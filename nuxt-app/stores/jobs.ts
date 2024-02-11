@@ -8,6 +8,7 @@ export const useJobs = defineStore('jobs', () => {
   const currentPage = ref<number>(1)
 
   const isLoading = ref(false)
+  const isFetchingInitial = ref(true)
 
   function clear() {
     displayedJobs.value = []
@@ -31,7 +32,8 @@ export const useJobs = defineStore('jobs', () => {
     isLoading,
     error,
     MAX_ERROR_RETRIES,
-    retries
+    retries,
+    isFetchingInitial
   }
 })
 interface Error {
