@@ -8,14 +8,12 @@ const pageFromQuery = Number.parseInt(route.query.p as string)
 const jobsStore = useJobs()
 jobsStore.currentPage = pageFromQuery || 1
 onBeforeMount(async () => {
-  logInfo(jobsStore.displayedJobs.length)
   if (jobsStore.displayedJobs.length !== 0)
     return
   try {
     await fetchJobs({ withCount: true })
   }
   catch (error) {
-
   }
   finally {
     jobsStore.isFetchingInitial = false

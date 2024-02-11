@@ -101,7 +101,6 @@ func GetCount(ctx *fiber.Ctx) error {
 }
 
 func GetJobs(ctx *fiber.Ctx) error {
-	results := []JobsResult{}
 	params := ctx.Queries()
 
 	page := params["p"]
@@ -194,7 +193,11 @@ LIMIT 20`, joins, filtersStr, having)
 
 	if err != nil {
 		slog.Error("Query error", "err", err)
+		return ctx.JSON(response{
+			Error: "Failed to get data",
+		})
 	}
+	results := []JobsResult{}
 
 	for rows.Next() {
 		var result JobsResult
@@ -202,7 +205,9 @@ LIMIT 20`, joins, filtersStr, having)
 
 		if err != nil {
 			slog.Error("Scan error: ", "err", err)
-
+			return ctx.JSON(response{
+				Error: "Failed to get data",
+			})
 		}
 		results = append(results, result)
 	}
