@@ -13,7 +13,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type JobId = string
 type Value struct {
 	jobId    JobId
 	filterId string
@@ -35,7 +34,7 @@ type ValueInputs struct {
 	ExpLevels   chan Value
 }
 
-func SeedFilters() {
+func SeedFilters(jobIds []JobId) {
 	slog.Info("Starting seeding job filters")
 	fullStartTime := time.Now()
 
@@ -52,14 +51,6 @@ func SeedFilters() {
 		expLevels,
 	}
 
-	jobIds := []JobId{}
-	var v JobId
-	rows, _ := db.DB.Query(context.Background(), "SELECT id from jobs")
-	for rows.Next() {
-		rows.Scan(&v)
-		jobIds = append(jobIds, v)
-	}
-	rows.Close()
 	jobIdsCount := len(jobIds)
 
 	wg := sync.WaitGroup{}

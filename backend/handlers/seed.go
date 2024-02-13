@@ -24,7 +24,7 @@ func SeedHandler(ctx *fiber.Ctx) error {
 
 	switch seedTarget {
 	case "jobs":
-		seeders.SeedJobs(int(countInt), parameters["reset"]=="true")
+		seeders.SeedJobs(int(countInt), parameters["reset"] == "true")
 
 	case "skills":
 		seeders.SeedSkills()
