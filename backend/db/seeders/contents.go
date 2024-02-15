@@ -8,6 +8,7 @@ import (
 	"main/db"
 	"os"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -35,44 +36,48 @@ func SeedContents() {
 	slog.Info("Starting seeding job contents...", "rows to create", jobsDataLen)
 
 	const VALUES_PER_WORKER = 500
-	workersCount := 1
+	workerCount := 1
 	if jobsDataLen > VALUES_PER_WORKER {
 		if jobsDataLen%500 != 0 {
-			workersCount := jobsDataLen/(VALUES_PER_WORKER) + 1
+			workerCount = jobsDataLen/(VALUES_PER_WORKER) + 1
 		} else {
-			workersCount := jobsDataLen / (VALUES_PER_WORKER)
+			workerCount = jobsDataLen / (VALUES_PER_WORKER)
 		}
 	}
 
 	isDividableByValuesPerWorker := jobsDataLen%500 == 0
 	var jobIdsShare [][]JobData
 	startIdx, endIdx := 0, VALUES_PER_WORKER
+
 	// allocating worker share
 	if isDividableByValuesPerWorker {
-		for i := 0; i < workersCount; i++ {
+		for i := 0; i < workerCount; i++ {
 			jobIdsShare = append(jobIdsShare, jobsData[startIdx:endIdx])
 			startIdx = endIdx
 			endIdx += VALUES_PER_WORKER
 		}
 	} else {
-		if workersCount-1 == 0 {
+		if workerCount-1 == 0 {
 			jobIdsShare = append(jobIdsShare, jobsData[0:jobsDataLen])
 		} else {
-			for i := 0; i < workersCount-1; i++ {
+			for i := 0; i < workerCount-1; i++ {
 				jobIdsShare = append(jobIdsShare, jobsData[startIdx:endIdx])
 				startIdx = endIdx
 				endIdx += VALUES_PER_WORKER
 			}
 			jobIdsShare = append(jobIdsShare, jobsData[startIdx:])
 		}
-		generatedContents := generateContents(jobIdsShare, jobIdsLen)
 
 	}
-	insertContents()
+	generatedContents := generateContents(jobIdsShare, jobsDataLen, workerCount)
+	insertContents(generatedContents)
 }
 
-func generateContents(jobIdsShare [][]JobData, jobIdsLen int) {
-	ctx := context.Background()
+func generateContents(jobIdsShare [][]JobData, jobIdsLen int, workerCount int) []JobContentsRow {
+	slog.Info("Generating contents", "workers count", workerCount)
+
+	var activeWorkers atomic.Uint32
+	activeWorkers.Store(uint32(workerCount))
 	wg := sync.WaitGroup{}
 	contents := getJobContents()
 
@@ -80,7 +85,7 @@ func generateContents(jobIdsShare [][]JobData, jobIdsLen int) {
 	for i := 0; i < len(jobIdsShare); i++ {
 		wg.Add(1)
 
-		go func(share []JobData, wg *sync.WaitGroup, ctx context.Context, vc chan JobContentsRow) {
+		go func(share []JobData, wg *sync.WaitGroup, vc chan JobContentsRow, counter *atomic.Uint32) {
 			for j := 0; j < len(share); j++ {
 				var idx int
 				switch share[j].ExpLevel {
@@ -98,15 +103,33 @@ func generateContents(jobIdsShare [][]JobData, jobIdsLen int) {
 					JobId:    share[j].Id,
 				}
 			}
+
 			wg.Done()
-		}(jobIdsShare[i], &wg, ctx, valuesC)
+			counter.Add(^uint32(0))
+		}(jobIdsShare[i], &wg, valuesC, &activeWorkers)
 	}
+	var values []JobContentsRow
+	wg.Add(1)
+	go func(activeWorkers *atomic.Uint32) {
+		for range valuesC {
+			v := <-valuesC
+			values = append(values, v)
+			if activeWorkers.Load() == 0 && len(valuesC) == 0 {
+				close(valuesC)
+				wg.Done()
+			}
+		}
+	}(&activeWorkers)
+	wg.Wait()
+	slog.Info("Finished generating contents", "rows", len(values))
+	return values
 }
 
 func getJobContents() []JobContent {
-	v, err := os.ReadFile("../seed_data.json")
+	fileName := "seed_data.json"
+	v, err := os.ReadFile("db/" + fileName)
 	if err != nil {
-		slog.Error("Failed to read job contents file", "err", err)
+		slog.Error("Failed to read job contents file", "file name", fileName, "err", err)
 	}
 
 	contents := []JobContent{}
@@ -117,16 +140,16 @@ func getJobContents() []JobContent {
 	return contents
 }
 
-func insertContents(input []JobContent) {
-	// TODO:
+func insertContents(input []JobContentsRow) {
 	start := time.Now()
 	rowsCopied, err := db.DB.CopyFrom(context.Background(), pgx.Identifier{"jobs_content"}, []string{
-		"content", "sections",
+		"content", "sections", "job_id",
 	}, pgx.CopyFromSlice(len(input), func(i int) ([]interface{}, error) {
 		return []interface{}{
-			input[i].Content, input[i].Sections,
+			input[i].Content, input[i].Sections, input[i].JobId,
 		}, nil
 	}))
+
 	if err != nil {
 		slog.Error("Error inserting data to database", "err", err)
 		return

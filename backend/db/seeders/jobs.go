@@ -195,7 +195,7 @@ func generateImage(companyName string) string {
 	return "data:image/png;base64," + encodedString
 }
 func generateCompanies(jobCount int) []SeededCompany {
-	companiesCount := jobCount/rand.Intn(2) + 2
+	companiesCount := jobCount / (rand.Intn(2) + 2)
 	var results []SeededCompany
 	for i := 0; i < companiesCount; i++ {
 		name := "Best comp " + strconv.Itoa(i)
@@ -323,12 +323,13 @@ func insertCompanies(rowSources []SeededCompany, rowCount int) {
 		return
 	}
 
-	slog.Info(fmt.Sprintf("Finished seeding %d companies [%s].\nRows inserted: %d/%d\n",
+	slog.Info(fmt.Sprintf("Finished seeding %d companies [%s]. Rows inserted: %d/%d\n",
 		rowCount, time.Since(timeStart), rowsCopied, rowCount))
 }
 
 func getCompaniesId(idsC chan string) []string {
-	rows, err := db.DB.Query(context.Background(), "SELECT id from companies")
+	rows, err := db.DB.Query(context.Background(), "SELECT id from companies LIMIT "+strconv.Itoa(cap(idsC)))
+
 	if err != nil {
 		slog.Error("Error getting companies id", "err", err)
 	}
