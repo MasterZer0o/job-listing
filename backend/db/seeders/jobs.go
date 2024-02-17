@@ -5,7 +5,9 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"image"
+
+	// "image"
+
 	"image/png"
 	"log/slog"
 	"main/db"
@@ -41,21 +43,32 @@ type Salary struct {
 }
 
 func SeedJobs(jobCount int, idReset bool) {
+	start := time.Now()
 	rowSources := make([]SeededJob, 0, jobCount)
 	jobC := make(chan SeededJob, jobCount/2)
+
+	if idReset {
+		db.DB.Exec(context.Background(), "ALTER SEQUENCE jobs_id_seq RESTART WITH 1")
+		_, err := db.DB.Exec(context.Background(), "ALTER SEQUENCE companies_id_seq RESTART WITH 1")
+		if err != nil {
+			slog.Error("Error resetting auto-incrementing id", "err", err)
+		} else {
+			slog.Info("Id has been reset.")
+		}
+	}
 
 	generatedCompanies := generateCompanies(jobCount)
 	insertCompanies(generatedCompanies, len(generatedCompanies))
 	companiesIds := make(chan string, jobCount)
 	companiesIdsArr := getCompaniesId(companiesIds)
+	_companiesIdsLen := len(companiesIdsArr)
 	companiesIdsLen := len(companiesIdsArr)
 
 	// fill companiesIds with duplicates to match jobs count
 	for companiesIdsLen < jobCount {
-		companiesIds <- companiesIdsArr[rand.Intn(companiesIdsLen)]
+		companiesIds <- companiesIdsArr[rand.Intn(_companiesIdsLen)]
+		companiesIdsLen++
 	}
-
-	jobContents := getJobContents()
 
 	workers := 3
 	rowSplit := make([]int, 0, workers)
@@ -73,15 +86,8 @@ func SeedJobs(jobCount int, idReset bool) {
 			rowSplit = append(rowSplit, dividedInt+jobCount%workers)
 		}
 	}
-	if idReset {
-		_, err := db.DB.Exec(context.Background(), "ALTER SEQUENCE jobs_id_seq RESTART WITH 1")
-		if err != nil {
-			slog.Error("Error resetting auto-incrementing id", "err", err)
-		} else {
-			slog.Info("Id has been reset.")
-		}
-	}
-	go generateJobs(rowSplit, jobC, companiesIds, jobContents)
+
+	go generateJobs(rowSplit, jobC, companiesIds)
 
 	for entry := range jobC {
 		rowSources = append(rowSources, entry)
@@ -91,21 +97,25 @@ func SeedJobs(jobCount int, idReset bool) {
 	jobIds := getAllJobIds()
 	go SeedFilters(jobIds)
 	SeedContents()
+	slog.Info(fmt.Sprintf("Finished seeding jobs [%s].", time.Since(start)))
+	var dbSize string
+	row := db.DB.QueryRow(context.Background(), "SELECT pg_size_pretty(pg_database_size(current_database())) AS size")
+
+	if err := row.Scan(&dbSize); err == nil {
+		slog.Info(fmt.Sprintf("Database size after seeding: ~%s", dbSize))
+	}
 }
 
-func generateJobs(rowSplit []int, jobC chan<- SeededJob, companiesIds chan string, jobContents []JobContent) {
-
+func generateJobs(rowSplit []int, jobC chan<- SeededJob, companiesIds chan string) {
 	currencyIds := GetPossibleValues("currencies")
 
 	wg := sync.WaitGroup{}
 	for i, v := range rowSplit {
 		wg.Add(1)
-		go func(c chan<- SeededJob, rowCount *int, workerId int) {
+		go func(c chan<- SeededJob, rowCount int, workerId int) {
 			defer wg.Done()
-			start := time.Now()
-			rc := *rowCount
 
-			for j := 0; j < rc; j++ {
+			for j := 0; j < rowCount; j++ {
 				expLevel := generateExpLevel()
 				remoteAvailable := rand.Intn(2) == 0
 				title := generateTitle(expLevel)
@@ -121,12 +131,11 @@ func generateJobs(rowSplit []int, jobC chan<- SeededJob, companiesIds chan strin
 					Title:           title,
 					SalaryMin:       salary.Min,
 					SalaryMax:       salary.Max,
-					CurrencyId:      fmt.Sprint(randomCurrencyId),
+					CurrencyId:      randomCurrencyId,
 					Level:           expLevel,
 				}
 			}
-			slog.Info(fmt.Sprintf("Worker #%d finished generating data. [%s]\n", workerId+1, time.Since(start)))
-		}(jobC, &v, i)
+		}(jobC, v, i)
 
 	}
 	wg.Wait()
@@ -160,27 +169,26 @@ func GetPossibleValues(tableName string) PossibleValues {
 	}
 }
 
-func calculateWorkerCount() {}
 func generateImage(companyName string) string {
 	const (
 		width    = 160
 		height   = 160
-		fontSize = 20
+		fontSize = 30.0
 		margin   = 10
 	)
 
-	// Create a new image
-	image.NewRGBA(image.Rect(0, 0, width, height))
 	dc := gg.NewContext(width, height)
-	dc.SetRGB(1, 1, 1)
+	dc.SetRGB(rand.Float64(), rand.Float64(), rand.Float64())
 	dc.Clear()
 
-	// Set font properties
-	dc.LoadFontFace("", fontSize)
+	dc.LoadFontFace("C:\\Windows\\Fonts\\DejaVuSans.ttf", fontSize)
+	dc.SetRGBA(0, 0, 0, 0.65)
+	dc.DrawRectangle(margin, margin, float64(width-2*margin), 3*fontSize+12)
+	dc.Fill()
 
-	// Draw the text with word wrap
-	dc.SetRGB(0, 0, 0)
-	dc.DrawStringWrapped(companyName, margin, margin, 0, 0, float64(width-2*margin), 1.5, gg.AlignCenter)
+	dc.SetRGB(1, 1, 1)
+
+	dc.DrawStringWrapped(companyName, margin, margin+6, 0, 0, float64(width-2*margin), 1.5, gg.AlignCenter)
 
 	// Encode the image to PNG format
 	var buf bytes.Buffer
@@ -195,7 +203,10 @@ func generateImage(companyName string) string {
 	return "data:image/png;base64," + encodedString
 }
 func generateCompanies(jobCount int) []SeededCompany {
-	companiesCount := jobCount / (rand.Intn(2) + 2)
+	companiesCount := jobCount/(rand.Intn(2)+2) + 1
+	if companiesCount == 0 {
+		companiesCount = 1
+	}
 	var results []SeededCompany
 	for i := 0; i < companiesCount; i++ {
 		name := "Best comp " + strconv.Itoa(i)
@@ -219,7 +230,7 @@ func generateSalary(expLeveL string) Salary {
 		min, max = [thresholds]int{10500, 11000, 12000}, [thresholds]int{12000, 14500, 16000}
 	}
 
-	randIdx := rand.Intn(thresholds) + 1
+	randIdx := rand.Intn(thresholds)
 	return Salary{
 		Min: min[randIdx],
 		Max: max[randIdx],
@@ -284,12 +295,9 @@ func generateLocation() string {
 
 	return locations[rand.Intn(len(locations))]
 }
-func generateDescription() {
-	// TODO:
-}
+
 func generateTitle(expLevel string) string {
-	// TODO:
-	return expLevel + " " + "Title" + strconv.Itoa(rand.Intn(100))
+	return expLevel + " Software Developer" + strconv.Itoa(rand.Intn(100))
 }
 
 func insertJobs(rowSources []SeededJob, rowCount int) {
@@ -307,7 +315,7 @@ func insertJobs(rowSources []SeededJob, rowCount int) {
 		return
 	}
 
-	slog.Info(fmt.Sprintf("Finished seeding %d jobs [%s].\nRows inserted: %d/%d\n",
+	slog.Info(fmt.Sprintf("Finished inserting %d jobs [%s]. Rows inserted: %d/%d\n",
 		rowCount, time.Since(timeStart), rowsCopied, rowCount))
 }
 func insertCompanies(rowSources []SeededCompany, rowCount int) {
@@ -329,7 +337,6 @@ func insertCompanies(rowSources []SeededCompany, rowCount int) {
 
 func getCompaniesId(idsC chan string) []string {
 	rows, err := db.DB.Query(context.Background(), "SELECT id from companies LIMIT "+strconv.Itoa(cap(idsC)))
-
 	if err != nil {
 		slog.Error("Error getting companies id", "err", err)
 	}
@@ -340,6 +347,7 @@ func getCompaniesId(idsC chan string) []string {
 		idsC <- value
 		values = append(values, value)
 	}
+
 	rows.Close()
 	return values
 }

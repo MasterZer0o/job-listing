@@ -2,11 +2,9 @@ package seeders
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"main/db"
-	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -14,10 +12,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type JobContent struct {
-	Content  string   `json:"content"`
-	Sections []string `json:"sections"`
-}
+// type JobContent struct {
+// 	Content  string   `json:"content"`
+// 	Sections []string `json:"sections"`
+// }
 
 type JobContentsRow struct {
 	Content  string
@@ -79,11 +77,11 @@ func generateContents(jobIdsShare [][]JobData, jobIdsLen int, workerCount int) [
 	var activeWorkers atomic.Uint32
 	activeWorkers.Store(uint32(workerCount))
 	wg := sync.WaitGroup{}
-	contents := getJobContents()
+	contents := db.GetSeedContentData()
 
 	valuesC := make(chan JobContentsRow, jobIdsLen)
+	wg.Add(len(jobIdsShare))
 	for i := 0; i < len(jobIdsShare); i++ {
-		wg.Add(1)
 
 		go func(share []JobData, wg *sync.WaitGroup, vc chan JobContentsRow, counter *atomic.Uint32) {
 			for j := 0; j < len(share); j++ {
@@ -111,8 +109,7 @@ func generateContents(jobIdsShare [][]JobData, jobIdsLen int, workerCount int) [
 	var values []JobContentsRow
 	wg.Add(1)
 	go func(activeWorkers *atomic.Uint32) {
-		for range valuesC {
-			v := <-valuesC
+		for v := range valuesC {
 			values = append(values, v)
 			if activeWorkers.Load() == 0 && len(valuesC) == 0 {
 				close(valuesC)
@@ -125,20 +122,20 @@ func generateContents(jobIdsShare [][]JobData, jobIdsLen int, workerCount int) [
 	return values
 }
 
-func getJobContents() []JobContent {
-	fileName := "seed_data.json"
-	v, err := os.ReadFile("db/" + fileName)
-	if err != nil {
-		slog.Error("Failed to read job contents file", "file name", fileName, "err", err)
-	}
+// func getJobContents() []JobContent {
+// 	fileName := "seed_data.json"
+// 	v, err := os.ReadFile("db/" + fileName)
+// 	if err != nil {
+// 		slog.Error("Failed to read job contents file", "file name", fileName, "err", err)
+// 	}
 
-	contents := []JobContent{}
-	err = json.Unmarshal(v, &contents)
-	if err != nil {
-		slog.Error("Error marshaling JSON into struct", "err", err)
-	}
-	return contents
-}
+// 	contents := []JobContent{}
+// 	err = json.Unmarshal(v, &contents)
+// 	if err != nil {
+// 		slog.Error("Error marshaling JSON into struct", "err", err)
+// 	}
+// 	return contents
+// }
 
 func insertContents(input []JobContentsRow) {
 	start := time.Now()

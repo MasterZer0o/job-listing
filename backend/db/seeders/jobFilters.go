@@ -96,7 +96,6 @@ func SeedFilters(jobIds []JobId) {
 		ExpLevels:   make(chan Value, 2*workers),
 	}
 
-	timeStart := time.Now()
 	for idx, share := range workerShare {
 		wg.Add(1)
 		go jobFilterGenerator(&valueInputs, &allPosValues, &wg, share, idx+1)
@@ -113,7 +112,6 @@ func SeedFilters(jobIds []JobId) {
 	nwg := sync.WaitGroup{}
 	go drainInputs(&valueInputs, outputs, &nwg)
 	wg.Wait()
-	slog.Info(fmt.Sprintf("%d Workers finished generating data", workers), "time spent", time.Since(timeStart))
 
 	close(valueInputs.EmpTypes)
 	close(valueInputs.ExpLevels)
@@ -162,7 +160,6 @@ func drainInputs(inputs *ValueInputs, outputs Outputs, parentWg *sync.WaitGroup)
 }
 
 func jobFilterGenerator(inputs *ValueInputs, possVals *AllFiltersPossibleValues, wg *sync.WaitGroup, share []JobId, workerId int) {
-	timeStart := time.Now()
 	for _, jobId := range share {
 		for i := 0; i < rand.Intn(6)+1; i++ {
 			inputs.TechSkills <- Value{
@@ -201,12 +198,10 @@ func jobFilterGenerator(inputs *ValueInputs, possVals *AllFiltersPossibleValues,
 	}
 
 	wg.Done()
-	slog.Info(fmt.Sprintf("Worker %d finished generating data.", workerId), "time spent", time.Since(timeStart))
 }
 
 func insertFilters(tableName string, filterCol string, input []Value, wg *sync.WaitGroup) {
 	wg.Add(1)
-	defer wg.Done()
 	startTime := time.Now()
 	rowsCopied, err := db.DB.CopyFrom(context.Background(), pgx.Identifier{tableName}, []string{
 		"job_id", filterCol,
@@ -223,5 +218,5 @@ func insertFilters(tableName string, filterCol string, input []Value, wg *sync.W
 	slog.Info(fmt.Sprintf("Seeding table %s finished.", tableName),
 		"time taken", time.Since(startTime),
 		"rows copied", fmt.Sprintf("%d/%d", rowsCopied, len(input)))
-
+	wg.Done()
 }
