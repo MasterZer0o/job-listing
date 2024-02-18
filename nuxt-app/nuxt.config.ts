@@ -1,5 +1,3 @@
-import openProps from 'open-props'
-
 export default defineNuxtConfig({
   modules: ['@nuxtjs/html-validator', '@unocss/nuxt',
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs', 'skipHydrate'] }]
@@ -20,8 +18,7 @@ export default defineNuxtConfig({
   css: ['@/assets/css/main.scss'],
   postcss: {
     plugins: {
-      'postcss-jit-props': openProps,
-      'autoprefixer': {}
+      autoprefixer: {}
     }
   },
 

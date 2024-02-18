@@ -13,9 +13,10 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "normalize.css": "^8.0.1",
     "perfect-debounce": "^1.0.0",
     "valibot": "^0.28.1",
-    "vue": "^3.4.18"
+    "vue": "^3.4.19"
   },
   "devDependencies": {
     "@antfu/eslint-config": "0.42.0",
@@ -25,9 +26,7 @@
     "@unocss/transformer-compile-class": "^0.58.5",
     "consola": "^3.2.3",
     "nuxt": "^3.10.1",
-    "open-props": "^1.6.18",
-    "postcss-jit-props": "^1.0.13",
-    "sass": "^1.70.0",
+    "sass": "^1.71.0",
     "typescript": "^5.3.3"
   }
 }

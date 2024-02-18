@@ -3,12 +3,13 @@
   padding-bottom: 1.5em;
 
   ul {
-    $padding: 4px;
+    $padding: 8px;
     display: flex;
     position: absolute;
     overflow: auto;
     padding-bottom: $padding;
     margin-bottom: 10px;
+    padding-right: 1em;
     width: 100%;
     gap: 1em;
 
@@ -46,7 +47,6 @@
       user-select: none;
       white-space: nowrap;
       position: relative;
-      font-size: 0.9em;
 
       &:hover {
         opacity: 0.85;

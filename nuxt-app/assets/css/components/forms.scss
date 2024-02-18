@@ -12,20 +12,29 @@
         background-color: var(--surface-2);
       }
     }
+
+    & > div:first-child {
+      box-shadow: var(--shadow);
+      border-radius: 5px;
+      position: relative;
+      margin: auto;
+      background-color: var(--surface-1);
+      width: fit-content;
+    }
   }
 
   .wrapper {
     width: fit-content;
-    margin: var(--size-10) auto 0 auto;
+    margin: 5rem auto 0 auto;
     background-color: var(--surface-1);
-    border-radius: var(--radius-2);
+    border-radius: 5px;
     outline: 1px solid var(--surface-2);
-    box-shadow: var(--shadow-2);
+    box-shadow: var(--shadow);
 
     & > p {
       text-align: center;
-      padding-top: var(--size-3);
-      font-size: var(--font-size-7);
+      padding-top: 1rem;
+      font-size: 3rem;
     }
   }
 
@@ -33,11 +42,11 @@
     display: flex;
     flex-direction: column;
     width: 22rem;
-    padding: var(--size-7) var(--size-4) var(--size-4);
+    padding: 2rem 1.25rem 1.25rem;
 
     .validation-error {
-      color: var(--red-7);
-      padding-bottom: 3px;
+      color: #f03e3e;
+      padding-top: 5px;
       display: inline-block;
     }
 
@@ -52,7 +61,7 @@
         cursor: pointer;
         position: absolute;
         top: 20px;
-        right: var(--size-2);
+        right: 0.5rem;
         user-select: none;
       }
     }
@@ -71,9 +80,12 @@
 
       input {
         outline-offset: 0;
-        height: var(--size-8);
+        // height: 3rem;
+        padding: 1em .4em;
         width: 100%;
-        outline: 1px solid var(--blue-11);
+        outline: 1px solid #114678;
+        background-color: var(--surface-2);
+        border-radius: 5px;
 
         &:is(:not(:placeholder-shown), :focus-visible) {
           outline: 1px solid var(--brand-2);
@@ -90,18 +102,18 @@
       }
     }
     button[type='submit'] {
-      margin-top: var(--size-9);
+      margin-top: 4rem;
       width: 100%;
       min-height: 46px;
       background-color: var(--brand-3);
-      padding: var(--size-2);
-      border-radius: var(--radius-2);
+      padding: 0.5rem;
+      border-radius: 5px;
       transition:
         transform 100ms ease-in-out,
         background-color 100ms ease-in-out;
-      font-size: var(--font-size-3);
-      color: var(--gray-1);
-      font-weight: var(--font-weight-7);
+      font-size: 1.25rem;
+      color: #f1f3f5;
+      font-weight: 700;
       letter-spacing: 1px;
 
       &:hover:not(:has(svg)) {
@@ -124,9 +136,9 @@
     div:last-of-type {
       & .validation-error {
         display: flex;
-        gap: var(--size-1);
-        padding-top: var(--size-2);
-        font-size: var(--font-size-1);
+        gap: 0.25rem;
+        padding-top: 0.5rem;
+        font-size: 1rem;
       }
     }
     .row {
@@ -150,7 +162,7 @@
         label {
           display: flex;
           align-items: center;
-          gap: var(--size-2);
+          gap: 0.5rem;
           cursor: pointer;
           user-select: none;
         }
@@ -161,9 +173,9 @@
         display: block;
         width: 15px;
         height: 15px;
-        border-radius: var(--radius-2);
+        border-radius: 5px;
         background-color: var(--surface-2);
-        outline: 1px solid var(--gray-7);
+        outline: 1px solid #495057;
         transition: all 0.15s ease;
 
         svg {
@@ -195,7 +207,7 @@
 
     & > a:last-child {
       color: var(--link);
-      margin-top: var(--size-7);
+      margin-top: 2rem;
 
       &:hover {
         text-decoration: underline;

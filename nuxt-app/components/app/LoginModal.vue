@@ -19,11 +19,11 @@ const rememberedValues = reactive({
   password: passwordInput.value?.value
 })
 const schema = object({
-  email: string([email(),
+  email: string([email('Invalid email'),
     minLength(1, 'This field is required.')]),
   password: string([
-    minLength(6, 'Your password has minimum 6 characters'),
-    minLength(1, 'This field is required.')])
+    minLength(6, 'Your password has at least 6 characters'),
+    minLength(1, 'This field is required')])
 })
 function closeModal() {
   emit('close')
@@ -96,7 +96,7 @@ async function login() {
 
 <template>
   <div class=":uno: fixed inset-0 z-50 bg-[var(--overlay-modal)] form flex" data-login-modal @click.self="closeModal">
-    <div class=":uno: w-fit m-auto bg-[var(--surface-1)] shadow-[var(--shadow-2)] rounded-[5px] relative">
+    <div>
       <button type="button" class="close-modal" @click="closeModal">
         <svg width="25" height="25" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
           <path fill="currentColor" d="M764.288 214.592L512 466.88L259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512L214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z" />
@@ -159,7 +159,7 @@ async function login() {
       <DevOnly>
         <button
           type="button"
-          class="absolute text-white"
+          class="absolute text-white bg-black"
           @click="function () {
             emailInput.focus()
             emailInput.value = `test${(Math.random() * 100).toFixed(2)}@test.com`
@@ -170,7 +170,7 @@ async function login() {
         </button>
         <button
           type="button"
-          class="absolute ml-20 text-white"
+          class="absolute ml-20 text-white bg-black"
           @click="function () {
             emailInput.focus()
             emailInput.value = `test@test.com`

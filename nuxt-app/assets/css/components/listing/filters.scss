@@ -20,13 +20,13 @@
       background: linear-gradient(90deg, var(--brand-4), var(--brand));
       width: 90%;
       border-radius: 6px;
-      padding: 0.5em 0;
+      padding: 0.65em 0;
       font-weight: bold;
       transition: transform 150ms ease-in-out;
       outline: 0px solid transparent;
       letter-spacing: 1px;
-      color: var(--gray-2);
-      box-shadow: var(--shadow-2);
+      color: #e9ecef;
+      box-shadow: var(--shadow);
 
       &:hover {
         transform: scale(1.03);
@@ -102,28 +102,31 @@
     position: relative;
     & > p {
       user-select: none;
+      margin: 0;
     }
     label {
       margin-top: 0.3em;
       position: relative;
       display: flex;
       align-items: center;
-      width: fit-content;
+      justify-content: space-around;
       border-radius: 4px;
       padding-right: 6px;
       outline: 1px solid var(--surface-4);
     }
     input {
-      -moz-appearance: textfield;
       appearance: textfield;
       outline-offset: 0;
-      padding-right: 5px;
       width: 100%;
       width: 7em;
       outline: none;
+      padding: 0.5em 0.3em;
+      background-color: var(--surface-1);
+      color: var(--text);
 
       & + span {
         padding-left: 6px;
+        font-weight: bold;
       }
 
       &::-webkit-outer-spin-button,
@@ -145,6 +148,7 @@
           position: relative;
           user-select: none;
           width: 100%;
+          padding: 0.15em 0;
           &:hover {
             color: var(--text-1);
           }
@@ -221,7 +225,7 @@
 
       li.tech-skill {
         cursor: pointer;
-        padding: 4px 8px;
+        padding: 0.5em 0.6em;
         border-radius: 4px;
         outline: 1px solid var(--surface-2);
         transition: all 100ms ease-in-out;

@@ -28,7 +28,7 @@ async function linkToCompany(e: MouseEvent) {
   <article>
     <NuxtLink :to="`/job/${offer.id}`" :prefetch="false">
       <section class="company-image">
-        <img src="https://placehold.co/400x400" alt="">
+        <img :src="offer.company.image" alt="">
       </section>
       <div class="offer-info">
         <div class="row">

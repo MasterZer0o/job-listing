@@ -3,8 +3,13 @@ const props = defineProps<{
   data: RelatedOffer
 }>()
 const emit = defineEmits(['saveJob'])
-const salaryFrom = props.data?.salary?.from[0]
-const salaryTo = props.data?.salary?.to[0]
+const salaryFrom = props.data?.salary?.from.length === 5
+  ? props.data?.salary?.from.substring(0, 2)
+  : props.data?.salary?.from[0]
+const salaryTo = props.data?.salary?.to.length === 5
+  ? props.data?.salary?.to.substring(0, 2)
+  : props.data?.salary?.to[0]
+
 const isExpanded = ref(false)
 </script>
 
