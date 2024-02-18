@@ -3,6 +3,7 @@ module main
 go 1.21.1
 
 require (
+	github.com/fogleman/gg v1.3.0
 	github.com/go-playground/validator/v10 v10.15.4
 	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/golang-migrate/migrate/v4 v4.16.2
@@ -10,12 +11,12 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/joho/godotenv v1.5.1
 	github.com/valyala/fasthttp v1.49.0
+	gitlab.com/greyxor/slogor v1.2.0
 	golang.org/x/crypto v0.14.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
@@ -34,7 +35,6 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	gitlab.com/greyxor/slogor v1.2.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/net v0.10.0 // indirect

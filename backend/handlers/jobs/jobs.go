@@ -30,6 +30,10 @@ type JobsResult struct {
 	PostedAt        time.Time     `json:"postedAt"`
 	Skills          []string      `json:"skills"`
 }
+type countResponse struct {
+	Count      uint64 `json:"count"`
+	TotalPages uint64 `json:"totalPages"`
+}
 
 func GetCount(ctx *fiber.Ctx) error {
 	params := ctx.Queries()
@@ -63,7 +67,7 @@ func GetCount(ctx *fiber.Ctx) error {
 			filters = append(filters, "job_work_modes.work_mode_id IN ("+params["mode"]+")")
 
 		case "ms":
-			filters = append(filters, "salary_from >"+params["ms"])
+			filters = append(filters, "salary_from >="+params["ms"])
 
 		}
 	}
@@ -79,24 +83,23 @@ func GetCount(ctx *fiber.Ctx) error {
 			}
 		}
 	}
-	// slog.Info(sqlQuery)
 	r, _ := db.DB.Query(ctx.Context(), sqlQuery)
 	var count uint64
 	r.Next()
 	r.Scan(&count)
 	r.Close()
 
-	const PER_PAGE = 20
+	const RESULTS_PER_PAGE = 20
 	var totalPages uint64
-	if count%PER_PAGE == 0 {
-		totalPages = count / PER_PAGE
+	if count%RESULTS_PER_PAGE == 0 {
+		totalPages = count / RESULTS_PER_PAGE
 	} else {
-		totalPages = count/PER_PAGE + 1
+		totalPages = count/RESULTS_PER_PAGE + 1
 	}
 
-	return ctx.JSON(map[string]interface{}{
-		"count":      count,
-		"totalPages": totalPages,
+	return ctx.JSON(countResponse{
+		Count:      count,
+		TotalPages: totalPages,
 	})
 }
 
@@ -133,7 +136,7 @@ func GetJobs(ctx *fiber.Ctx) error {
 			LEFT JOIN work_modes ON job_work_modes.work_mode_id = work_modes.id`
 			filters = append(filters, "job_work_modes.work_mode_id IN ("+params["mode"]+")")
 		case "ms":
-			filters = append(filters, "salary_from >"+params["ms"])
+			filters = append(filters, "salary_from >="+params["ms"])
 		}
 	}
 
