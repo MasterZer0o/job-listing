@@ -91,6 +91,16 @@ async function applyFilters() {
     }
   }
 }
+const router = useRouter()
+async function clearAllFilters() {
+  await router.push({
+    query: undefined
+  })
+
+  store.clearAll()
+
+  await fetchJobs({ withCount: true })
+}
 </script>
 
 <template>
@@ -104,6 +114,12 @@ async function applyFilters() {
           <title>Click to {{ pinned ? 'unpin' : 'pin' }} filters panel</title>
           <path :fill="pinned ? 'currentColor' : 'none'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 20l5-5m0 0l3.956 3.956a1 1 0 0 0 1.626-.314l2.255-5.261a1 1 0 0 1 .548-.535l3.207-1.283a1 1 0 0 0 .336-1.635l-6.856-6.856a1 1 0 0 0-1.635.336l-1.283 3.207a1 1 0 0 1-.535.548L5.358 9.418a1 1 0 0 0-.314 1.626L9 15z" />
         </svg>
+      </button>
+    </div>
+    <div>
+      <button type="button" @click="clearAllFilters" v-if="store.shouldShowApplied">
+        clear all
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-0.5 -0.5 14 14" height="14" width="14"><g><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M6.5 12.535714285714286c3.3334785714285715 0 6.035714285714286 -2.702235714285714 6.035714285714286 -6.035714285714286C12.535714285714286 3.1665678571428573 9.833478571428572 0.4642857142857143 6.5 0.4642857142857143 3.1665678571428573 0.4642857142857143 0.4642857142857143 3.1665678571428573 0.4642857142857143 6.5c0 3.3334785714285715 2.702282142857143 6.035714285714286 6.035714285714286 6.035714285714286Z" stroke-width="1.5"></path><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M3.7142857142857144 6.5h5.571428571428571" stroke-width="2"></path></g></svg>
       </button>
     </div>
     <ul>

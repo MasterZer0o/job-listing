@@ -23,7 +23,7 @@
         content: '';
         height: 2px;
         position: absolute;
-        bottom: calc(0px + $padding);
+        bottom: calc(-2px + $padding);
         border-radius: 15px;
         z-index: 1;
         transition:
@@ -55,10 +55,10 @@
         }
       }
       &::before {
-        bottom: 0;
+        bottom: -2px;
         z-index: 0;
-        left: 5%;
-        right: 5%;
+        left: calc(5% + 1px);
+        right: calc(5% + 1px);
         transition: background-color 100ms ease-in-out;
       }
     }
